@@ -10,11 +10,10 @@
 <meta name="theme-color" content="#fbf4f5">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" as="image" href="img/envelope.webp">
-<link rel="preload" as="image" href="img/pocket.webp">
 <link rel="preload" as="image" href="img/hand.webp">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Cormorant+SC:wght@500;600&family=Great+Vibes&family=Manrope:wght@400;600;700&display=swap">
 <style>
+@font-face{font-family:"Classica Two";src:url("fonts/ClassicaTwo.woff2") format("woff2"),url("fonts/ClassicaTwo.ttf") format("truetype");font-display:swap}
 :root{
   --bg:#fbf4f5;          /* фон фото с конвертом */
   --cream:#f7f0ea;       /* карточка */
@@ -24,7 +23,8 @@
   --rose-light:#e9c3c9;
   --pearl:#efe8df;
   --gold:#c9a66b;
-  --script:"Great Vibes","Segoe Script",cursive;   /* выбор пользователя: росчерк как Parisienne, но с кириллицей */
+  --script:"Great Vibes","Segoe Script",cursive;
+  --classica:"Classica Two","Great Vibes","Segoe Script",cursive;   /* выбор пользователя для имён и подписи */
   --wine:#4a0b12;                                    /* бордо герба и фона открытки (фото 2) */
   --ivory:#f4f1ea;                                   /* внутренняя часть кружевной плашки */
   --serif:"Cormorant Garamond",Georgia,serif;
@@ -69,7 +69,7 @@ body::after{ /* лёгкая виньетка, как на фото */
   80%{transform:rotate(0) translateY(0)}
 }
 .env.still{animation:none;cursor:default}
-.env img{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none;user-select:none}
+.env img,.env svg{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none;user-select:none;overflow:visible}
 .env .pocket{z-index:3}
 /* карточка в конверте: геометрия снята с фото (кадр 630×610) */
 .card-s{position:absolute;z-index:2;left:20.95%;width:56.8%;top:32.95%;height:57%;
@@ -77,7 +77,7 @@ body::after{ /* лёгкая виньетка, как на фото */
   box-shadow:0 1px 2px rgba(90,26,43,.18),inset 0 0 0 1px rgba(255,255,255,.6);
   display:flex;flex-direction:column;align-items:center;padding-top:7%;gap:2px;
   transition:transform 1.25s cubic-bezier(.45,.02,.25,1)}
-.card-s .n{font-family:var(--script);font-size:clamp(36px,11vw,50px);line-height:1;color:var(--ink);margin-top:6px}
+.card-s .n{font-family:var(--classica);font-size:clamp(36px,11vw,50px);line-height:1;color:var(--ink);margin-top:6px}
 .card-s .d{font-family:var(--serif);font-style:italic;font-weight:600;font-size:clamp(13px,3.8vw,17px);color:var(--ink-soft);letter-spacing:.06em}
 .card-s .k{font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-soft);font-weight:700}
 .hand{position:absolute;z-index:10;left:0;top:0;width:44%;pointer-events:none;user-select:none;display:block;
@@ -95,7 +95,7 @@ body::after{ /* лёгкая виньетка, как на фото */
 .invite.show{opacity:1;pointer-events:auto}
 /* плашка: кремовый картон с зерном, слепое тиснение — двойная линия и завитки по углам (свет сверху-слева) */
 .card{--cw:440px;--paper:#f1e7d3;position:relative;width:min(440px,100%);background:var(--paper);border-radius:3px;
-  padding:calc(var(--cw)*.26) calc(var(--cw)*.105) calc(var(--cw)*.1);text-align:center;isolation:isolate;
+  padding:calc(var(--cw)*.37) calc(var(--cw)*.105) calc(var(--cw)*.1);text-align:center;isolation:isolate;
   box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 1px 2px rgba(40,10,10,.35),0 34px 44px -22px rgba(0,0,0,.65);
   transform:translateY(30px) scale(.94);transition:transform .9s cubic-bezier(.2,.8,.25,1)}
 .invite.show .card{transform:none}
@@ -110,8 +110,9 @@ body::after{ /* лёгкая виньетка, как на фото */
   filter:drop-shadow(0 6px 8px rgba(40,5,10,.4))}
 .host{font-family:"Cormorant SC",var(--serif);font-weight:600;font-size:13px;letter-spacing:.34em;color:var(--wine);margin:0 0 6px}
 .kicker{font-size:11px;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-soft)}
-.name{font-family:var(--script);font-weight:400;font-size:clamp(66px,19vw,92px);line-height:1.2;margin:0;color:var(--wine);padding:0 10px}
-.sub{font-family:var(--serif);font-style:italic;font-weight:600;font-size:24px;margin:-4px 0 20px;color:var(--ink)}
+.kicker.top{position:absolute;left:0;right:0;top:calc(var(--cw)*.3);font-size:9px;letter-spacing:.32em;color:var(--ink-soft);opacity:.85}
+.name{font-family:var(--classica);font-weight:400;font-size:clamp(40px,11.5vw,56px);line-height:1.25;margin:0;color:var(--wine);padding:0 4px;text-wrap:balance}
+.sub{font-family:var(--serif);font-style:italic;font-weight:600;font-size:24px;margin:6px 0 14px;color:var(--ink)}
 .sub .ny{display:inline-block;margin-top:6px;font-style:normal;font-size:12px;font-family:var(--sans);font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-soft)}
 .date{display:flex;align-items:center;justify-content:center;margin:0 auto 20px}
 .date > div{padding:4px 14px;display:flex;flex-direction:column;justify-content:center}
@@ -163,7 +164,7 @@ body::after{ /* лёгкая виньетка, как на фото */
 .btn.no{color:var(--ink);background:transparent;box-shadow:inset 0 0 0 1.5px var(--rose)}
 .btn.cal{display:inline-block;margin-top:14px;font-size:13px;color:var(--ink-soft);background:none;text-decoration:underline;text-underline-offset:4px;padding:8px}
 .answer{min-height:24px;margin-top:14px;font-family:var(--serif);font-style:italic;font-size:19px;color:var(--ink)}
-.sign{font-family:var(--script);font-size:30px;color:var(--ink);margin-top:14px}
+.sign{font-family:var(--classica);font-size:30px;color:var(--ink);margin-top:14px}
 .row-btn{width:100%;font:inherit;color:inherit;text-align:left;cursor:pointer;position:relative;overflow:hidden;
   background:linear-gradient(135deg,#fff 0%,#fbf1f3 55%,#f3dde2 100%);border-color:var(--rose);
   animation:nudge 3.4s ease-in-out infinite;transform-origin:50% 50%}
@@ -207,7 +208,7 @@ body::after{ /* лёгкая виньетка, как на фото */
 .dress h3{font-family:var(--serif);font-weight:600;font-size:22px;margin:18px 0 6px;color:var(--ink);display:flex;align-items:center;gap:12px}
 .dress h3::after{content:"";flex:1;height:1px;background:rgba(201,139,149,.5)}
 .dress p{font-family:var(--serif);font-size:17px;line-height:1.45;margin:0 0 10px;color:var(--ink)}
-.dress .fin{font-family:var(--script);font-size:26px;text-align:center;margin:22px 0 0;color:var(--ink)}
+.dress .fin{font-family:var(--classica);font-size:26px;text-align:center;margin:22px 0 0;color:var(--ink)}
 #confetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:10}
 .again{position:fixed;left:max(10px,env(safe-area-inset-left,0px));top:max(10px,env(safe-area-inset-top,0px));z-index:6;
   font:600 12px var(--sans);color:var(--pearl);background:rgba(255,255,255,.1);border:1px solid rgba(239,232,223,.35);border-radius:999px;padding:8px 14px;cursor:pointer;display:none}
@@ -225,13 +226,70 @@ body::after{ /* лёгкая виньетка, как на фото */
     <div class="to" id="to">Тебе письмо</div>
     <div class="box" id="box">
       <button class="env" id="env" aria-label="Открыть конверт">
-        <img src="img/envelope.webp" alt="" draggable="false">
+        <!-- конверт нарисован: клапан, бахрома -->
+        <svg viewBox="0 0 630 610" aria-hidden="true">
+          <defs>
+            <filter id="velvet" x="-5%" y="-5%" width="110%" height="110%" color-interpolation-filters="sRGB">
+              <feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="3" seed="4" result="n"/>
+              <feColorMatrix in="n" type="matrix" values="0 0 0 0 .25  0 0 0 0 .05  0 0 0 0 .08  0 0 0 .55 -.12" result="dark"/>
+              <feColorMatrix in="n" type="matrix" values="0 0 0 0 1  0 0 0 0 .9  0 0 0 0 .92  0 0 0 .5 -.22" result="light"/>
+              <feComposite in="dark" in2="SourceGraphic" operator="in" result="d2"/>
+              <feComposite in="light" in2="SourceGraphic" operator="in" result="l2"/>
+              <feComposite in="d2" in2="SourceGraphic" operator="over" result="s1"/>
+              <feComposite in="l2" in2="s1" operator="over"/>
+            </filter>
+            <filter id="fluff" x="-10%" y="-10%" width="120%" height="120%">
+              <feTurbulence type="turbulence" baseFrequency=".12 .6" numOctaves="2" seed="3" result="t"/>
+              <feDisplacementMap in="SourceGraphic" in2="t" scale="7" xChannelSelector="R" yChannelSelector="G"/>
+            </filter>
+            <filter id="softshadow" x="-20%" y="-20%" width="140%" height="160%"><feGaussianBlur stdDeviation="14"/></filter>
+            <linearGradient id="flapG" x1="0" y1="0" x2=".3" y2="1"><stop offset="0" stop-color="#dc96a0"/><stop offset=".55" stop-color="#cf7d88"/><stop offset="1" stop-color="#bf6b77"/></linearGradient>
+            <linearGradient id="pocketG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d9909a"/><stop offset=".5" stop-color="#cf7c87"/><stop offset="1" stop-color="#b96874"/></linearGradient>
+            <linearGradient id="tasselG" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#a9525f"/><stop offset=".45" stop-color="#d4848e"/><stop offset="1" stop-color="#a04b58"/></linearGradient>
+            <radialGradient id="knotG" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#e3a2aa"/><stop offset="1" stop-color="#9d4652"/></radialGradient>
+            <g id="tassel">
+              <path d="M0 0v18" stroke="#7a2130" stroke-width="2.2" fill="none"/>
+              <ellipse cx="0" cy="26" rx="7.5" ry="9.5" fill="url(#knotG)"/>
+              <path d="M-5 24c3-2 7-2 10 0" stroke="#7a2130" stroke-width="1.4" fill="none" opacity=".7"/>
+              <path d="M-6 34 C-14 52-16 76-13 100 L13 100 C16 76 14 52 6 34 Z" fill="url(#tasselG)"/>
+              <g stroke="#f0bcc3" stroke-width=".9" opacity=".55" fill="none">
+                <path d="M-8 44v54M-4 40v60M0 38v62M4 40v60M8 44v54"/>
+              </g>
+              <path d="M-13 100h26" stroke="#8b3645" stroke-width="2" opacity=".8"/>
+            </g>
+            <g id="fringe" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path id="fr" fill="none" d="M45 250 L308 25 L575 250 M45 250 L308 392 L575 250"/>
+            </g>
+          </defs>
+          <ellipse cx="308" cy="560" rx="265" ry="36" fill="rgba(90,26,43,.35)" filter="url(#softshadow)"/>
+          <!-- клапан (ромб) -->
+          <path d="M308 25 L575 250 L308 392 L45 250 Z" fill="url(#flapG)" filter="url(#velvet)"/>
+          <path d="M308 25 L575 250 L308 392 L45 250 Z" fill="none" stroke="rgba(120,40,55,.25)" stroke-width="1.5"/>
+          <!-- бахрома по всем четырём рёбрам клапана -->
+          <use href="#fr" stroke="#6b1324" stroke-width="15"/>
+          <use href="#fr" stroke="#8d2036" stroke-width="11" stroke-dasharray="1.6 2.6" filter="url(#fluff)"/>
+          <use href="#fr" stroke="#b1455a" stroke-width="5" stroke-dasharray="1 3.5" opacity=".6" filter="url(#fluff)"/>
+        </svg>
         <div class="card-s" id="cardS">
           <div class="k">приглашение</div>
-          <div class="n" id="cardName">Яна</div>
+          <div class="n" id="cardName">для вас</div>
           <div class="d">30 октября</div>
         </div>
-        <img class="pocket" src="img/pocket.webp" alt="" draggable="false">
+        <!-- карман и кисти — поверх карточки -->
+        <svg class="pocket" viewBox="0 0 630 610" aria-hidden="true">
+          <path d="M58 405 L308 383 L560 405 L560 560 Q560 568 552 568 L66 568 Q58 568 58 560 Z" fill="url(#pocketG)" filter="url(#velvet)"/>
+          <path d="M58 405 L308 560 L560 405" fill="none" stroke="rgba(255,255,255,.22)" stroke-width="1.6"/>
+          <path d="M58 405 L308 560 L560 405" fill="none" stroke="rgba(120,40,55,.22)" stroke-width="1.2" transform="translate(0 2)"/>
+          <path d="M58 405 L308 383 L560 405" fill="none" stroke="rgba(255,255,255,.3)" stroke-width="1.5"/>
+          <g id="tassels">
+            <use href="#tassel" transform="translate(52 256)"/><use href="#tassel" transform="translate(96 279)"/>
+            <use href="#tassel" transform="translate(140 302)"/><use href="#tassel" transform="translate(184 325)"/>
+            <use href="#tassel" transform="translate(228 350)"/>
+            <use href="#tassel" transform="translate(568 256)"/><use href="#tassel" transform="translate(524 279)"/>
+            <use href="#tassel" transform="translate(480 302)"/><use href="#tassel" transform="translate(436 325)"/>
+            <use href="#tassel" transform="translate(392 350)"/>
+          </g>
+        </svg>
       </button>
       <img class="hand" id="hand" src="img/hand.webp" alt="" draggable="false">
     </div>
@@ -241,30 +299,6 @@ body::after{ /* лёгкая виньетка, как на фото */
 
 <section class="invite" id="invite" aria-live="polite">
   <article class="card" id="card">
-    <svg class="crest" viewBox="0 0 240 244" aria-label="Монограмма ЯС — Яна Сандович">
-      <defs>
-        <linearGradient id="rg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f2dac6"/><stop offset="1" stop-color="#d6ab8c"/></linearGradient>
-        <linearGradient id="wg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5c1119"/><stop offset="1" stop-color="#38060c"/></linearGradient>
-      </defs>
-      <g fill="none" stroke="#4a0b12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-        <!-- завитки: правая половина + зеркало -->
-        <g id="fl">
-          <path d="M184 56c14-12 30-8 32 6 1 11-10 16-16 10-5-6 3-13 9-9"/>
-          <path d="M188 134c16 0 26 10 22 22-3 9-17 9-18 0-1-7 9-9 13-4"/>
-          <path d="M160 206c12 6 14 22 3 30-10 7-22 0-17-8 4-6 13-2 11 5"/>
-          <path d="M134 10c6-10 20-12 28-4 6 6 2 14-6 12-7-2-5-11 2-11"/>
-        </g>
-        <use href="#fl" transform="matrix(-1 0 0 1 240 0)"/>
-        <path d="M120 2v16M112 10h16"/>
-        <path d="M120 230v12"/>
-      </g>
-      <path fill="url(#wg)" d="M120 18c30 0 58 12 66 40 8 28-2 52 0 76 2 28-6 56-26 72-14 12-28 18-40 26-12-8-26-14-40-26-20-16-28-44-26-72 2-24-8-48 0-76 8-28 36-40 66-40z"/>
-      <path fill="none" stroke="#d9b093" stroke-width="1.3" transform="translate(120 125) scale(.9) translate(-120 -125)" d="M120 18c30 0 58 12 66 40 8 28-2 52 0 76 2 28-6 56-26 72-14 12-28 18-40 26-12-8-26-14-40-26-20-16-28-44-26-72 2-24-8-48 0-76 8-28 36-40 66-40z"/>
-      <g font-family="Cormorant Garamond, Georgia, serif" font-weight="500" fill="url(#rg)">
-        <text x="62" y="154" font-size="90">Я</text>
-        <text x="108" y="170" font-size="92">С</text>
-      </g>
-    </svg>
     <svg class="paper" id="paper" viewBox="0 0 440 900" preserveAspectRatio="none" aria-hidden="true">
       <defs>
         <filter id="emb" filterUnits="userSpaceOnUse" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
@@ -304,10 +338,9 @@ body::after{ /* лёгкая виньетка, как на фото */
         <use href="#scroll" id="c1"/><use href="#scroll" id="c2"/><use href="#scroll" id="c3"/><use href="#scroll" id="c4"/>
       </g>
     </svg>
-    <div class="host">Яна Сандович</div>
-    <div class="kicker">Manhattan Jazz Salon · 1948</div>
-    <h1 class="name" id="bigName">Яна</h1>
-    <p class="sub"><span id="subTxt">празднует день рождения</span><br><span class="ny">светский вечер · джаз · тайна</span></p>
+    <div class="kicker top">Manhattan Jazz Salon · 1948</div>
+    <h1 class="name" id="bigName">Дорогие гости,</h1>
+    <p class="sub">ждём Вас в пятницу</p>
 
     <div class="date">
       <div><span class="sm">пятница</span></div>
@@ -403,15 +436,18 @@ body::after{ /* лёгкая виньетка, как на фото */
 
   // Имя гостя из ссылки: ...?to=Маша → «Маша, тебе письмо»
   const guest = new URLSearchParams(location.search).get("to");
-  if (guest) {                                  // именная ссылка: имя гостя на конверте и в открытке
-    const g = guest.trim().slice(0, 30);
+  if (guest) {                                  // именная ссылка: ?to=Игорь и Владислава (&g=м|ж|мн — если род угадан неверно)
+    const g = guest.trim().slice(0, 40);
+    const many = /\s(и|&)\s|,/.test(g);
+    const fem = /[аяь]$/i.test(g) && !/(ь)$/i.test(g);
+    const gp = new URLSearchParams(location.search).get("g");
+    const word = gp === "мн" || (!gp && many) ? "Дорогие" : gp === "ж" || (!gp && fem) ? "Дорогая" : "Дорогой";
     el("to").textContent = g + ", тебе письмо";
+    if (many) el("to").textContent = g + ", вам письмо";
     el("cardName").textContent = g;
-    el("bigName").textContent = g;
-    el("subTxt").textContent = "Яна приглашает тебя на день рождения";
-    document.title = g + ", тебе письмо · 30 октября";
+    el("bigName").textContent = word + " " + g + ",";
+    document.title = g + " · приглашение на 30 октября";
   }
-
   // Сцена появляется, когда все слои загружены (или через 4 с, если сеть совсем медленная)
   // ширина плашки → толщина кружевной рамки (пропорции фото)
   const cardEl = el("card");
