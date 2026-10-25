@@ -1,0 +1,703 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Приглашение для Ирины</title>
+<meta name="description" content="Тебе письмо! Открой конверт — там приглашение на день рождения Яны, 30 октября.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Приглашение для Ирины">
+<meta property="og:title" content="Тебе письмо 💌">
+<meta property="og:description" content="30 октября в 17:30 · Manhattan Jazz Salon, 1948. Открой конверт.">
+<meta property="og:url" content="https://priglasheniye.pages.dev/i/irina/">
+<meta property="og:image" content="https://priglasheniye.pages.dev/img/og.jpg">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<base href="../../">
+<script>window.GUEST = 'Ирина';</script>
+<meta name="theme-color" content="#fbf4f5">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="image" href="img/hand.webp">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Cormorant+SC:wght@500;600&family=Great+Vibes&family=Manrope:wght@400;600;700&display=swap">
+<style>
+@font-face{font-family:"Classica Two";src:url("fonts/ClassicaTwo.woff2") format("woff2"),url("fonts/ClassicaTwo.ttf") format("truetype");font-display:swap}
+:root{
+  --bg:#fbf4f5;          /* фон фото с конвертом */
+  --cream:#f7f0ea;       /* карточка */
+  --ink:#5a1a2b;         /* бордо перчатки и бахромы */
+  --ink-soft:#8c4a5a;
+  --rose:#c98b95;        /* бархат */
+  --rose-light:#e9c3c9;
+  --pearl:#efe8df;
+  --gold:#c9a66b;
+  --script:"Great Vibes","Segoe Script",cursive;
+  --classica:"Classica Two","Great Vibes","Segoe Script",cursive;   /* выбор пользователя для имён и подписи */
+  --wine:#4a0b12;                                    /* бордо герба и фона открытки (фото 2) */
+  --ivory:#f4f1ea;                                   /* внутренняя часть кружевной плашки */
+  --serif:"Cormorant Garamond",Georgia,serif;
+  --sans:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;overflow-x:hidden;max-width:100vw}
+body{font-family:var(--sans);color:var(--ink);background:var(--bg);min-height:100svh;overflow-x:hidden;touch-action:pan-y;overscroll-behavior-x:none;-webkit-tap-highlight-color:transparent}
+body::after{ /* лёгкая виньетка, как на фото */
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(120% 90% at 50% 40%,transparent 55%,rgba(201,139,149,.18) 100%)}
+
+/* ---------- блёстки ---------- */
+.sky{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+/* блёстки рисуются на canvas (#sky), см. JS glitter */
+
+/* ---------- сцена ---------- */
+.stage{position:relative;z-index:1;min-height:100svh;display:grid;place-items:center;overflow-x:clip;
+  padding-block:24px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.scene{display:flex;flex-direction:column;align-items:center;gap:18px;opacity:0;transition:opacity .7s ease}
+.scene.ready{opacity:1}   /* показываем, только когда конверт, карман и рука загружены — иначе карточка на миг висит одна */
+.to{font-family:var(--serif);font-style:italic;font-weight:600;font-size:clamp(34px,9vw,48px);color:var(--ink);text-align:center;line-height:1.05;letter-spacing:.01em;transition:opacity .5s}
+.hint{font-size:12px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-soft);animation:pulse 1.8s ease-in-out infinite;margin-top:6px}
+@keyframes pulse{0%,100%{opacity:.5}50%{opacity:1}}
+
+/* коробка: конверт (качается) + рука (не качается) */
+.box{position:relative;width:min(400px,90vw);aspect-ratio:630/610}
+.env{position:absolute;inset:0;border:0;padding:0;background:none;cursor:pointer;perspective:1200px;will-change:transform;
+  animation:wiggle 2.8s ease-in-out infinite;transform-origin:50% 85%}
+.env:focus-visible{outline:3px dashed var(--rose);outline-offset:10px;border-radius:12px}
+@keyframes wiggle{
+  0%,60%,100%{transform:rotate(0) translateY(0)}
+  64%{transform:rotate(-3.5deg) translateY(-5px)}
+  68%{transform:rotate(3.5deg) translateY(-7px)}
+  72%{transform:rotate(-2.5deg) translateY(-5px)}
+  76%{transform:rotate(1.5deg) translateY(-2px)}
+  80%{transform:rotate(0) translateY(0)}
+}
+.env.still{animation:none;cursor:default}
+.env img{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none;user-select:none}
+.env .lay{z-index:1}.env .front{z-index:3}
+/* карточка в конверте: внутри тела (фальц на 41 % высоты), наружу выходит только когда поднимается */
+.card-s{position:absolute;z-index:2;left:21%;width:58%;top:44%;height:47%;
+  background:var(--cream);border-radius:3px;will-change:transform;
+  box-shadow:0 1px 2px rgba(90,26,43,.18),inset 0 0 0 1px rgba(255,255,255,.6);
+  display:flex;flex-direction:column;align-items:center;padding-top:7%;gap:2px;
+  transition:transform 1.25s cubic-bezier(.45,.02,.25,1)}
+.card-s.peek{transition:transform .8s cubic-bezier(.2,.8,.25,1)}
+.card-s .n{font-family:var(--classica);font-size:clamp(28px,8.5vw,40px);line-height:1.02;color:var(--ink);margin-top:4px;white-space:nowrap;width:92%;text-align:center}
+.card-s .n span{display:block}
+.card-s .f{font-family:var(--serif);font-style:italic;font-size:clamp(13px,3.6vw,16px);color:var(--ink-soft);margin-top:3px;line-height:1}
+.card-s .f[hidden]{display:none}
+.card-s .d{font-family:var(--serif);font-style:italic;font-weight:600;font-size:clamp(13px,3.8vw,17px);color:var(--ink-soft);letter-spacing:.06em;margin-top:5px}
+.card-s .k{font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-soft);font-weight:700}
+/* клапан: два слоя (закрытый и открытый), переворот вокруг фальца в два полуоборота — без backface-visibility (Safari его теряет) */
+.flap{position:absolute;inset:0;z-index:4;pointer-events:none;transform-origin:50% 40.98%;will-change:transform;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.flap-c{transition:transform .55s cubic-bezier(.55,.05,.85,.5)}
+.flap-o{transform:rotateX(-90deg);visibility:hidden;transition:transform .6s cubic-bezier(.15,.5,.3,1)}
+.env.open .flap-c{transform:rotateX(90deg);visibility:hidden;transition:transform .55s cubic-bezier(.55,.05,.85,.5),visibility 0s .55s}
+.env.open2 .flap-o{transform:rotateX(0);visibility:visible}
+.env.flap-behind .flap{z-index:1}
+.hand{position:absolute;z-index:10;left:0;top:0;width:56%;pointer-events:none;user-select:none;display:block;opacity:0;will-change:transform;
+  transition:transform 1.15s cubic-bezier(.2,.75,.25,1),opacity .3s}
+.hand.pull{transition:transform 1.25s cubic-bezier(.45,.02,.25,1)}
+.hand.away{transition:transform 1s cubic-bezier(.5,0,.8,.6),opacity .6s .3s}
+.env.fade{transition:opacity .7s ease,transform .7s ease;opacity:0;transform:scale(.94) translateY(16px)}
+
+/* ---------- приглашение ---------- */
+.invite{position:fixed;inset:0;z-index:5;overflow-y:auto;overflow-x:hidden;touch-action:pan-y;overscroll-behavior-x:none;display:grid;place-items:start center;
+  padding-block:calc(56px + env(safe-area-inset-top,0px)) 40px;padding-left:max(12px,env(safe-area-inset-left,0px));padding-right:max(12px,env(safe-area-inset-right,0px));
+  background:#3a070c url("img/lace_bg.webp") center top/100% auto repeat-y;
+  opacity:0;pointer-events:none;transition:opacity .7s ease}
+.invite.show{opacity:1;pointer-events:auto}
+/* плашка: кремовый картон с зерном, слепое тиснение — двойная линия и завитки по углам (свет сверху-слева) */
+.card{--cw:440px;--paper:#f1e7d3;position:relative;width:min(440px,100%);background:var(--paper);border-radius:3px;
+  padding:calc(var(--cw)*.37) calc(var(--cw)*.105) calc(var(--cw)*.19);text-align:center;isolation:isolate;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 1px 2px rgba(40,10,10,.35),0 34px 44px -22px rgba(0,0,0,.65);
+  transform:translateY(30px) scale(.94);transition:transform .9s cubic-bezier(.2,.8,.25,1)}
+.invite.show .card{transform:none}
+.card::before{ /* зерно бумаги — поверх рельефа, чтобы выглядело одним листом */
+  content:"";position:absolute;inset:0;z-index:1;pointer-events:none;mix-blend-mode:multiply;opacity:.8;border-radius:3px;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' seed='5'/%3E%3CfeColorMatrix values='0 0 0 0 .55 0 0 0 0 .45 0 0 0 0 .3 0 0 0 .13 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.card > *{position:relative;z-index:2}
+/* тиснение: SVG-«бумага» на всю плашку; рельеф — освещение карты высот (размытый силуэт узора), зерно идёт поверх */
+.paper{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;border-radius:3px;object-fit:fill}
+/* герб с монограммой — сверху по центру */
+.crest{position:absolute;left:50%;top:calc(var(--cw)*-.09);transform:translateX(-50%);width:calc(var(--cw)*.30);height:auto;z-index:3;
+  filter:drop-shadow(0 6px 8px rgba(40,5,10,.4))}
+.host{font-family:"Cormorant SC",var(--serif);font-weight:600;font-size:13px;letter-spacing:.34em;color:var(--wine);margin:0 0 6px}
+.kicker{font-size:11px;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-soft)}
+.kicker.top{position:absolute;left:0;right:0;top:calc(var(--cw)*.235);font-size:9px;letter-spacing:.32em;color:var(--ink-soft);opacity:.85}
+.name{font-family:var(--classica);font-weight:400;font-size:clamp(30px,8.6vw,42px);line-height:1.3;margin:0;color:var(--wine);padding:0 4px;text-wrap:balance;overflow-wrap:anywhere;max-width:100%}
+.sub{font-family:var(--serif);font-style:italic;font-weight:600;font-size:24px;margin:6px 0 14px;color:var(--ink)}
+.sub .ny{display:inline-block;margin-top:6px;font-style:normal;font-size:12px;font-family:var(--sans);font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-soft)}
+.date{display:flex;align-items:center;justify-content:center;margin:0 auto 20px}
+.date > div{padding:4px 14px;display:flex;flex-direction:column;justify-content:center}
+.date .mid{border-left:1px solid var(--rose);border-right:1px solid var(--rose);padding:0 18px}
+.date .big{font-family:var(--classica);font-weight:400;font-size:66px;line-height:1;color:var(--ink)}
+.date .sm{font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft)}
+.text{font-family:var(--serif);font-size:19px;line-height:1.45;color:var(--ink);max-width:30ch;margin:0 auto 22px;text-wrap:balance}
+/* голосовое сообщение */
+.voice{display:none;align-items:center;gap:12px;margin:0 0 22px;padding:12px 14px 12px 12px;text-align:left;
+  background:var(--ink);color:var(--pearl);border-radius:999px;box-shadow:0 14px 26px -14px rgba(90,26,43,.7)}
+.voice.ready{display:flex}
+.voice .play{flex:none;width:46px;height:46px;border-radius:50%;border:0;background:var(--pearl);color:var(--ink);cursor:pointer;
+  display:grid;place-items:center;transition:transform .15s}
+.voice .play:active{transform:scale(.94)}
+.voice .play svg{width:20px;height:20px;display:block}
+.voice .play .ic-pause{display:none}
+.voice.playing .play .ic-play{display:none}
+.voice.playing .play .ic-pause{display:block}
+.voice .body{flex:1;min-width:0}
+.voice .lbl{font-family:var(--serif);font-style:italic;font-size:16px;line-height:1.1;margin-bottom:7px;color:var(--pearl)}
+.voice .bar{position:relative;height:22px;cursor:pointer;display:flex;align-items:center;gap:2px}
+.voice .bar i{flex:1;display:block;border-radius:2px;background:rgba(239,232,223,.35);height:var(--h,40%);transition:background .2s}
+.voice .bar i.on{background:var(--pearl)}
+.voice .t{flex:none;font-size:12px;font-variant-numeric:tabular-nums;color:rgba(239,232,223,.8);min-width:38px;text-align:right}
+.transcript{display:none;margin:-10px 0 22px;text-align:left}
+.transcript.ready{display:block}
+.transcript summary{list-style:none;cursor:pointer;text-align:center;font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);padding:6px}
+.transcript summary::-webkit-details-marker{display:none}
+.transcript summary::after{content:" ▾";font-size:11px}
+.transcript[open] summary::after{content:" ▴"}
+.transcript p{font-family:var(--serif);font-size:17px;line-height:1.45;margin:10px 0 0;color:var(--ink)}
+.info{display:grid;gap:8px;margin:0 0 22px;text-align:left}
+.row{display:flex;gap:12px;align-items:flex-start;background:rgba(255,255,255,.55);border-radius:4px;padding:11px 14px;border:1px solid rgba(201,139,149,.35)}
+.row > div:last-child{min-width:0}
+.row .map{display:inline-block;margin-top:4px;font:600 12px var(--sans);letter-spacing:.04em;color:var(--ink-soft);text-decoration:underline;text-underline-offset:3px}
+.row .ic{flex:none;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-size:17px;background:var(--rose-light)}
+.row b{display:block;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-soft)}
+.row span{display:block;font-family:var(--serif);font-size:18px;font-weight:600;line-height:1.25}
+.row span small{display:block;font-size:15px;font-weight:500;color:var(--ink-soft)}
+.count{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:0 0 24px}
+.count > div{border-top:1px solid var(--rose);padding:8px 0 0}
+.count .n{font-family:var(--serif);font-weight:600;font-size:30px;color:var(--ink);font-variant-numeric:tabular-nums;line-height:1}
+.count .u{font-size:9px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-soft);margin-top:4px}
+.q{font-family:var(--serif);font-style:italic;font-weight:600;font-size:24px;margin:0 0 12px}
+.btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.btn{font:700 14px var(--sans);letter-spacing:.06em;border:0;border-radius:999px;padding:14px 26px;cursor:pointer;transition:transform .15s ease}
+.btn:active{transform:scale(.96)}
+.btn.yes{color:var(--pearl);background:var(--ink);box-shadow:0 12px 22px -10px rgba(90,26,43,.7)}
+.btn.no{color:var(--ink);background:transparent;box-shadow:inset 0 0 0 1.5px var(--rose)}
+.btn.cal{display:inline-block;margin-top:14px;font-size:13px;color:var(--ink-soft);background:none;text-decoration:underline;text-underline-offset:4px;padding:8px}
+.calalt{display:block;font:500 11px var(--sans);letter-spacing:.04em;color:var(--ink-soft);opacity:.7;text-decoration:none;margin-top:-2px}
+.answer{min-height:24px;margin-top:14px;font-family:var(--serif);font-style:italic;font-size:19px;color:var(--ink)}
+.answer .sent{display:block;margin-top:4px;font:500 11px var(--sans);font-style:normal;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);opacity:.8}
+.btn.picked{transform:scale(.97);opacity:.85}
+.sign{font-family:var(--classica);font-size:24px;color:var(--ink);margin-top:14px}
+.row-btn{width:100%;font:inherit;color:inherit;text-align:left;cursor:pointer;position:relative;overflow:hidden;
+  background:linear-gradient(135deg,#fff 0%,#fbf1f3 55%,#f3dde2 100%);border-color:var(--rose);
+  animation:nudge 3.4s ease-in-out infinite;transform-origin:50% 50%}
+.row-btn::after{ /* золотой блик пробегает по плашке */
+  content:"";position:absolute;top:-60%;bottom:-60%;left:-40%;width:35%;pointer-events:none;transform:skewX(-20deg);
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.95) 45%,rgba(201,166,107,.45) 55%,transparent);
+  animation:shine 3.4s ease-in-out infinite}
+.row-btn .chev{position:absolute;right:14px;top:50%;transform:translateY(-50%);font-family:var(--serif);font-size:28px;line-height:1;color:var(--ink)}
+.row-btn b{color:var(--ink)}
+@keyframes nudge{              /* плашка подрагивает и подсвечивается — намёк, что на неё можно нажать */
+  0%,66%,100%{transform:translateX(0) rotate(0);box-shadow:0 0 0 0 rgba(201,139,149,0)}
+  70%{transform:translateX(-3px) rotate(-.6deg);box-shadow:0 0 0 4px rgba(201,139,149,.35),0 8px 22px -6px rgba(90,26,43,.45)}
+  74%{transform:translateX(3px) rotate(.6deg)}
+  78%{transform:translateX(-2px) rotate(-.4deg);box-shadow:0 0 0 6px rgba(201,139,149,.28),0 10px 24px -6px rgba(90,26,43,.45)}
+  82%{transform:translateX(1px) rotate(0)}
+  90%{transform:translateX(0) rotate(0);box-shadow:0 0 0 0 rgba(201,139,149,0)}
+}
+@keyframes shine{0%,62%{left:-40%}88%,100%{left:120%}}
+.row-btn:hover{background:rgba(255,255,255,.85)}
+.row-btn .map{text-decoration:none;color:var(--ink)}
+
+/* ---------- дресс-код и мудборд ---------- */
+.dress{position:fixed;inset:0;z-index:8;overflow-y:auto;background:rgba(74,11,18,.78);
+  display:grid;place-items:start center;
+  padding-block:calc(16px + env(safe-area-inset-top,0px)) 32px;padding-left:max(12px,env(safe-area-inset-left,0px));padding-right:max(12px,env(safe-area-inset-right,0px));
+  opacity:0;pointer-events:none;transition:opacity .4s}
+.dress.show{opacity:1;pointer-events:auto}
+.dress .sheet{position:relative;width:min(560px,100%);background:var(--cream);border-radius:8px;padding:30px 22px 28px;
+  box-shadow:0 40px 80px -30px rgba(40,10,20,.6);transform:translateY(24px);transition:transform .45s cubic-bezier(.2,.8,.25,1)}
+.dress.show .sheet{transform:none}
+.dress .x{position:absolute;right:10px;top:10px;width:38px;height:38px;border-radius:50%;border:1px solid rgba(201,139,149,.5);background:#fff;color:var(--ink);font-size:20px;line-height:1;cursor:pointer}
+.dress h2{font-family:var(--serif);font-style:italic;font-weight:600;font-size:34px;margin:0;text-align:center;color:var(--ink);line-height:1.05}
+.dress .dsub{text-align:center;font-size:11px;font-weight:700;letter-spacing:.26em;text-transform:uppercase;color:var(--ink-soft);margin:8px 0 18px}
+.mood{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin:0 0 22px}
+.mood img{width:100%;height:100%;object-fit:cover;display:block;border-radius:3px;background:var(--rose-light)}
+.mood a{display:block;position:relative;overflow:hidden;border-radius:3px}
+.mood a:nth-child(1){grid-column:span 3;aspect-ratio:3/4}
+.mood a:nth-child(2){grid-column:span 3;aspect-ratio:3/4}
+.mood a:nth-child(3),.mood a:nth-child(4),.mood a:nth-child(5){grid-column:span 2;aspect-ratio:3/4.4}
+.mood img{position:absolute;inset:0}
+.dress h3{font-family:var(--serif);font-weight:600;font-size:22px;margin:18px 0 6px;color:var(--ink);display:flex;align-items:center;gap:12px}
+.dress h3::after{content:"";flex:1;height:1px;background:rgba(201,139,149,.5)}
+.dress p{font-family:var(--serif);font-size:17px;line-height:1.45;margin:0 0 10px;color:var(--ink)}
+.dress .fin{font-family:var(--classica);font-size:22px;text-align:center;margin:22px 0 0;color:var(--ink)}
+#confetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:10}
+.again{position:fixed;left:max(10px,env(safe-area-inset-left,0px));top:max(10px,env(safe-area-inset-top,0px));z-index:6;
+  font:600 12px var(--sans);color:var(--pearl);background:rgba(255,255,255,.1);border:1px solid rgba(239,232,223,.35);border-radius:999px;padding:8px 14px;cursor:pointer;display:none}
+.invite.show ~ .again{display:block}
+
+@media (prefers-reduced-motion:reduce){.env,.hint,.row-btn{animation:none!important}}
+</style>
+</head>
+<body>
+
+<canvas class="sky" id="sky" aria-hidden="true"></canvas>
+
+<main class="stage">
+  <div class="scene" id="scene">
+    <div class="to" id="to">Тебе письмо</div>
+    <div class="box" id="box">
+      <button class="env" id="env" aria-label="Открыть конверт">
+        <img class="lay" src="img/env_back.webp" alt="" draggable="false">
+        <div class="card-s" id="cardS">
+          <div class="k">приглашение</div>
+          <div class="f" id="cardFor" hidden>для</div>
+          <div class="n" id="cardName"><span>для вас</span></div>
+          <div class="d">30 октября</div>
+        </div>
+        <img class="front" src="img/env_front.webp" alt="" draggable="false">
+        <div class="flap flap-c"><img src="img/env_flap_closed.webp" alt="" draggable="false"></div>
+        <div class="flap flap-o"><img src="img/env_flap_open.webp" alt="" draggable="false"></div>
+      </button>
+      <img class="hand" id="hand" src="img/hand.webp" alt="" draggable="false">
+    </div>
+    <div class="hint" id="hint">нажми на конверт</div>
+  </div>
+</main>
+
+<section class="invite" id="invite" aria-live="polite">
+  <article class="card" id="card">
+    <img class="paper" id="paper" alt="" draggable="false">
+    <div class="kicker top">Manhattan Jazz Salon · 1948</div>
+    <h1 class="name" id="bigName">Дорогие гости,</h1>
+    <p class="sub">ждём Вас в</p>
+
+    <div class="date">
+      <div><span class="sm">пятницу</span></div>
+      <div class="mid"><span class="big">30</span></div>
+      <div><span class="sm">октября</span><span class="sm">2026</span></div>
+    </div>
+
+    <p class="text">Джаз на виниле, свечи и фарфор, коктейли и светские разговоры&nbsp;— один вечер в старом Нью-Йорке. И предупреждаю: вечер не&nbsp;будет томным.</p>
+
+    <div class="voice" id="voice">
+      <button class="play" id="play" aria-label="Слушать голосовое сообщение">
+        <svg class="ic-play" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M8 5v14l11-7z"/></svg>
+        <svg class="ic-pause" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg>
+      </button>
+      <div class="body">
+        <div class="lbl">Голосовое от Яны</div>
+        <div class="bar" id="bar" aria-hidden="true"></div>
+      </div>
+      <div class="t" id="vt">0:00</div>
+      <audio id="au" preload="metadata">
+        <source src="audio/message.m4a" type="audio/mp4">
+        <source src="audio/message.ogg" type="audio/ogg">
+      </audio>
+    </div>
+    <details class="transcript" id="transcript">
+      <summary>Расшифровка голосового</summary>
+      <p>Приглашаю вас на светский раут в честь моего дня рождения.</p>
+      <p>В этот вечер мы окунёмся в Нью-Йорк 1948 года — время джентльменов и леди, джаза и послевоенного гламура. Представьте: за окнами Манхэттен, в зале негромко играет винил, на столах — фарфор и свечи, дамы блистают своей элегантностью в жемчугах, кавалеры — в костюмах и бабочках. Мы соберёмся в маленьком джазовом салоне, где вечер течёт неспешно: коктейли, светские разговоры, атмосфера старого Нью-Йорка.</p>
+      <p>Но предупреждаю… вечер не будет томным.</p>
+    </details>
+
+    <div class="info">
+      <div class="row"><div class="ic">🕠</div><div><b>Когда</b><span>30 октября в 17:30</span></div></div>
+      <div class="row"><div class="ic">📍</div><div><b>Где</b><span>Санкт-Петербург, Кадетская линия В.&nbsp;О., д.&nbsp;5, корп.&nbsp;2, лит.&nbsp;Д<small>помещение 252, 2-й этаж</small></span><a class="map" href="https://yandex.ru/maps/?text=%D0%A1%D0%B0%D0%BD%D0%BA%D1%82-%D0%9F%D0%B5%D1%82%D0%B5%D1%80%D0%B1%D1%83%D1%80%D0%B3%2C%20%D0%9A%D0%B0%D0%B4%D0%B5%D1%82%D1%81%D0%BA%D0%B0%D1%8F%20%D0%BB%D0%B8%D0%BD%D0%B8%D1%8F%205%D0%BA2" target="_blank" rel="noopener">показать на карте</a></div></div>
+      <div class="row"><div class="ic">🎷</div><div><b>Тема</b><span>Manhattan Jazz Salon, 1948<small>светский вечер, джаз и тайна</small></span></div></div>
+      <button class="row row-btn" id="dressBtn" type="button"><div class="ic">🥂</div><div><b>Дресс-код</b><span>Элегантный вечерний образ 40/50-х<small>леди — жемчуг, кавалеры — бабочки</small></span></div><span class="chev" aria-hidden="true">›</span></button>
+    </div>
+
+    <div class="count" aria-label="До праздника осталось">
+      <div><div class="n" id="cd-d">0</div><div class="u">дней</div></div>
+      <div><div class="n" id="cd-h">0</div><div class="u">часов</div></div>
+      <div><div class="n" id="cd-m">0</div><div class="u">минут</div></div>
+      <div><div class="n" id="cd-s">0</div><div class="u">секунд</div></div>
+    </div>
+
+    <p class="q">Придёшь?</p>
+    <div class="btns">
+      <button class="btn yes" id="yes">Конечно приду</button>
+      <button class="btn no" id="no">Не смогу</button>
+    </div>
+    <div class="answer" id="answer"></div>
+    <a class="btn cal" id="cal" href="event.ics">Добавить в календарь</a>
+    <a class="calalt" id="calAlt" href="event.ics" target="_blank" rel="noopener">или файл для другого календаря</a>
+
+    <div class="sign">С любовью, Яна</div>
+  </article>
+</section>
+<button class="again" id="again">↺ в конверт</button>
+
+<section class="dress" id="dress" role="dialog" aria-modal="true" aria-labelledby="dressTitle">
+  <article class="sheet">
+    <button class="x" id="dressX" aria-label="Закрыть">×</button>
+    <h2 id="dressTitle">Dress code</h2>
+    <div class="dsub">элегантный вечерний образ 40/50-х</div>
+
+    <div class="mood" aria-label="Мудборд">
+      <a href="img/mood/m3.webp" target="_blank" rel="noopener"><img src="img/mood/m3.webp" alt="Розовый костюм-тайор с меховым воротником, жемчуг и перчатки, Нью-Йорк" loading="lazy"></a>
+      <a href="img/mood/m5.webp" target="_blank" rel="noopener"><img src="img/mood/m5.webp" alt="Красный приталенный костюм 50-х, белые перчатки, шляпка" loading="lazy"></a>
+      <a href="img/mood/m1.webp" target="_blank" rel="noopener"><img src="img/mood/m1.webp" alt="Двубортный костюм в полоску и галстук" loading="lazy"></a>
+      <a href="img/mood/m2.webp" target="_blank" rel="noopener"><img src="img/mood/m2.webp" alt="Белый смокинг с бабочкой и коктейлем" loading="lazy"></a>
+      <a href="img/mood/m4.webp" target="_blank" rel="noopener"><img src="img/mood/m4.webp" alt="Пара 40-х: серый костюм со шляпой и белое платье" loading="lazy"></a>
+    </div>
+
+    <h3>Дамам</h3>
+    <p>Дамам будет особенно к лицу женственный приталенный силуэт: подчёркнутая талия. Это может быть костюм-тайор с меховой отделкой, платье 40-х с мягкими драпировками или платье 50-х с приталенным лифом, а также приталенный жакет с юбкой до колена или брюками&nbsp;— если хочется более дерзкий образ.</p>
+    <p>Из элементов&nbsp;— всё, что создаёт настроение салона: перчатки, жемчуг, мех, мундштук (если хочется добавить нотку нуара), красная помада, голливудские стрелки, а причёска&nbsp;— кудри волнами или аккуратный пучок. Шляпки&nbsp;— по желанию. Полная реконструкция не обязательна: достаточно одного точного акцента.</p>
+
+    <h3>Кавалерам</h3>
+    <p>Классический костюм, белая рубашка, галстук или бабочка, классическая обувь. Подтяжки, жилет, запонки или шляпа&nbsp;— по желанию.</p>
+
+    <p class="fin">Буду очень ждать вас в этом маленьком Нью-Йорке 1948 года!</p>
+  </article>
+</section>
+
+<canvas id="confetti"></canvas>
+
+<script>
+(() => {
+  const EVENT = { start: new Date(2026, 9, 30, 17, 30), hours: 5, title: "День рождения Яны — Manhattan Jazz Salon, 1948",
+    place: "Санкт-Петербург, Кадетская линия В. О., д. 5, корп. 2, лит. Д, пом. 252 (2-й этаж)" };
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const el = id => document.getElementById(id);
+  const HAND = { w: 551, h: 911, px: 0.441, py: 0.9232 }; // размер PNG и точка щипка (доля)
+
+  // Имя гостя из ссылки: ...?to=Маша → «Маша, тебе письмо»
+  // Мессенджеры иногда кодируют ссылку повторно (%20 → %2520): раскодируем, пока в имени остаются %XX
+  function unpct(v) { for (let i = 0; i < 3 && /%[0-9a-f]{2}/i.test(v); i++) { try { v = decodeURIComponent(v); } catch (e) { break; } } return v.replace(/\+/g, " "); }
+  let guest = new URLSearchParams(location.search).get("to") || window.GUEST || null;   // window.GUEST задаёт именная страница (src/make_links.py)
+  if (guest) guest = unpct(guest).replace(/[<>"]/g, "").replace(/\s+/g, " ").trim().slice(0, 40) || null;
+  if (guest) {                                  // именная ссылка: ?to=Игорь и Владислава (&g=м|ж|мн — если род угадан неверно)
+    const g = guest;
+    const many = /\s(и|&)\s|,/.test(g);
+    const fem = /[аяь]$/i.test(g) && !/(ь)$/i.test(g);
+    const gp = new URLSearchParams(location.search).get("g");
+    const word = gp === "мн" || (!gp && many) ? "Дорогие" : gp === "ж" || (!gp && fem) ? "Дорогая" : "Дорогой";
+    el("to").textContent = g + ", тебе письмо";
+    if (many) el("to").textContent = g + ", вам письмо";
+    el("bigName").textContent = word + " " + g + ",";
+    document.title = g + " · приглашение на 30 октября";
+    // Карточка в конверте: «приглашение / для / Владиславы / и Игоря» — имена в родительном падеже (&for=… задаёт форму вручную)
+    const forced = new URLSearchParams(location.search).get("for");
+    const parts = (forced ? unpct(forced).replace(/[<>"]/g, "").trim() : g).split(/\s(?=(?:и|&)\s)|,\s*/);
+    const lines = parts.map((p, i) => (forced ? p : p.split(" ").map(genitive).join(" ")) + (i < parts.length - 1 && !/^[и&]\s/.test(parts[i + 1]) ? "," : ""));
+    el("cardFor").hidden = false;
+    el("cardName").innerHTML = lines.map(l => "<span>" + l.replace(/&/g, "&amp;") + "</span>").join("");
+    document.title = "Приглашение для " + lines.join(" ");
+  }
+  // Родительный падеж русского имени: Владислава → Владиславы, Игорь → Игоря, Андрей → Андрея, Маша → Маши, Мария → Марии
+  function genitive(w) {
+    if (/^(и|&)$/i.test(w)) return w;
+    const map = { "лев": "Льва", "павел": "Павла", "любовь": "Любови", "пётр": "Петра", "петр": "Петра" };
+    const l = w.toLowerCase(); if (map[l]) return map[l];
+    if (/[гкхжшчщ]а$/i.test(w)) return w.slice(0, -1) + "и";
+    if (/а$/i.test(w)) return w.slice(0, -1) + "ы";
+    if (/я$/i.test(w)) return w.slice(0, -1) + "и";
+    if (/[ьй]$/i.test(w)) return w.slice(0, -1) + "я";
+    if (/[бвгджзклмнпрстфхцчшщ]$/i.test(w)) return w + "а";
+    return w;                                             // Мари, Лео, Хлое — не склоняем
+  }
+  // Длинное имя на карточке в конверте («Владислава и Игорь»): ужимаем шрифт, пока не влезет в одну строку
+  function fitCardName() {
+    const n = el("cardName"); n.style.fontSize = "";
+    let fs = parseFloat(getComputedStyle(n).fontSize);
+    while (n.scrollWidth > n.clientWidth + 1 && fs > 15) { fs -= 1; n.style.fontSize = fs + "px"; }
+  }
+  fitCardName(); document.fonts && document.fonts.ready.then(fitCardName); addEventListener("resize", fitCardName);
+  // Сцена появляется, когда все слои загружены (или через 4 с, если сеть совсем медленная)
+  // ширина плашки → тиснение: SVG с фильтром освещения собирается в строку и ставится как картинка (растеризуется один раз)
+  const cardEl = el("card");
+  const PAPER_DEFS = `<defs>
+        <filter id="emb" filterUnits="userSpaceOnUse" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+          <feGaussianBlur in="SourceAlpha" stdDeviation="2.2" result="bump"/>
+          <feDiffuseLighting in="bump" surfaceScale="4.5" diffuseConstant="1" lighting-color="#ffffff" result="diff">
+            <feDistantLight azimuth="225" elevation="60"/>
+          </feDiffuseLighting>
+          <!-- плоская бумага → 1.0; тень не глубже ~40 %, блик мягкий -->
+          <feComponentTransfer in="diff" result="diffN">
+            <feFuncR type="linear" slope=".66" intercept=".43"/><feFuncG type="linear" slope=".66" intercept=".43"/><feFuncB type="linear" slope=".66" intercept=".43"/>
+          </feComponentTransfer>
+          <feFlood flood-color="#f1e7d3" result="paper"/>
+          <feBlend in="paper" in2="diffN" mode="multiply" result="shaded"/>
+          <feSpecularLighting in="bump" surfaceScale="4.5" specularConstant=".2" specularExponent="24" lighting-color="#ffffff" result="spec">
+            <feDistantLight azimuth="225" elevation="60"/>
+          </feSpecularLighting>
+          <feComposite in="spec" in2="bump" operator="in" result="specM"/>
+          <feComposite in="shaded" in2="specM" operator="arithmetic" k2="1" k3="1"/>
+        </filter>
+        <!-- угловой завиток: две зеркальные спирали с листьями -->
+        <g id="scroll" fill="none" stroke="#000" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 118 C14 70 40 34 82 30 C118 27 140 50 132 76 C125 98 98 104 86 90 C77 79 86 64 100 66 C110 68 112 80 104 82"/>
+          <path d="M118 20 C70 14 34 40 30 82 C27 118 50 140 76 132 C98 125 104 98 90 86 C79 77 64 86 66 100 C68 110 80 112 82 104"/>
+          <path d="M20 118 C22 140 34 160 52 178"/>
+          <path d="M118 20 C140 22 160 34 178 52"/>
+          <path d="M58 150 c-10 10-22 14-34 12 M150 58 c10-10 14-22 12-34"/>
+          <g fill="#000" stroke="none">
+            <path d="M46 166 c-8-14 2-30 16-32 -4 14-6 24-16 32z"/>
+            <path d="M166 46 c-14-8-30 2-32 16 14-4 24-6 32-16z"/>
+            <circle cx="104" cy="104" r="4.5"/><circle cx="178" cy="52" r="3.5"/><circle cx="52" cy="178" r="3.5"/>
+          </g>
+        </g>
+      </defs>`;
+  let paperKey = "";
+  const setCW = () => {
+    const W = cardEl.offsetWidth, H = cardEl.offsetHeight;
+    cardEl.style.setProperty("--cw", W + "px");
+    const key = W + "x" + H; if (key === paperKey) return; paperKey = key;
+    const o = W * .05, n = W * .072, k = W * .29 / 200, m = W * .026;
+    const rect = i => `<rect x="${i}" y="${i}" width="${W - 2 * i}" height="${H - 2 * i}" fill="none" stroke="#000" stroke-width="2.6"/>`;
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">${PAPER_DEFS}
+      <g filter="url(#emb)">${rect(o)}${rect(n)}
+        <use href="#scroll" transform="translate(${m} ${m}) scale(${k})"/><use href="#scroll" transform="translate(${W - m} ${m}) scale(${-k} ${k})"/>
+        <use href="#scroll" transform="translate(${m} ${H - m}) scale(${k} ${-k})"/><use href="#scroll" transform="translate(${W - m} ${H - m}) scale(${-k})"/>
+      </g></svg>`;
+    el("paper").src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+  };
+  setCW(); new ResizeObserver(() => requestAnimationFrame(setCW)).observe(cardEl);
+
+  const sceneEl = el("scene");
+  const imgs = [...sceneEl.querySelectorAll("img")].map(i => i.complete && i.naturalWidth ? Promise.resolve() : (i.decode ? i.decode().catch(() => {}) : new Promise(r => { i.onload = i.onerror = r; })));
+  Promise.race([Promise.all(imgs), new Promise(r => setTimeout(r, 4000))]).then(() => sceneEl.classList.add("ready"));
+
+  // Блёстки первого экрана — см. ниже
+
+  // Рука достаёт карточку
+  const env = el("env"), box = el("box"), hand = el("hand"), cardS = el("cardS"),
+        scene = el("scene"), invite = el("invite"), hint = el("hint");
+  let opened = false;
+  const wait = ms => new Promise(r => setTimeout(r, reduce ? 0 : ms));
+
+  async function open() {
+    if (opened) return; opened = true;
+    hint.style.visibility = "hidden"; el("to").style.opacity = "0";
+    env.classList.add("still");
+    env.classList.add("open");                                 // клапан поднимается до ребра…
+    await wait(550);
+    env.classList.add("open2");                                // …и ложится открытым
+    await wait(650);
+    env.classList.add("flap-behind");                          // карточка теперь перед открытым клапаном
+    cardS.classList.add("peek");
+    const peek = cardS.offsetHeight * 0.42;                    // карточка выглядывает из конверта
+    cardS.style.transform = `translateY(${-peek}px)`;
+    await wait(850);
+
+    const B = box.getBoundingClientRect(), C = cardS.getBoundingClientRect();
+    const hw = hand.offsetWidth, hh = hw * HAND.h / HAND.w;
+    const tx = (C.left - B.left) + C.width / 2 - hw * HAND.px;
+    const ty = (C.top - B.top) + C.height * 0.14 - hh * HAND.py;   // пальцы заходят на край карточки
+    const startY = -(B.top + hh + 40);
+    hand.style.transition = "none";
+    hand.style.transform = `translate(${tx}px, ${startY}px)`;
+    hand.getBoundingClientRect();
+    hand.style.transition = "";
+    hand.style.opacity = "1";
+    await wait(30);
+    hand.style.transform = `translate(${tx}px, ${ty}px)`;   // спускается
+    await wait(1200);
+    hand.style.transform = `translate(${tx}px, ${ty + 3}px) scale(.985)`; // хватает
+    await wait(260);
+    const lift = C.height * 1.15;
+    cardS.classList.remove("peek");
+    hand.classList.add("pull");
+    hand.style.transform = `translate(${tx}px, ${ty - lift}px)`;
+    cardS.style.transform = `translateY(${-peek - lift}px)`;
+    await wait(1300);
+    env.classList.add("fade");
+    hand.classList.remove("pull"); hand.classList.add("away");
+    hand.style.transform = `translate(${tx}px, ${startY - lift}px)`;
+    hand.style.opacity = "0";
+    cardS.style.transition = "transform .9s cubic-bezier(.5,0,.8,.6), opacity .5s .2s";
+    cardS.style.transform = `translateY(${-peek - lift - B.top - hh}px)`; cardS.style.opacity = "0";
+    await wait(500);
+    scene.style.opacity = "0";
+    invite.classList.add("show");
+    invite.scrollTop = 0;
+    skyStop(); burst();
+  }
+  env.addEventListener("click", open);
+
+  el("again").addEventListener("click", () => {
+    invite.classList.remove("show");
+    env.className = "env"; hand.className = "hand"; hand.style.cssText = "";
+    cardS.className = "card-s"; cardS.style.cssText = ""; scene.style.opacity = ""; hint.style.visibility = ""; el("to").style.opacity = "";
+    opened = false; skyStart();
+  });
+
+  // Обратный отсчёт
+  function tick() {
+    let ms = Math.max(0, EVENT.start - new Date());
+    const d = Math.floor(ms / 864e5); ms -= d * 864e5;
+    const h = Math.floor(ms / 36e5); ms -= h * 36e5;
+    const m = Math.floor(ms / 6e4); ms -= m * 6e4;
+    el("cd-d").textContent = d; el("cd-h").textContent = h;
+    el("cd-m").textContent = m; el("cd-s").textContent = Math.floor(ms / 1e3);
+  }
+  tick(); setInterval(tick, 1000);
+
+  // Голосовое сообщение: блок показывается, только если файл реально загрузился
+  const voice = el("voice"), au = el("au"), bar = el("bar"), vt = el("vt");
+  const N = 34, bars = [];
+  for (let i = 0; i < N; i++) {           // «волна» — фиксированный узор, чтобы не прыгала
+    const b = document.createElement("i");
+    b.style.setProperty("--h", (28 + 60 * Math.abs(Math.sin(i * 1.7) * Math.cos(i * .6))) + "%");
+    bar.appendChild(b); bars.push(b);
+  }
+  const mmss = s => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
+  const onMeta = () => { voice.classList.add("ready"); el("transcript").classList.add("ready"); vt.textContent = mmss(au.duration); };
+  au.addEventListener("loadedmetadata", onMeta);
+  if (au.readyState >= 1) onMeta();   // файл мог загрузиться раньше, чем повесили обработчик
+  au.addEventListener("error", () => { voice.classList.remove("ready"); el("transcript").classList.add("ready"); el("transcript").open = true; });
+  el("play").addEventListener("click", () => { au.paused ? au.play() : au.pause(); });
+  au.addEventListener("play", () => voice.classList.add("playing"));
+  au.addEventListener("pause", () => voice.classList.remove("playing"));
+  au.addEventListener("ended", () => { voice.classList.remove("playing"); vt.textContent = mmss(au.duration); });
+  au.addEventListener("timeupdate", () => {
+    const k = au.currentTime / (au.duration || 1);
+    bars.forEach((b, i) => b.classList.toggle("on", i / N < k));
+    vt.textContent = au.paused && au.currentTime === 0 ? mmss(au.duration) : mmss(au.currentTime);
+  });
+  bar.addEventListener("click", e => {
+    const r = bar.getBoundingClientRect();
+    au.currentTime = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width)) * (au.duration || 0);
+  });
+
+  // Дресс-код и мудборд
+  const dress = el("dress");
+  const openDress = () => { dress.classList.add("show"); dress.scrollTop = 0; el("dressX").focus(); };
+  const closeDress = () => { dress.classList.remove("show"); el("dressBtn").focus(); };
+  el("dressBtn").addEventListener("click", openDress);
+  el("dressX").addEventListener("click", closeDress);
+  dress.addEventListener("click", e => { if (e.target === dress) closeDress(); });
+  addEventListener("keydown", e => { if (e.key === "Escape" && dress.classList.contains("show")) closeDress(); });
+
+  // Ответ гостя → функция /rsvp на Cloudflare Pages → Яне в Telegram (токен бота хранится в настройках Cloudflare, не в странице)
+  const RSVP_URL = "https://priglasheniye.pages.dev/rsvp";
+  let lastSent = "";
+  async function notify(kind) {
+    if (lastSent === kind) return true;                       // повторный клик по той же кнопке — не дублируем
+    try {
+      const r = await fetch(RSVP_URL, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ name: guest || "", kind }) });
+      const j = await r.json().catch(() => ({})); if (j.ok) lastSent = kind; return !!j.ok;
+    } catch (e) { return false; }
+  }
+  async function answer(kind) {
+    const a = el("answer");
+    a.innerHTML = (kind === "yes" ? "Ура! Жду тебя" : "Очень жаль… Отметим в другой раз") + '<small class="sent" id="sent">отправляю…</small>';
+    if (kind === "yes") burst();
+    el("yes").classList.toggle("picked", kind === "yes"); el("no").classList.toggle("picked", kind === "no");
+    const ok = await notify(kind), s = el("sent");
+    if (s) s.textContent = ok ? "Ответ передан Яне" : "Не получилось отправить — напишите Яне";
+  }
+  el("yes").addEventListener("click", () => answer("yes"));
+  el("no").addEventListener("click", () => answer("no"));
+
+  // Календарь: iPhone/iPad/Mac открывают файл event.ics прямо в «Календаре», остальным — ссылка в Google Календарь; второй вариант запасной
+  const ICS = "https://priglasheniye.pages.dev/event.ics";
+  const GCAL = "https://calendar.google.com/calendar/render?action=TEMPLATE&text=" + encodeURIComponent(EVENT.title) +
+    "&dates=20261030T143000Z/20261030T193000Z&location=" + encodeURIComponent(EVENT.place) +
+    "&details=" + encodeURIComponent("Светский вечер, джаз и тайна. Дресс-код: элегантный вечерний образ 40/50-х. Приглашение: https://priglasheniye.pages.dev/");
+  const apple = /iPhone|iPad|iPod|Macintosh/.test(navigator.userAgent);
+  el("cal").href = apple ? ICS : GCAL; if (!apple) el("cal").target = "_blank";
+  el("calAlt").href = apple ? GCAL : ICS; el("calAlt").textContent = apple ? "или в Google Календарь" : "или скачать файл .ics";
+
+  // ---------- Блёстки: мелкая мерцающая пыль, ловящая свет (золото, жемчуг, роза) ----------
+  // Спрайты рисуются один раз: мягкая светящаяся точка и четырёхлучевая вспышка — дальше только drawImage, это дёшево.
+  // Две палитры: для светлого первого экрана — глубокие золото/роза/бордо с тёплым ядром, для бордовой открытки — золото/жемчуг с белым ядром
+  const PAL_L = [[196, 146, 62], [214, 118, 140], [122, 32, 54], [230, 186, 100], [201, 139, 149]];
+  const PAL_D = [[217, 178, 106], [243, 215, 154], [255, 246, 224], [233, 183, 192], [201, 139, 149]];
+  // glow=true — вариант для открытки (точка с ореолом, вспышка с круглым свечением); glow=false — мягкий для экрана конверта
+  function sprites(pal, core, glow) {
+    return pal.map(([r, g, b]) => {
+      const dot = document.createElement("canvas"); dot.width = dot.height = 64;
+      let c = dot.getContext("2d"), gr = c.createRadialGradient(32, 32, 0, 32, 32, 32);
+      if (glow) { gr.addColorStop(0, core); gr.addColorStop(.2, `rgba(${r},${g},${b},1)`); gr.addColorStop(.42, `rgba(${r},${g},${b},.4)`); gr.addColorStop(1, `rgba(${r},${g},${b},0)`); }
+      else { gr.addColorStop(0, core); gr.addColorStop(.3, `rgba(${r},${g},${b},1)`); gr.addColorStop(.5, `rgba(${r},${g},${b},.35)`); gr.addColorStop(.62, `rgba(${r},${g},${b},0)`); }
+      c.fillStyle = gr; c.fillRect(0, 0, 64, 64);
+      const fl = document.createElement("canvas"); fl.width = fl.height = 128;
+      c = fl.getContext("2d");
+      if (glow) { gr = c.createRadialGradient(64, 64, 0, 64, 64, 64); gr.addColorStop(0, core); gr.addColorStop(.22, `rgba(${r},${g},${b},.45)`); gr.addColorStop(1, `rgba(${r},${g},${b},0)`); c.fillStyle = gr; c.fillRect(0, 0, 128, 128); }
+      const ray = (len, w, a) => { c.save(); c.translate(64, 64); c.rotate(a);
+        const lg = c.createLinearGradient(-len, 0, len, 0); lg.addColorStop(0, `rgba(${r},${g},${b},0)`); lg.addColorStop(.5, core); lg.addColorStop(1, `rgba(${r},${g},${b},0)`);
+        c.fillStyle = lg; c.beginPath(); c.moveTo(-len, 0); c.quadraticCurveTo(0, -w, len, 0); c.quadraticCurveTo(0, w, -len, 0); c.fill(); c.restore(); };
+      if (glow) { ray(62, 2.6, 0); ray(62, 2.6, Math.PI / 2); ray(28, 1.6, Math.PI / 4); ray(28, 1.6, -Math.PI / 4); }
+      else { ray(56, 1.8, 0); ray(56, 1.8, Math.PI / 2); ray(22, 1.1, Math.PI / 4); ray(22, 1.1, -Math.PI / 4); }
+      return { dot, fl };
+    });
+  }
+  const SPR_L = sprites(PAL_L, "rgba(255,240,205,1)", false), SPR_D = sprites(PAL_D, "rgba(255,253,247,1)", true);
+  const ST_SOFT = { base: .22, gain: .5, d0: 2.6, d1: 1.2, th: .72, f0: 5, f1: 4, fa: .6 };     // экран конверта: тихо, без ореола
+  const ST_GLOW = { base: .28, gain: .72, d0: 3.4, d1: 2.2, th: .5, f0: 6, f1: 6, fa: 1 };     // открытка: как было, со свечением
+  const flick = (t, p) => Math.max(0, Math.sin(t * p.f + p.ph)) ** 3;            // вспышки, как блёстка поймала свет
+  function drawDust(cx, spr, st, p, b, alpha, k) {                                  // b — яркость 0..1, st — стиль
+    const sp = spr[p.c], a = alpha * (st.base + st.gain * b);
+    if (a < .01) return;
+    cx.globalAlpha = a; const d = p.r * (st.d0 + st.d1 * b) * k;
+    cx.drawImage(sp.dot, p.x * k - d / 2, p.y * k - d / 2, d, d);
+    if (b > st.th && p.r > 1.4) { const f = p.r * (st.f0 + st.f1 * b) * k; cx.globalAlpha = alpha * st.fa * (b - st.th) / (1 - st.th); cx.drawImage(sp.fl, p.x * k - f / 2, p.y * k - f / 2, f, f); }
+  }
+  function mkDust(x, y) {
+    return { x, y, r: .9 + Math.random() ** 1.7 * 2.6, c: Math.floor(Math.random() * 5),
+      ph: Math.random() * 6.3, f: (.9 + Math.random() * 2.6) / 1000,              // частота мерцания, рад/мс
+      vx: (Math.random() - .5) * 6, vy: -(3 + Math.random() * 9), sw: Math.random() * 6.3 };
+  }
+
+  // 1) Первый экран: пыль из блёсток медленно плывёт вверх и мерцает; останавливается, когда конверт открыт
+  const sky = el("sky"), sctx = sky.getContext("2d");
+  let dust = [], skyOn = false, skyRaf = 0, skyT = 0;
+  function sizeSky() {
+    const k = devicePixelRatio; sky.width = innerWidth * k; sky.height = innerHeight * k;
+    const n = Math.min(320, Math.max(140, Math.round(innerWidth * innerHeight / 2300)));
+    while (dust.length < n) dust.push(mkDust(Math.random() * innerWidth, Math.random() * innerHeight));
+    dust.length = n;
+  }
+  function skyStep(now) {
+    if (!skyOn) { skyRaf = 0; return; }
+    const dt = Math.min(50, now - (skyT || now)); skyT = now; const k = devicePixelRatio, W = innerWidth, H = innerHeight;
+    sctx.clearRect(0, 0, sky.width, sky.height);
+    for (const p of dust) {
+      p.y += p.vy * dt / 1000; p.x += (p.vx + Math.sin(now / 1400 + p.sw) * 4) * dt / 1000;
+      if (p.y < -6) { p.y = H + 4; p.x = Math.random() * W; } if (p.x < -6) p.x = W + 4; else if (p.x > W + 6) p.x = -4;
+      drawDust(sctx, SPR_L, ST_SOFT, p, flick(now, p), 1, k);
+    }
+    sctx.globalAlpha = 1; skyRaf = requestAnimationFrame(skyStep);
+  }
+  function skyStart() { if (reduce || skyOn) return; skyOn = true; skyT = 0; if (!skyRaf) skyRaf = requestAnimationFrame(skyStep); }
+  function skyStop() { skyOn = false; sctx.clearRect(0, 0, sky.width, sky.height); }
+  addEventListener("resize", sizeSky); sizeSky(); skyStart();
+  document.addEventListener("visibilitychange", () => { if (document.hidden) skyOn = false; else if (!invite.classList.contains("show")) skyStart(); });
+
+  // 2) Открытка: осыпание блёсток — медленно падают, покачиваются, вспыхивают и тают
+  const cv = el("confetti"), ctx = cv.getContext("2d");
+  let parts = [], raf = 0;
+  function resize() { cv.width = innerWidth * devicePixelRatio; cv.height = innerHeight * devicePixelRatio; }
+  addEventListener("resize", resize); resize();
+  function burst() {
+    if (reduce) return;
+    const W = innerWidth, H = innerHeight, t0 = performance.now();
+    for (let i = 0; i < 300; i++) {
+      const p = mkDust(Math.random() * W, H * .95 - Math.random() * H * 1.5);        // половина уже на экране, половина сыплется сверху
+      p.r = 1 + Math.random() ** 1.5 * 2.8; p.vy = 34 + Math.random() * 60; p.vx = (Math.random() - .5) * 10;
+      p.t0 = t0 + Math.random() * 400; p.life = 4200 + Math.random() * 2200; parts.push(p);
+    }
+    for (let i = 0; i < 22; i++) {                                                 // отдельные крупные вспышки, уже на экране
+      const p = mkDust(Math.random() * W, Math.random() * H);
+      p.r = 2.4 + Math.random() * 1.8; p.vy = 6 + Math.random() * 10; p.vx = 0; p.f = (1.4 + Math.random()) / 1000;
+      p.t0 = t0 + 300 + Math.random() * 2600; p.life = 1800 + Math.random() * 1400; parts.push(p);
+    }
+    if (!raf) raf = requestAnimationFrame(step);
+  }
+  let lastStep = 0;
+  function step(now) {
+    const dt = Math.min(50, now - (lastStep || now)); lastStep = now; const k = devicePixelRatio;
+    ctx.clearRect(0, 0, cv.width, cv.height);
+    parts = parts.filter(p => now < p.t0 + p.life && p.y < innerHeight + 10);
+    for (const p of parts) {
+      if (now < p.t0) continue;
+      const u = (now - p.t0) / p.life, env = Math.min(1, u * 6) * Math.min(1, (1 - u) * 3);   // быстро появляется, в конце тает
+      p.y += p.vy * dt / 1000; p.x += (p.vx + Math.sin(now / 900 + p.sw) * 9) * dt / 1000;
+      drawDust(ctx, SPR_D, ST_GLOW, p, flick(now, p), env, k);
+    }
+    ctx.globalAlpha = 1;
+    raf = parts.length ? requestAnimationFrame(step) : (lastStep = 0, 0);
+  }
+})();
+</script>
+</body>
+</html>
