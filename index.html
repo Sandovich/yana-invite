@@ -10,6 +10,9 @@
 <meta name="theme-color" content="#fbf4f5">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="image" href="img/envelope.webp">
+<link rel="preload" as="image" href="img/pocket.webp">
+<link rel="preload" as="image" href="img/hand.webp">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Marck+Script&family=Manrope:wght@400;600;700&display=swap">
 <style>
 :root{
@@ -44,7 +47,8 @@ body::after{ /* лёгкая виньетка, как на фото */
 /* ---------- сцена ---------- */
 .stage{position:relative;z-index:1;min-height:100svh;display:grid;place-items:center;
   padding-block:24px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-.scene{display:flex;flex-direction:column;align-items:center;gap:18px;transition:opacity .7s ease}
+.scene{display:flex;flex-direction:column;align-items:center;gap:18px;opacity:0;transition:opacity .7s ease}
+.scene.ready{opacity:1}   /* показываем, только когда конверт, карман и рука загружены — иначе карточка на миг висит одна */
 .to{font-family:var(--serif);font-style:italic;font-weight:600;font-size:clamp(34px,9vw,48px);color:var(--ink);text-align:center;line-height:1.05;letter-spacing:.01em;transition:opacity .5s}
 .hint{font-size:12px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-soft);animation:pulse 1.8s ease-in-out infinite;margin-top:6px}
 @keyframes pulse{0%,100%{opacity:.5}50%{opacity:1}}
@@ -163,15 +167,15 @@ body::after{ /* лёгкая виньетка, как на фото */
     <div class="to" id="to">Тебе письмо</div>
     <div class="box" id="box">
       <button class="env" id="env" aria-label="Открыть конверт">
-        <img src="img/envelope.png" alt="" draggable="false">
+        <img src="img/envelope.webp" alt="" draggable="false">
         <div class="card-s" id="cardS">
           <div class="k">приглашение</div>
           <div class="n">Яна</div>
           <div class="d">30 октября</div>
         </div>
-        <img class="pocket" src="img/pocket.png" alt="" draggable="false">
+        <img class="pocket" src="img/pocket.webp" alt="" draggable="false">
       </button>
-      <img class="hand" id="hand" src="img/hand.png" alt="" draggable="false">
+      <img class="hand" id="hand" src="img/hand.webp" alt="" draggable="false">
     </div>
     <div class="hint" id="hint">нажми на конверт</div>
   </div>
@@ -251,6 +255,11 @@ body::after{ /* лёгкая виньетка, как на фото */
   // Имя гостя из ссылки: ...?to=Маша → «Маша, тебе письмо»
   const guest = new URLSearchParams(location.search).get("to");
   if (guest) el("to").textContent = guest.slice(0, 30) + ", тебе письмо";
+
+  // Сцена появляется, когда все слои загружены (или через 4 с, если сеть совсем медленная)
+  const sceneEl = el("scene");
+  const imgs = [...sceneEl.querySelectorAll("img")].map(i => i.complete && i.naturalWidth ? Promise.resolve() : (i.decode ? i.decode().catch(() => {}) : new Promise(r => { i.onload = i.onerror = r; })));
+  Promise.race([Promise.all(imgs), new Promise(r => setTimeout(r, 4000))]).then(() => sceneEl.classList.add("ready"));
 
   // Сердечки
   const sky = el("sky");
