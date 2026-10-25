@@ -99,26 +99,14 @@ body::after{ /* лёгкая виньетка, как на фото */
   box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 1px 2px rgba(40,10,10,.35),0 34px 44px -22px rgba(0,0,0,.65);
   transform:translateY(30px) scale(.94);transition:transform .9s cubic-bezier(.2,.8,.25,1)}
 .invite.show .card{transform:none}
-.card::before{ /* зерно бумаги */
-  content:"";position:absolute;inset:0;z-index:0;pointer-events:none;mix-blend-mode:multiply;opacity:.8;border-radius:3px;
+.card::before{ /* зерно бумаги — поверх рельефа, чтобы выглядело одним листом */
+  content:"";position:absolute;inset:0;z-index:1;pointer-events:none;mix-blend-mode:multiply;opacity:.8;border-radius:3px;
   background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' seed='5'/%3E%3CfeColorMatrix values='0 0 0 0 .55 0 0 0 0 .45 0 0 0 0 .3 0 0 0 .13 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
-.card > *{position:relative}
-/* рельеф тиснения — три слоя: тень (вниз-вправо), блик (вверх-влево), бумага сверху. Без CSS-фильтров: одинаково на iPhone и Android */
-.lines{position:absolute;inset:0;pointer-events:none;z-index:1}
-.lines i{position:absolute;border:2px solid var(--paper);border-radius:1px}
-.lines .o{inset:calc(var(--cw)*.05)} .lines .n{inset:calc(var(--cw)*.072)}
-.lines .sh{border-color:rgba(70,30,15,.55);transform:translate(1.6px,1.6px);filter:blur(.7px)}
-.lines .hi{border-color:rgba(255,255,255,.95);transform:translate(-1.2px,-1.2px)}
-.corner{position:absolute;width:calc(var(--cw)*.29);height:auto;z-index:1;pointer-events:none;overflow:visible}
-.corner.tl{left:calc(var(--cw)*.026);top:calc(var(--cw)*.026)}
-.corner.tr{right:calc(var(--cw)*.026);top:calc(var(--cw)*.026);transform:scaleX(-1)}
-.corner.bl{left:calc(var(--cw)*.026);bottom:calc(var(--cw)*.026);transform:scaleY(-1)}
-.corner.br{right:calc(var(--cw)*.026);bottom:calc(var(--cw)*.026);transform:scale(-1)}
-.corner .sh{color:rgba(70,30,15,.55);filter:url(#softblur)}
-.corner .hi{color:rgba(255,255,255,.95)}
-.corner .pa{color:var(--paper)}
+.card > *{position:relative;z-index:2}
+/* тиснение: SVG-«бумага» на всю плашку; рельеф — освещение карты высот (размытый силуэт узора), зерно идёт поверх */
+.paper{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;border-radius:3px}
 /* герб с монограммой — сверху по центру */
-.crest{position:absolute;left:50%;top:calc(var(--cw)*-.09);transform:translateX(-50%);width:calc(var(--cw)*.30);height:auto;z-index:2;
+.crest{position:absolute;left:50%;top:calc(var(--cw)*-.09);transform:translateX(-50%);width:calc(var(--cw)*.30);height:auto;z-index:3;
   filter:drop-shadow(0 6px 8px rgba(40,5,10,.4))}
 .host{font-family:"Cormorant SC",var(--serif);font-weight:600;font-size:13px;letter-spacing:.34em;color:var(--wine);margin:0 0 6px}
 .kicker{font-size:11px;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-soft)}
@@ -277,28 +265,45 @@ body::after{ /* лёгкая виньетка, как на фото */
         <text x="108" y="170" font-size="92">С</text>
       </g>
     </svg>
-    <div class="lines"><i class="o sh"></i><i class="n sh"></i><i class="o hi"></i><i class="n hi"></i><i class="o"></i><i class="n"></i></div>
-    <svg class="corner tl" viewBox="0 0 200 200" aria-hidden="true"><use href="#scroll" class="sh" transform="translate(2.2 2.2)"/><use href="#scroll" class="hi" transform="translate(-1.5 -1.5)"/><use href="#scroll" class="pa"/></svg>
-    <svg class="corner tr" viewBox="0 0 200 200" aria-hidden="true"><use href="#scroll" class="sh" transform="translate(2.2 2.2)"/><use href="#scroll" class="hi" transform="translate(-1.5 -1.5)"/><use href="#scroll" class="pa"/></svg>
-    <svg class="corner bl" viewBox="0 0 200 200" aria-hidden="true"><use href="#scroll" class="sh" transform="translate(2.2 2.2)"/><use href="#scroll" class="hi" transform="translate(-1.5 -1.5)"/><use href="#scroll" class="pa"/></svg>
-    <svg class="corner br" viewBox="0 0 200 200" aria-hidden="true"><use href="#scroll" class="sh" transform="translate(2.2 2.2)"/><use href="#scroll" class="hi" transform="translate(-1.5 -1.5)"/><use href="#scroll" class="pa"/></svg>
-    <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
-      <filter id="softblur" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="1.1"/></filter>
-      <!-- угловой завиток тиснения: две зеркальные спирали с листьями; рисуется цветом слоя (currentColor) -->
-      <g id="scroll" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M20 118 C14 70 40 34 82 30 C118 27 140 50 132 76 C125 98 98 104 86 90 C77 79 86 64 100 66 C110 68 112 80 104 82"/>
-        <path d="M118 20 C70 14 34 40 30 82 C27 118 50 140 76 132 C98 125 104 98 90 86 C79 77 64 86 66 100 C68 110 80 112 82 104"/>
-        <path d="M20 118 C22 140 34 160 52 178"/>
-        <path d="M118 20 C140 22 160 34 178 52"/>
-        <path d="M58 150 c-10 10-22 14-34 12 M150 58 c10-10 14-22 12-34"/>
-        <g fill="currentColor" stroke="none">
-          <path d="M46 166 c-8-14 2-30 16-32 -4 14-6 24-16 32z"/>
-          <path d="M166 46 c-14-8-30 2-32 16 14-4 24-6 32-16z"/>
-          <circle cx="104" cy="104" r="4"/>
-          <circle cx="178" cy="52" r="3.2"/><circle cx="52" cy="178" r="3.2"/>
+    <svg class="paper" id="paper" viewBox="0 0 440 900" preserveAspectRatio="none" aria-hidden="true">
+      <defs>
+        <filter id="emb" filterUnits="userSpaceOnUse" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+          <feGaussianBlur in="SourceAlpha" stdDeviation="2.2" result="bump"/>
+          <feDiffuseLighting in="bump" surfaceScale="4.5" diffuseConstant="1" lighting-color="#ffffff" result="diff">
+            <feDistantLight azimuth="225" elevation="60"/>
+          </feDiffuseLighting>
+          <!-- плоская бумага → 1.0; тень не глубже ~40 %, блик мягкий -->
+          <feComponentTransfer in="diff" result="diffN">
+            <feFuncR type="linear" slope=".66" intercept=".43"/><feFuncG type="linear" slope=".66" intercept=".43"/><feFuncB type="linear" slope=".66" intercept=".43"/>
+          </feComponentTransfer>
+          <feFlood flood-color="#f1e7d3" result="paper"/>
+          <feBlend in="paper" in2="diffN" mode="multiply" result="shaded"/>
+          <feSpecularLighting in="bump" surfaceScale="4.5" specularConstant=".2" specularExponent="24" lighting-color="#ffffff" result="spec">
+            <feDistantLight azimuth="225" elevation="60"/>
+          </feSpecularLighting>
+          <feComposite in="spec" in2="bump" operator="in" result="specM"/>
+          <feComposite in="shaded" in2="specM" operator="arithmetic" k2="1" k3="1"/>
+        </filter>
+        <!-- угловой завиток: две зеркальные спирали с листьями -->
+        <g id="scroll" fill="none" stroke="#000" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 118 C14 70 40 34 82 30 C118 27 140 50 132 76 C125 98 98 104 86 90 C77 79 86 64 100 66 C110 68 112 80 104 82"/>
+          <path d="M118 20 C70 14 34 40 30 82 C27 118 50 140 76 132 C98 125 104 98 90 86 C79 77 64 86 66 100 C68 110 80 112 82 104"/>
+          <path d="M20 118 C22 140 34 160 52 178"/>
+          <path d="M118 20 C140 22 160 34 178 52"/>
+          <path d="M58 150 c-10 10-22 14-34 12 M150 58 c10-10 14-22 12-34"/>
+          <g fill="#000" stroke="none">
+            <path d="M46 166 c-8-14 2-30 16-32 -4 14-6 24-16 32z"/>
+            <path d="M166 46 c-14-8-30 2-32 16 14-4 24-6 32-16z"/>
+            <circle cx="104" cy="104" r="4.5"/><circle cx="178" cy="52" r="3.5"/><circle cx="52" cy="178" r="3.5"/>
+          </g>
         </g>
+      </defs>
+      <g filter="url(#emb)">
+        <rect id="ln1" fill="none" stroke="#000" stroke-width="2.6"/>
+        <rect id="ln2" fill="none" stroke="#000" stroke-width="2.6"/>
+        <use href="#scroll" id="c1"/><use href="#scroll" id="c2"/><use href="#scroll" id="c3"/><use href="#scroll" id="c4"/>
       </g>
-    </defs></svg>
+    </svg>
     <div class="host">Яна Сандович</div>
     <div class="kicker">Manhattan Jazz Salon · 1948</div>
     <h1 class="name" id="bigName">Яна</h1>
@@ -410,7 +415,21 @@ body::after{ /* лёгкая виньетка, как на фото */
   // Сцена появляется, когда все слои загружены (или через 4 с, если сеть совсем медленная)
   // ширина плашки → толщина кружевной рамки (пропорции фото)
   const cardEl = el("card");
-  const setCW = () => cardEl.style.setProperty("--cw", cardEl.offsetWidth + "px");
+  const setCW = () => {
+    const W = cardEl.offsetWidth, H = cardEl.offsetHeight;
+    cardEl.style.setProperty("--cw", W + "px");
+    // SVG-бумага: viewBox = пиксели плашки, узор раскладываем по размеру без искажений
+    const svg = el("paper"); svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+    const o = W * .05, n = W * .072;
+    for (const [id, i] of [["ln1", o], ["ln2", n]]) {
+      const r = el(id); r.setAttribute("x", i); r.setAttribute("y", i); r.setAttribute("width", W - 2 * i); r.setAttribute("height", H - 2 * i);
+    }
+    const k = W * .29 / 200, m = W * .026;
+    el("c1").setAttribute("transform", `translate(${m} ${m}) scale(${k})`);
+    el("c2").setAttribute("transform", `translate(${W - m} ${m}) scale(${-k} ${k})`);
+    el("c3").setAttribute("transform", `translate(${m} ${H - m}) scale(${k} ${-k})`);
+    el("c4").setAttribute("transform", `translate(${W - m} ${H - m}) scale(${-k})`);
+  };
   setCW(); new ResizeObserver(setCW).observe(cardEl);
 
   const sceneEl = el("scene");
