@@ -153,17 +153,24 @@ body::after{ /* лёгкая виньетка, как на фото */
 .btn.cal{display:inline-block;margin-top:14px;font-size:13px;color:var(--ink-soft);background:none;text-decoration:underline;text-underline-offset:4px;padding:8px}
 .answer{min-height:24px;margin-top:14px;font-family:var(--serif);font-style:italic;font-size:19px;color:var(--ink)}
 .sign{font-family:var(--script);font-size:30px;color:var(--ink);margin-top:14px}
-.row-btn{width:100%;font:inherit;color:inherit;text-align:left;cursor:pointer;transition:background .2s;
-  animation:nudge 3.4s ease-in-out infinite;transform-origin:50% 50%;position:relative}
-.row-btn .chev{position:absolute;right:14px;top:50%;transform:translateY(-50%);font-family:var(--serif);font-size:28px;line-height:1;color:var(--ink-soft)}
-@keyframes nudge{              /* плашка подрагивает — намёк, что на неё можно нажать */
-  0%,70%,100%{transform:translateX(0) rotate(0)}
-  74%{transform:translateX(-3px) rotate(-.6deg)}
-  78%{transform:translateX(3px) rotate(.6deg)}
-  82%{transform:translateX(-2px) rotate(-.4deg)}
-  86%{transform:translateX(1px) rotate(0)}
-  90%{transform:translateX(0) rotate(0)}
+.row-btn{width:100%;font:inherit;color:inherit;text-align:left;cursor:pointer;position:relative;overflow:hidden;
+  background:linear-gradient(135deg,#fff 0%,#fbf1f3 55%,#f3dde2 100%);border-color:var(--rose);
+  animation:nudge 3.4s ease-in-out infinite;transform-origin:50% 50%}
+.row-btn::after{ /* золотой блик пробегает по плашке */
+  content:"";position:absolute;top:-60%;bottom:-60%;left:-40%;width:35%;pointer-events:none;transform:skewX(-20deg);
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.95) 45%,rgba(201,166,107,.45) 55%,transparent);
+  animation:shine 3.4s ease-in-out infinite}
+.row-btn .chev{position:absolute;right:14px;top:50%;transform:translateY(-50%);font-family:var(--serif);font-size:28px;line-height:1;color:var(--ink)}
+.row-btn b{color:var(--ink)}
+@keyframes nudge{              /* плашка подрагивает и подсвечивается — намёк, что на неё можно нажать */
+  0%,66%,100%{transform:translateX(0) rotate(0);box-shadow:0 0 0 0 rgba(201,139,149,0)}
+  70%{transform:translateX(-3px) rotate(-.6deg);box-shadow:0 0 0 4px rgba(201,139,149,.35),0 8px 22px -6px rgba(90,26,43,.45)}
+  74%{transform:translateX(3px) rotate(.6deg)}
+  78%{transform:translateX(-2px) rotate(-.4deg);box-shadow:0 0 0 6px rgba(201,139,149,.28),0 10px 24px -6px rgba(90,26,43,.45)}
+  82%{transform:translateX(1px) rotate(0)}
+  90%{transform:translateX(0) rotate(0);box-shadow:0 0 0 0 rgba(201,139,149,0)}
 }
+@keyframes shine{0%,62%{left:-40%}88%,100%{left:120%}}
 .row-btn:hover{background:rgba(255,255,255,.85)}
 .row-btn .map{text-decoration:none;color:var(--ink)}
 
