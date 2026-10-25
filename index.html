@@ -93,18 +93,28 @@ body::after{ /* лёгкая виньетка, как на фото */
   background:radial-gradient(120% 80% at 50% 30%,#5e121c,var(--wine) 60%,#2e0509);
   opacity:0;pointer-events:none;transition:opacity .7s ease}
 .invite.show{opacity:1;pointer-events:auto}
-/* кружевная плашка: рамка — фото кружева (819×1256), нарезанное на полосы; бока повторяются, верх и низ — целиком */
-.card{--cw:440px;position:relative;width:min(440px,100%);background:var(--ivory);border-radius:0;
-  border-style:solid;border-width:calc(var(--cw)*183/819) calc(var(--cw)*96/819) calc(var(--cw)*185/819) calc(var(--cw)*100/819);
-  border-image:url("img/lace.webp") 183 96 185 100 / 1 / 0 round;
-  padding:calc(var(--cw)*.19) 6px 10px;text-align:center;
-  filter:drop-shadow(0 30px 40px rgba(0,0,0,.45));
+/* плашка: кремовый картон с зерном, слепое тиснение — двойная линия и завитки по углам (свет сверху-слева) */
+.card{--cw:440px;--paper:#f1e7d3;position:relative;width:min(440px,100%);background:var(--paper);border-radius:3px;
+  padding:calc(var(--cw)*.26) 28px 30px;text-align:center;isolation:isolate;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 1px 2px rgba(40,10,10,.35),0 34px 44px -22px rgba(0,0,0,.65);
   transform:translateY(30px) scale(.94);transition:transform .9s cubic-bezier(.2,.8,.25,1)}
 .invite.show .card{transform:none}
+.card::before{ /* зерно бумаги */
+  content:"";position:absolute;inset:0;z-index:0;pointer-events:none;mix-blend-mode:multiply;opacity:.8;border-radius:3px;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' seed='5'/%3E%3CfeColorMatrix values='0 0 0 0 .55 0 0 0 0 .45 0 0 0 0 .3 0 0 0 .13 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
 .card > *{position:relative}
-/* герб с монограммой — сидит на верхней кружевной полосе, как на фото 2 */
-.crest{position:absolute;left:50%;top:calc(var(--cw)*-.165);transform:translateX(-50%);width:calc(var(--cw)*.31);height:auto;z-index:2;
-  filter:drop-shadow(0 4px 6px rgba(40,5,10,.35))}
+.emb{filter:drop-shadow(-.7px -.7px 0 rgba(255,255,255,.9)) drop-shadow(.9px .9px .7px rgba(80,45,20,.42))}  /* рельеф без краски */
+.line{position:absolute;pointer-events:none;border:1.4px solid var(--paper);z-index:1}
+.line.l1{inset:calc(var(--cw)*.052)}
+.line.l2{inset:calc(var(--cw)*.072)}
+.corner{position:absolute;width:calc(var(--cw)*.27);height:auto;z-index:1;pointer-events:none}
+.corner.tl{left:calc(var(--cw)*.028);top:calc(var(--cw)*.028)}
+.corner.tr{right:calc(var(--cw)*.028);top:calc(var(--cw)*.028);transform:scaleX(-1)}
+.corner.bl{left:calc(var(--cw)*.028);bottom:calc(var(--cw)*.028);transform:scaleY(-1)}
+.corner.br{right:calc(var(--cw)*.028);bottom:calc(var(--cw)*.028);transform:scale(-1)}
+/* герб с монограммой — сверху по центру */
+.crest{position:absolute;left:50%;top:calc(var(--cw)*-.09);transform:translateX(-50%);width:calc(var(--cw)*.30);height:auto;z-index:2;
+  filter:drop-shadow(0 6px 8px rgba(40,5,10,.4))}
 .host{font-family:"Cormorant SC",var(--serif);font-weight:600;font-size:13px;letter-spacing:.34em;color:var(--wine);margin:0 0 6px}
 .kicker{font-size:11px;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-soft)}
 .name{font-family:var(--script);font-weight:400;font-size:clamp(66px,19vw,92px);line-height:1.2;margin:0;color:var(--wine);padding:0 10px}
@@ -262,6 +272,25 @@ body::after{ /* лёгкая виньетка, как на фото */
         <text x="108" y="170" font-size="92">С</text>
       </g>
     </svg>
+    <div class="line l1 emb"></div><div class="line l2 emb"></div>
+    <svg class="corner tl emb" viewBox="0 0 160 160" aria-hidden="true"><use href="#scroll"/></svg>
+    <svg class="corner tr emb" viewBox="0 0 160 160" aria-hidden="true"><use href="#scroll"/></svg>
+    <svg class="corner bl emb" viewBox="0 0 160 160" aria-hidden="true"><use href="#scroll"/></svg>
+    <svg class="corner br emb" viewBox="0 0 160 160" aria-hidden="true"><use href="#scroll"/></svg>
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+      <!-- угловой завиток тиснения: рисуется цветом бумаги, объём даёт свет/тень -->
+      <g id="scroll" fill="none" stroke="var(--paper)" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M6 154 C6 80 44 26 118 14"/>
+        <path d="M118 14 c22-3 34 10 28 24 -5 11 -21 10 -22 0 -1-8 9-11 12-5"/>
+        <path d="M6 154 c-3-22 10-34 24-28 11 5 10 21 0 22 -8 1-11-9-5-12"/>
+        <path d="M34 112 C30 72 60 40 104 36"/>
+        <path d="M104 36 c14-1 22 8 18 18 -4 8-15 6-15-1 0-6 7-8 9-3"/>
+        <path d="M34 112 c-1 14 8 22 18 18 8-4 6-15-1-15 -6 0-8 7-3 9"/>
+        <path d="M58 64 c16-14 34-16 44-8 8 7 2 18-7 15 -7-2-6-11 1-11"/>
+        <path d="M56 66 c-14 16-16 34-8 44 7 8 18 2 15-7 -2-7-11-6-11 1"/>
+        <path d="M84 84 c6-10 20-10 24-2 3 7-5 13-11 9 -5-4-2-11 4-10"/>
+      </g>
+    </defs></svg>
     <div class="host">Яна Сандович</div>
     <div class="kicker">Manhattan Jazz Salon · 1948</div>
     <h1 class="name" id="bigName">Яна</h1>
