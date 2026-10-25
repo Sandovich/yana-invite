@@ -39,12 +39,14 @@ body::after{ /* лёгкая виньетка, как на фото */
 
 /* ---------- блёстки ---------- */
 .sky{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
-/* сердечки: появляются, чуть всплывают и тают */
-.spark{position:absolute;width:14px;height:14px;opacity:0;animation:heart 5s ease-in-out infinite;
-  background:no-repeat center/contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23c98b95' d='M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 5 6.4 5c2 0 3.6 1.1 4.6 2.6l1 1.4 1-1.4C14 6.1 15.6 5 17.6 5 21 5 23.1 8.4 21.6 11.8 19.5 16.4 12 21 12 21z'/%3E%3C/svg%3E")}
-.spark.b{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%235a1a2b' d='M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 5 6.4 5c2 0 3.6 1.1 4.6 2.6l1 1.4 1-1.4C14 6.1 15.6 5 17.6 5 21 5 23.1 8.4 21.6 11.8 19.5 16.4 12 21 12 21z'/%3E%3C/svg%3E")}
-.spark.c{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23c9a66b' d='M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 5 6.4 5c2 0 3.6 1.1 4.6 2.6l1 1.4 1-1.4C14 6.1 15.6 5 17.6 5 21 5 23.1 8.4 21.6 11.8 19.5 16.4 12 21 12 21z'/%3E%3C/svg%3E")}
-@keyframes heart{0%{opacity:0;transform:translateY(10px) scale(.4) rotate(-8deg)}35%{opacity:.75;transform:translateY(-6px) scale(1) rotate(6deg)}70%{opacity:.55;transform:translateY(-18px) scale(.95) rotate(-4deg)}100%{opacity:0;transform:translateY(-30px) scale(.5) rotate(0)}}
+/* звёзды: яркие (золото/бордо, с мягким ореолом) и блеклые (розовые, прозрачные); мерцают — разгораются и гаснут */
+.spark{position:absolute;width:14px;height:14px;opacity:0;animation:twinkle 4s ease-in-out infinite;--peak:.95;
+  background:no-repeat center/contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3CradialGradient id='g' cx='12' cy='12' r='12' gradientUnits='userSpaceOnUse'%3E%3Cstop offset='0' stop-color='%23fff3d6' stop-opacity='.9'/%3E%3Cstop offset='.35' stop-color='%23e9c889' stop-opacity='.35'/%3E%3Cstop offset='1' stop-color='%23e9c889' stop-opacity='0'/%3E%3C/radialGradient%3E%3Ccircle cx='12' cy='12' r='12' fill='url(%23g)'/%3E%3Cpath fill='%23c9a66b' d='M12 1c.5 6.3 4.7 10.5 11 11-6.3.5-10.5 4.7-11 11-.5-6.3-4.7-10.5-11-11 6.3-.5 10.5-4.7 11-11z'/%3E%3C/svg%3E")}
+.spark.b{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3CradialGradient id='g' cx='12' cy='12' r='12' gradientUnits='userSpaceOnUse'%3E%3Cstop offset='0' stop-color='%23ffe3e8' stop-opacity='.9'/%3E%3Cstop offset='.4' stop-color='%23e9b7c0' stop-opacity='.3'/%3E%3Cstop offset='1' stop-color='%23e9b7c0' stop-opacity='0'/%3E%3C/radialGradient%3E%3Ccircle cx='12' cy='12' r='12' fill='url(%23g)'/%3E%3Cpath fill='%235a1a2b' d='M12 1c.5 6.3 4.7 10.5 11 11-6.3.5-10.5 4.7-11 11-.5-6.3-4.7-10.5-11-11 6.3-.5 10.5-4.7 11-11z'/%3E%3C/svg%3E")}
+.spark.dim{--peak:.32;animation-duration:6s;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23c98b95' d='M12 1c.5 6.3 4.7 10.5 11 11-6.3.5-10.5 4.7-11 11-.5-6.3-4.7-10.5-11-11 6.3-.5 10.5-4.7 11-11z'/%3E%3C/svg%3E")}
+.spark.dim.c{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23c9a66b' d='M12 1c.5 6.3 4.7 10.5 11 11-6.3.5-10.5 4.7-11 11-.5-6.3-4.7-10.5-11-11 6.3-.5 10.5-4.7 11-11z'/%3E%3C/svg%3E")}
+@keyframes twinkle{0%{opacity:0;transform:scale(.3) rotate(0)}45%{opacity:var(--peak);transform:scale(1) rotate(25deg)}60%{opacity:calc(var(--peak)*.8);transform:scale(.9) rotate(35deg)}100%{opacity:0;transform:scale(.35) rotate(60deg)}}
 
 /* ---------- сцена ---------- */
 .stage{position:relative;z-index:1;min-height:100svh;display:grid;place-items:center;overflow-x:clip;
@@ -78,7 +80,7 @@ body::after{ /* лёгкая виньетка, как на фото */
   display:flex;flex-direction:column;align-items:center;padding-top:7%;gap:2px;
   transition:transform 1.25s cubic-bezier(.45,.02,.25,1)}
 .card-s.peek{transition:transform .8s cubic-bezier(.2,.8,.25,1)}
-.card-s .n{font-family:var(--classica);font-size:clamp(28px,8.5vw,40px);line-height:1;color:var(--ink);margin-top:6px}
+.card-s .n{font-family:var(--classica);font-size:clamp(28px,8.5vw,40px);line-height:1;color:var(--ink);margin-top:6px;white-space:nowrap;width:92%;text-align:center}
 .card-s .d{font-family:var(--serif);font-style:italic;font-weight:600;font-size:clamp(13px,3.8vw,17px);color:var(--ink-soft);letter-spacing:.06em}
 .card-s .k{font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-soft);font-weight:700}
 /* клапан: два слоя (закрытый и открытый), переворот вокруг фальца в два полуоборота — без backface-visibility (Safari его теряет) */
@@ -171,6 +173,8 @@ body::after{ /* лёгкая виньетка, как на фото */
 .btn.no{color:var(--ink);background:transparent;box-shadow:inset 0 0 0 1.5px var(--rose)}
 .btn.cal{display:inline-block;margin-top:14px;font-size:13px;color:var(--ink-soft);background:none;text-decoration:underline;text-underline-offset:4px;padding:8px}
 .answer{min-height:24px;margin-top:14px;font-family:var(--serif);font-style:italic;font-size:19px;color:var(--ink)}
+.answer .sent{display:block;margin-top:4px;font:500 11px var(--sans);font-style:normal;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);opacity:.8}
+.btn.picked{transform:scale(.97);opacity:.85}
 .sign{font-family:var(--classica);font-size:24px;color:var(--ink);margin-top:14px}
 .row-btn{width:100%;font:inherit;color:inherit;text-align:left;cursor:pointer;position:relative;overflow:hidden;
   background:linear-gradient(135deg,#fff 0%,#fbf1f3 55%,#f3dde2 100%);border-color:var(--rose);
@@ -341,6 +345,10 @@ body::after{ /* лёгкая виньетка, как на фото */
 <canvas id="confetti"></canvas>
 
 <script>
+// Telegram-бот, которому уходят ответы «приду / не смогу». Заполнить: token — от @BotFather, chat — id чата Яны с ботом.
+window.TG_CONFIG = { token: "", chat: "" };
+</script>
+<script>
 (() => {
   const EVENT = { start: new Date(2026, 9, 30, 17, 30), hours: 5, title: "День рождения Яны — Manhattan Jazz Salon, 1948",
     place: "Санкт-Петербург, Кадетская линия В. О., д. 5, корп. 2, лит. Д, пом. 252 (2-й этаж)" };
@@ -362,6 +370,13 @@ body::after{ /* лёгкая виньетка, как на фото */
     el("bigName").textContent = word + " " + g + ",";
     document.title = g + " · приглашение на 30 октября";
   }
+  // Длинное имя на карточке в конверте («Владислава и Игорь»): ужимаем шрифт, пока не влезет в одну строку
+  function fitCardName() {
+    const n = el("cardName"); n.style.fontSize = "";
+    let fs = parseFloat(getComputedStyle(n).fontSize);
+    while (n.scrollWidth > n.clientWidth + 1 && fs > 15) { fs -= 1; n.style.fontSize = fs + "px"; }
+  }
+  fitCardName(); document.fonts && document.fonts.ready.then(fitCardName); addEventListener("resize", fitCardName);
   // Сцена появляется, когда все слои загружены (или через 4 с, если сеть совсем медленная)
   // ширина плашки → тиснение: SVG с фильтром освещения собирается в строку и ставится как картинка (растеризуется один раз)
   const cardEl = el("card");
@@ -417,15 +432,15 @@ body::after{ /* лёгкая виньетка, как на фото */
   const imgs = [...sceneEl.querySelectorAll("img")].map(i => i.complete && i.naturalWidth ? Promise.resolve() : (i.decode ? i.decode().catch(() => {}) : new Promise(r => { i.onload = i.onerror = r; })));
   Promise.race([Promise.all(imgs), new Promise(r => setTimeout(r, 4000))]).then(() => sceneEl.classList.add("ready"));
 
-  // Сердечки
+  // Звёзды: 12 ярких (золото/бордо) и 18 блеклых, каждая мерцает со своим периодом и сдвигом
   const sky = el("sky");
-  if (!reduce) for (let i = 0; i < 18; i++) {
-    const s = document.createElement("div");
-    s.className = "spark " + ["a", "a", "b", "c"][i % 4];
+  if (!reduce) for (let i = 0; i < 30; i++) {
+    const s = document.createElement("div"), bright = i < 12;
+    s.className = "spark " + (bright ? ["a", "a", "b"][i % 3] : "dim " + ["a", "c"][i % 2]);
     s.style.left = Math.random() * 100 + "%"; s.style.top = Math.random() * 100 + "%";
-    s.style.animationDelay = (Math.random() * 5) + "s";
-    s.style.animationDuration = (4 + Math.random() * 3) + "s";
-    const sz = 9 + Math.random() * 10; s.style.width = s.style.height = sz + "px";
+    s.style.animationDelay = (Math.random() * 6) + "s";
+    s.style.animationDuration = (bright ? 3.2 + Math.random() * 2.5 : 5 + Math.random() * 3) + "s";
+    const sz = bright ? 16 + Math.random() * 16 : 8 + Math.random() * 10; s.style.width = s.style.height = sz + "px";
     sky.appendChild(s);
   }
 
@@ -538,9 +553,33 @@ body::after{ /* лёгкая виньетка, как на фото */
   dress.addEventListener("click", e => { if (e.target === dress) closeDress(); });
   addEventListener("keydown", e => { if (e.key === "Escape" && dress.classList.contains("show")) closeDress(); });
 
-  // Ответ гостя
-  el("yes").addEventListener("click", () => { el("answer").textContent = "Ура! Жду тебя"; burst(); });
-  el("no").addEventListener("click", () => { el("answer").textContent = "Очень жаль… Отметим в другой раз"; });
+  // Ответ гостя → Яне в Telegram через бота (токен и chat_id — в TG_CONFIG в начале страницы)
+  const TG = window.TG_CONFIG || {};
+  let lastSent = "";
+  async function notify(kind) {
+    const who = guest ? guest.trim().slice(0, 40) : "Гость без именной ссылки";
+    const text = (kind === "yes" ? "✅ " + who + " — придёт!" : "❌ " + who + " — не сможет прийти") +
+      "\n" + new Date().toLocaleString("ru-RU", { timeZone: "Europe/Moscow", day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" });
+    if (!TG.token || !TG.chat) { console.warn("TG_CONFIG не заполнен — ответ не отправлен:", text); return null; }
+    if (lastSent === kind) return true;                       // повторный клик по той же кнопке — не дублируем
+    try {
+      const r = await fetch("https://api.telegram.org/bot" + TG.token + "/sendMessage", {
+        method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({ chat_id: TG.chat, text, disable_notification: "false" })
+      });
+      const j = await r.json(); if (j.ok) lastSent = kind; return !!j.ok;
+    } catch (e) { return false; }
+  }
+  async function answer(kind) {
+    const a = el("answer");
+    a.innerHTML = (kind === "yes" ? "Ура! Жду тебя" : "Очень жаль… Отметим в другой раз") + '<small class="sent" id="sent"></small>';
+    if (kind === "yes") burst();
+    el("yes").classList.toggle("picked", kind === "yes"); el("no").classList.toggle("picked", kind === "no");
+    const ok = await notify(kind), s = el("sent");
+    if (s) s.textContent = ok === null ? "" : ok ? "Ответ передан Яне" : "Не получилось отправить — напишите Яне";
+  }
+  el("yes").addEventListener("click", () => answer("yes"));
+  el("no").addEventListener("click", () => answer("no"));
 
   // Файл для календаря
   const pad = n => String(n).padStart(2, "0");
@@ -552,37 +591,49 @@ body::after{ /* лёгкая виньетка, как на фото */
     "END:VEVENT", "END:VCALENDAR"].join("\r\n");
   el("cal").href = "data:text/calendar;charset=utf-8," + encodeURIComponent(ics);
 
-  // Конфетти: бордо, бархат, жемчуг, золото
-  const colors = ["#5a1a2b", "#c98b95", "#efe8df", "#c9a66b", "#e9c3c9"];
+  // Блеск звёзд: по всему экрану вспыхивают и гаснут четырёхлучевые искры (золото, жемчуг, роза) — вместо конфетти
+  const colors = [[233, 200, 137], [255, 243, 214], [239, 232, 223], [233, 183, 192], [201, 166, 107]];
   const cv = el("confetti"), ctx = cv.getContext("2d");
   let parts = [], raf = 0;
   function resize() { cv.width = innerWidth * devicePixelRatio; cv.height = innerHeight * devicePixelRatio; }
   addEventListener("resize", resize); resize();
   function burst() {
     if (reduce) return;
-    const W = cv.width, H = cv.height, k = devicePixelRatio;
-    for (let i = 0; i < 140; i++) {
-      const side = i % 2 ? 1 : -1;
+    const W = cv.width, H = cv.height, k = devicePixelRatio, t0 = performance.now();
+    for (let i = 0; i < 70; i++) {
+      const big = Math.random() < .3;
       parts.push({
-        x: side > 0 ? W * 0.05 : W * 0.95, y: H * 0.8,
-        vx: side * (3 + Math.random() * 9) * k, vy: -(10 + Math.random() * 13) * k,
-        w: (5 + Math.random() * 5) * k, h: (7 + Math.random() * 7) * k,
-        r: Math.random() * 6, vr: (Math.random() - .5) * .3,
-        c: colors[Math.floor(Math.random() * colors.length)], life: 0
+        x: Math.random() * W, y: Math.random() * H,
+        s: (big ? 14 + Math.random() * 12 : 5 + Math.random() * 8) * k,       // радиус луча
+        t0: t0 + Math.random() * 2600,                                          // когда вспыхнет
+        dur: 900 + Math.random() * 1500,                                         // сколько горит
+        rot: Math.random() * Math.PI, spin: (Math.random() - .5) * .0015,
+        c: colors[Math.floor(Math.random() * colors.length)], glow: big
       });
     }
     if (!raf) raf = requestAnimationFrame(step);
   }
-  function step() {
+  function star(r) {                                                             // контур четырёхлучевой искры
+    const w = r * .18;
+    ctx.beginPath(); ctx.moveTo(0, -r);
+    ctx.quadraticCurveTo(w * .4, -w * .4, r, 0); ctx.quadraticCurveTo(w * .4, w * .4, 0, r);
+    ctx.quadraticCurveTo(-w * .4, w * .4, -r, 0); ctx.quadraticCurveTo(-w * .4, -w * .4, 0, -r); ctx.closePath();
+  }
+  function step(now) {
     ctx.clearRect(0, 0, cv.width, cv.height);
-    const k = devicePixelRatio;
-    parts = parts.filter(p => p.y < cv.height + 40 && p.life < 400);
+    parts = parts.filter(p => now < p.t0 + p.dur);
     for (const p of parts) {
-      p.life++; p.vy += 0.32 * k; p.vx *= 0.985; p.vy *= 0.99;
-      p.x += p.vx; p.y += p.vy; p.r += p.vr;
-      const f = Math.abs(Math.cos(p.life / 8));
-      ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.r);
-      ctx.fillStyle = p.c; ctx.fillRect(-p.w / 2, -p.h / 2 * f, p.w, p.h * f);
+      if (now < p.t0) continue;
+      const u = (now - p.t0) / p.dur, a = Math.sin(Math.PI * u) ** 1.4;           // плавно разгорается и гаснет
+      const r = p.s * (.55 + .45 * Math.sin(Math.PI * u)), [cr, cg, cb] = p.c;
+      ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot + (now - p.t0) * p.spin);
+      if (p.glow) {
+        const g = ctx.createRadialGradient(0, 0, 0, 0, 0, r * 1.8);
+        g.addColorStop(0, `rgba(${cr},${cg},${cb},${.45 * a})`); g.addColorStop(1, `rgba(${cr},${cg},${cb},0)`);
+        ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 0, r * 1.8, 0, Math.PI * 2); ctx.fill();
+      }
+      ctx.fillStyle = `rgba(${cr},${cg},${cb},${a})`; star(r); ctx.fill();
+      if (p.glow) { ctx.fillStyle = `rgba(255,250,240,${.9 * a})`; star(r * .45); ctx.fill(); }
       ctx.restore();
     }
     raf = parts.length ? requestAnimationFrame(step) : 0;
