@@ -3,10 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!--OG-START-->
 <title>Яна приглашает · 30 октября</title>
 <meta name="description" content="Тебе письмо! Открой конверт — там приглашение на день рождения Яны.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Приглашение на день рождения Яны">
 <meta property="og:title" content="Тебе письмо 💌">
-<meta property="og:description" content="Открой конверт — там приглашение на день рождения Яны, 30 октября.">
+<meta property="og:description" content="30 октября в 17:30 · Manhattan Jazz Salon, 1948. Открой конверт.">
+<meta property="og:image" content="https://sandovich.github.io/yana-invite/img/og.jpg">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<!--OG-END-->
 <meta name="theme-color" content="#fbf4f5">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -39,10 +46,10 @@ body::after{ /* лёгкая виньетка, как на фото */
 
 /* ---------- блёстки ---------- */
 .sky{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
-/* звёзды: яркие (золото/бордо, с мягким ореолом) и блеклые (розовые, прозрачные); мерцают — разгораются и гаснут */
-.spark{position:absolute;width:14px;height:14px;opacity:0;animation:twinkle 4s ease-in-out infinite;--peak:.95;
-  background:no-repeat center/contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3CradialGradient id='g' cx='12' cy='12' r='12' gradientUnits='userSpaceOnUse'%3E%3Cstop offset='0' stop-color='%23fff3d6' stop-opacity='.9'/%3E%3Cstop offset='.35' stop-color='%23e9c889' stop-opacity='.35'/%3E%3Cstop offset='1' stop-color='%23e9c889' stop-opacity='0'/%3E%3C/radialGradient%3E%3Ccircle cx='12' cy='12' r='12' fill='url(%23g)'/%3E%3Cpath fill='%23c9a66b' d='M12 1c.5 6.3 4.7 10.5 11 11-6.3.5-10.5 4.7-11 11-.5-6.3-4.7-10.5-11-11 6.3-.5 10.5-4.7 11-11z'/%3E%3C/svg%3E")}
-.spark.b{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3CradialGradient id='g' cx='12' cy='12' r='12' gradientUnits='userSpaceOnUse'%3E%3Cstop offset='0' stop-color='%23ffe3e8' stop-opacity='.9'/%3E%3Cstop offset='.4' stop-color='%23e9b7c0' stop-opacity='.3'/%3E%3Cstop offset='1' stop-color='%23e9b7c0' stop-opacity='0'/%3E%3C/radialGradient%3E%3Ccircle cx='12' cy='12' r='12' fill='url(%23g)'/%3E%3Cpath fill='%235a1a2b' d='M12 1c.5 6.3 4.7 10.5 11 11-6.3.5-10.5 4.7-11 11-.5-6.3-4.7-10.5-11-11 6.3-.5 10.5-4.7 11-11z'/%3E%3C/svg%3E")}
+/* звёзды-блики: яркие — свечение + тонкие длинные лучи + белое ядро (золото / бордо), блеклые — маленькие розовые; разгораются и гаснут */
+.spark{position:absolute;width:14px;height:14px;opacity:0;animation:twinkle 4s ease-in-out infinite;--peak:1;
+  background:no-repeat center/contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3CradialGradient id='g' cx='32' cy='32' r='32' gradientUnits='userSpaceOnUse'%3E%3Cstop offset='0' stop-color='%23fff6e0' stop-opacity='1'/%3E%3Cstop offset='.18' stop-color='%23f3d79a' stop-opacity='.55'/%3E%3Cstop offset='.5' stop-color='%23e9c889' stop-opacity='.14'/%3E%3Cstop offset='1' stop-color='%23e9c889' stop-opacity='0'/%3E%3C/radialGradient%3E%3Ccircle cx='32' cy='32' r='32' fill='url(%23g)'/%3E%3Cpath fill='%23d9b26a' d='M32 2c.6 20 9.4 28.8 30 30-20.6 1.2-29.4 10-30 30-.6-20-9.4-28.8-30-30 20.6-1.2 29.4-10 30-30z'/%3E%3Cpath fill='%23f1dba6' opacity='.85' d='M32 18c1.2 8.6 5.4 12.8 14 14-8.6 1.2-12.8 5.4-14 14-1.2-8.6-5.4-12.8-14-14 8.6-1.2 12.8-5.4 14-14z' transform='rotate(45 32 32)'/%3E%3Ccircle cx='32' cy='32' r='2.6' fill='%23fffdf7'/%3E%3C/svg%3E")}
+.spark.b{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3CradialGradient id='g' cx='32' cy='32' r='32' gradientUnits='userSpaceOnUse'%3E%3Cstop offset='0' stop-color='%23ffe9ee' stop-opacity='1'/%3E%3Cstop offset='.18' stop-color='%23e9b7c0' stop-opacity='.5'/%3E%3Cstop offset='.5' stop-color='%23d98fa0' stop-opacity='.12'/%3E%3Cstop offset='1' stop-color='%23d98fa0' stop-opacity='0'/%3E%3C/radialGradient%3E%3Ccircle cx='32' cy='32' r='32' fill='url(%23g)'/%3E%3Cpath fill='%236b1f33' d='M32 2c.6 20 9.4 28.8 30 30-20.6 1.2-29.4 10-30 30-.6-20-9.4-28.8-30-30 20.6-1.2 29.4-10 30-30z'/%3E%3Cpath fill='%23d98fa0' opacity='.8' d='M32 18c1.2 8.6 5.4 12.8 14 14-8.6 1.2-12.8 5.4-14 14-1.2-8.6-5.4-12.8-14-14 8.6-1.2 12.8-5.4 14-14z' transform='rotate(45 32 32)'/%3E%3Ccircle cx='32' cy='32' r='2.6' fill='%23fff4f6'/%3E%3C/svg%3E")}
 .spark.dim{--peak:.32;animation-duration:6s;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23c98b95' d='M12 1c.5 6.3 4.7 10.5 11 11-6.3.5-10.5 4.7-11 11-.5-6.3-4.7-10.5-11-11 6.3-.5 10.5-4.7 11-11z'/%3E%3C/svg%3E")}
 .spark.dim.c{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23c9a66b' d='M12 1c.5 6.3 4.7 10.5 11 11-6.3.5-10.5 4.7-11 11-.5-6.3-4.7-10.5-11-11 6.3-.5 10.5-4.7 11-11z'/%3E%3C/svg%3E")}
@@ -363,7 +370,7 @@ window.TG_CONFIG = { token: "", chat: "769656309" };
   // Имя гостя из ссылки: ...?to=Маша → «Маша, тебе письмо»
   // Мессенджеры иногда кодируют ссылку повторно (%20 → %2520): раскодируем, пока в имени остаются %XX
   function unpct(v) { for (let i = 0; i < 3 && /%[0-9a-f]{2}/i.test(v); i++) { try { v = decodeURIComponent(v); } catch (e) { break; } } return v.replace(/\+/g, " "); }
-  let guest = new URLSearchParams(location.search).get("to");
+  let guest = new URLSearchParams(location.search).get("to") || window.GUEST || null;   // window.GUEST задаёт именная страница (src/make_links.py)
   if (guest) guest = unpct(guest).replace(/[<>"]/g, "").replace(/\s+/g, " ").trim().slice(0, 40) || null;
   if (guest) {                                  // именная ссылка: ?to=Игорь и Владислава (&g=м|ж|мн — если род угадан неверно)
     const g = guest;
@@ -381,6 +388,7 @@ window.TG_CONFIG = { token: "", chat: "769656309" };
     const lines = parts.map((p, i) => (forced ? p : p.split(" ").map(genitive).join(" ")) + (i < parts.length - 1 && !/^[и&]\s/.test(parts[i + 1]) ? "," : ""));
     el("cardFor").hidden = false;
     el("cardName").innerHTML = lines.map(l => "<span>" + l.replace(/&/g, "&amp;") + "</span>").join("");
+    document.title = "Приглашение для " + lines.join(" ");
   }
   // Родительный падеж русского имени: Владислава → Владиславы, Игорь → Игоря, Андрей → Андрея, Маша → Маши, Мария → Марии
   function genitive(w) {
@@ -464,7 +472,7 @@ window.TG_CONFIG = { token: "", chat: "769656309" };
     s.style.left = Math.random() * 100 + "%"; s.style.top = Math.random() * 100 + "%";
     s.style.animationDelay = (Math.random() * 6) + "s";
     s.style.animationDuration = (bright ? 3.2 + Math.random() * 2.5 : 5 + Math.random() * 3) + "s";
-    const sz = bright ? 16 + Math.random() * 16 : 8 + Math.random() * 10; s.style.width = s.style.height = sz + "px";
+    const sz = bright ? 30 + Math.random() * 34 : 8 + Math.random() * 10; s.style.width = s.style.height = sz + "px";
     sky.appendChild(s);
   }
 
@@ -637,8 +645,7 @@ window.TG_CONFIG = { token: "", chat: "769656309" };
     }
     if (!raf) raf = requestAnimationFrame(step);
   }
-  function star(r) {                                                             // контур четырёхлучевой искры
-    const w = r * .18;
+  function star(r, w) {                                                          // контур четырёхлучевой искры: r — длина луча, w — толщина у центра
     ctx.beginPath(); ctx.moveTo(0, -r);
     ctx.quadraticCurveTo(w * .4, -w * .4, r, 0); ctx.quadraticCurveTo(w * .4, w * .4, 0, r);
     ctx.quadraticCurveTo(-w * .4, w * .4, -r, 0); ctx.quadraticCurveTo(-w * .4, -w * .4, 0, -r); ctx.closePath();
@@ -651,13 +658,16 @@ window.TG_CONFIG = { token: "", chat: "769656309" };
       const u = (now - p.t0) / p.dur, a = Math.sin(Math.PI * u) ** 1.4;           // плавно разгорается и гаснет
       const r = p.s * (.55 + .45 * Math.sin(Math.PI * u)), [cr, cg, cb] = p.c;
       ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot + (now - p.t0) * p.spin);
-      if (p.glow) {
-        const g = ctx.createRadialGradient(0, 0, 0, 0, 0, r * 1.8);
-        g.addColorStop(0, `rgba(${cr},${cg},${cb},${.45 * a})`); g.addColorStop(1, `rgba(${cr},${cg},${cb},0)`);
-        ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 0, r * 1.8, 0, Math.PI * 2); ctx.fill();
+      if (p.glow) {                                                                // свечение вокруг звезды
+        const g = ctx.createRadialGradient(0, 0, 0, 0, 0, r * 1.6);
+        g.addColorStop(0, `rgba(255,248,230,${.7 * a})`); g.addColorStop(.3, `rgba(${cr},${cg},${cb},${.35 * a})`); g.addColorStop(1, `rgba(${cr},${cg},${cb},0)`);
+        ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 0, r * 1.6, 0, Math.PI * 2); ctx.fill();
       }
-      ctx.fillStyle = `rgba(${cr},${cg},${cb},${a})`; star(r); ctx.fill();
-      if (p.glow) { ctx.fillStyle = `rgba(255,250,240,${.9 * a})`; star(r * .45); ctx.fill(); }
+      ctx.fillStyle = `rgba(${cr},${cg},${cb},${a})`; star(r, r * .16); ctx.fill();          // длинные тонкие лучи
+      if (p.glow) {
+        ctx.rotate(Math.PI / 4); ctx.fillStyle = `rgba(${cr},${cg},${cb},${.7 * a})`; star(r * .42, r * .1); ctx.fill();   // короткие диагональные
+        ctx.fillStyle = `rgba(255,253,247,${a})`; ctx.beginPath(); ctx.arc(0, 0, r * .07 + .8, 0, Math.PI * 2); ctx.fill(); // белое ядро
+      }
       ctx.restore();
     }
     raf = parts.length ? requestAnimationFrame(step) : 0;
