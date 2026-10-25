@@ -97,12 +97,37 @@ body::after{ /* лёгкая виньетка, как на фото */
 .kicker{font-size:11px;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-soft)}
 .name{font-family:var(--script);font-weight:400;font-size:clamp(72px,21vw,100px);line-height:1.15;margin:0;color:var(--ink)}
 .sub{font-family:var(--serif);font-style:italic;font-weight:600;font-size:24px;margin:-4px 0 20px;color:var(--ink)}
+.sub .ny{display:inline-block;margin-top:6px;font-style:normal;font-size:12px;font-family:var(--sans);font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-soft)}
 .date{display:flex;align-items:center;justify-content:center;margin:0 auto 20px}
 .date > div{padding:4px 14px;display:flex;flex-direction:column;justify-content:center}
 .date .mid{border-left:1px solid var(--rose);border-right:1px solid var(--rose);padding:0 18px}
 .date .big{font-family:var(--serif);font-weight:600;font-size:60px;line-height:1;color:var(--ink)}
 .date .sm{font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft)}
 .text{font-family:var(--serif);font-size:19px;line-height:1.45;color:var(--ink);max-width:30ch;margin:0 auto 22px;text-wrap:balance}
+/* голосовое сообщение */
+.voice{display:none;align-items:center;gap:12px;margin:0 0 22px;padding:12px 14px 12px 12px;text-align:left;
+  background:var(--ink);color:var(--pearl);border-radius:999px;box-shadow:0 14px 26px -14px rgba(90,26,43,.7)}
+.voice.ready{display:flex}
+.voice .play{flex:none;width:46px;height:46px;border-radius:50%;border:0;background:var(--pearl);color:var(--ink);cursor:pointer;
+  display:grid;place-items:center;transition:transform .15s}
+.voice .play:active{transform:scale(.94)}
+.voice .play svg{width:20px;height:20px;display:block}
+.voice .play .ic-pause{display:none}
+.voice.playing .play .ic-play{display:none}
+.voice.playing .play .ic-pause{display:block}
+.voice .body{flex:1;min-width:0}
+.voice .lbl{font-family:var(--serif);font-style:italic;font-size:16px;line-height:1.1;margin-bottom:7px;color:var(--pearl)}
+.voice .bar{position:relative;height:22px;cursor:pointer;display:flex;align-items:center;gap:2px}
+.voice .bar i{flex:1;display:block;border-radius:2px;background:rgba(239,232,223,.35);height:var(--h,40%);transition:background .2s}
+.voice .bar i.on{background:var(--pearl)}
+.voice .t{flex:none;font-size:12px;font-variant-numeric:tabular-nums;color:rgba(239,232,223,.8);min-width:38px;text-align:right}
+.transcript{display:none;margin:-10px 0 22px;text-align:left}
+.transcript.ready{display:block}
+.transcript summary{list-style:none;cursor:pointer;text-align:center;font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);padding:6px}
+.transcript summary::-webkit-details-marker{display:none}
+.transcript summary::after{content:" ▾";font-size:11px}
+.transcript[open] summary::after{content:" ▴"}
+.transcript p{font-family:var(--serif);font-size:17px;line-height:1.45;margin:10px 0 0;color:var(--ink)}
 .info{display:grid;gap:8px;margin:0 0 22px;text-align:left}
 .row{display:flex;gap:12px;align-items:center;background:rgba(255,255,255,.55);border-radius:4px;padding:11px 14px;border:1px solid rgba(201,139,149,.35)}
 .row .ic{flex:none;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-size:17px;background:var(--rose-light)}
@@ -154,9 +179,9 @@ body::after{ /* лёгкая виньетка, как на фото */
 
 <section class="invite" id="invite" aria-live="polite">
   <article class="card">
-    <div class="kicker">Приглашение</div>
+    <div class="kicker">Светский раут</div>
     <h1 class="name">Яна</h1>
-    <p class="sub">празднует день рождения</p>
+    <p class="sub">празднует день рождения<br><span class="ny">Нью-Йорк · 1948</span></p>
 
     <div class="date">
       <div><span class="sm">пятница</span></div>
@@ -164,12 +189,34 @@ body::after{ /* лёгкая виньетка, как на фото */
       <div><span class="sm">октября</span><span class="sm">2026</span></div>
     </div>
 
-    <p class="text">Будет вкусно, тепло и очень красиво. Приходи&nbsp;— без тебя праздник будет не&nbsp;тот.</p>
+    <p class="text">Джаз на виниле, свечи и фарфор, коктейли и светские разговоры&nbsp;— один вечер в старом Нью-Йорке. И предупреждаю: вечер не&nbsp;будет томным.</p>
+
+    <div class="voice" id="voice">
+      <button class="play" id="play" aria-label="Слушать голосовое сообщение">
+        <svg class="ic-play" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M8 5v14l11-7z"/></svg>
+        <svg class="ic-pause" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg>
+      </button>
+      <div class="body">
+        <div class="lbl">Голосовое от Яны</div>
+        <div class="bar" id="bar" aria-hidden="true"></div>
+      </div>
+      <div class="t" id="vt">0:00</div>
+      <audio id="au" preload="metadata">
+        <source src="audio/message.m4a" type="audio/mp4">
+        <source src="audio/message.ogg" type="audio/ogg">
+      </audio>
+    </div>
+    <details class="transcript" id="transcript">
+      <summary>Расшифровка голосового</summary>
+      <p>Приглашаю вас на светский раут в честь моего дня рождения.</p>
+      <p>В этот вечер мы окунёмся в Нью-Йорк 1948 года — время джентльменов и леди, джаза и послевоенного гламура. Представьте: за окнами Манхэттен, в зале негромко играет винил, на столах — фарфор и свечи, дамы блистают своей элегантностью в жемчугах, кавалеры — в костюмах и бабочках. Мы соберёмся в маленьком джазовом салоне, где вечер течёт неспешно: коктейли, светские разговоры, атмосфера старого Нью-Йорка.</p>
+      <p>Но предупреждаю… вечер не будет томным.</p>
+    </details>
 
     <div class="info">
       <div class="row"><div class="ic">🕖</div><div><b>Во сколько</b><span>в 19:00</span></div></div>
       <div class="row"><div class="ic">📍</div><div><b>Где</b><span>Адрес пришлю лично</span></div></div>
-      <div class="row"><div class="ic">🥂</div><div><b>Дресс-код</b><span>Нарядно</span></div></div>
+      <div class="row"><div class="ic">🥂</div><div><b>Дресс-код</b><span>Леди — жемчуг, кавалеры — бабочки</span></div></div>
     </div>
 
     <div class="count" aria-label="До праздника осталось">
@@ -280,6 +327,33 @@ body::after{ /* лёгкая виньетка, как на фото */
     el("cd-m").textContent = m; el("cd-s").textContent = Math.floor(ms / 1e3);
   }
   tick(); setInterval(tick, 1000);
+
+  // Голосовое сообщение: блок показывается, только если файл реально загрузился
+  const voice = el("voice"), au = el("au"), bar = el("bar"), vt = el("vt");
+  const N = 34, bars = [];
+  for (let i = 0; i < N; i++) {           // «волна» — фиксированный узор, чтобы не прыгала
+    const b = document.createElement("i");
+    b.style.setProperty("--h", (28 + 60 * Math.abs(Math.sin(i * 1.7) * Math.cos(i * .6))) + "%");
+    bar.appendChild(b); bars.push(b);
+  }
+  const mmss = s => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
+  const onMeta = () => { voice.classList.add("ready"); el("transcript").classList.add("ready"); vt.textContent = mmss(au.duration); };
+  au.addEventListener("loadedmetadata", onMeta);
+  if (au.readyState >= 1) onMeta();   // файл мог загрузиться раньше, чем повесили обработчик
+  au.addEventListener("error", () => { voice.classList.remove("ready"); el("transcript").classList.add("ready"); el("transcript").open = true; });
+  el("play").addEventListener("click", () => { au.paused ? au.play() : au.pause(); });
+  au.addEventListener("play", () => voice.classList.add("playing"));
+  au.addEventListener("pause", () => voice.classList.remove("playing"));
+  au.addEventListener("ended", () => { voice.classList.remove("playing"); vt.textContent = mmss(au.duration); });
+  au.addEventListener("timeupdate", () => {
+    const k = au.currentTime / (au.duration || 1);
+    bars.forEach((b, i) => b.classList.toggle("on", i / N < k));
+    vt.textContent = au.paused && au.currentTime === 0 ? mmss(au.duration) : mmss(au.currentTime);
+  });
+  bar.addEventListener("click", e => {
+    const r = bar.getBoundingClientRect();
+    au.currentTime = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width)) * (au.duration || 0);
+  });
 
   // Ответ гостя
   el("yes").addEventListener("click", () => { el("answer").textContent = "Ура! Жду тебя"; burst(); });
