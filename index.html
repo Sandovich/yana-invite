@@ -153,7 +153,17 @@ body::after{ /* лёгкая виньетка, как на фото */
 .btn.cal{display:inline-block;margin-top:14px;font-size:13px;color:var(--ink-soft);background:none;text-decoration:underline;text-underline-offset:4px;padding:8px}
 .answer{min-height:24px;margin-top:14px;font-family:var(--serif);font-style:italic;font-size:19px;color:var(--ink)}
 .sign{font-family:var(--script);font-size:30px;color:var(--ink);margin-top:14px}
-.row-btn{width:100%;font:inherit;color:inherit;text-align:left;cursor:pointer;transition:background .2s}
+.row-btn{width:100%;font:inherit;color:inherit;text-align:left;cursor:pointer;transition:background .2s;
+  animation:nudge 3.4s ease-in-out infinite;transform-origin:50% 50%;position:relative}
+.row-btn .chev{position:absolute;right:14px;top:50%;transform:translateY(-50%);font-family:var(--serif);font-size:28px;line-height:1;color:var(--ink-soft)}
+@keyframes nudge{              /* плашка подрагивает — намёк, что на неё можно нажать */
+  0%,70%,100%{transform:translateX(0) rotate(0)}
+  74%{transform:translateX(-3px) rotate(-.6deg)}
+  78%{transform:translateX(3px) rotate(.6deg)}
+  82%{transform:translateX(-2px) rotate(-.4deg)}
+  86%{transform:translateX(1px) rotate(0)}
+  90%{transform:translateX(0) rotate(0)}
+}
 .row-btn:hover{background:rgba(255,255,255,.85)}
 .row-btn .map{text-decoration:none;color:var(--ink)}
 
@@ -185,7 +195,7 @@ body::after{ /* лёгкая виньетка, как на фото */
   font:600 12px var(--sans);color:var(--ink-soft);background:rgba(251,244,245,.85);border:1px solid rgba(201,139,149,.4);border-radius:999px;padding:8px 14px;cursor:pointer;display:none}
 .invite.show ~ .again{display:block}
 
-@media (prefers-reduced-motion:reduce){.env,.spark,.hint{animation:none!important}}
+@media (prefers-reduced-motion:reduce){.env,.spark,.hint,.row-btn{animation:none!important}}
 </style>
 </head>
 <body>
@@ -200,7 +210,7 @@ body::after{ /* лёгкая виньетка, как на фото */
         <img src="img/envelope.webp" alt="" draggable="false">
         <div class="card-s" id="cardS">
           <div class="k">приглашение</div>
-          <div class="n">Яна</div>
+          <div class="n" id="cardName">Яна</div>
           <div class="d">30 октября</div>
         </div>
         <img class="pocket" src="img/pocket.webp" alt="" draggable="false">
@@ -214,8 +224,8 @@ body::after{ /* лёгкая виньетка, как на фото */
 <section class="invite" id="invite" aria-live="polite">
   <article class="card">
     <div class="kicker">Manhattan Jazz Salon · 1948</div>
-    <h1 class="name">Яна</h1>
-    <p class="sub">празднует день рождения<br><span class="ny">светский вечер · джаз · тайна</span></p>
+    <h1 class="name" id="bigName">Яна</h1>
+    <p class="sub"><span id="subTxt">празднует день рождения</span><br><span class="ny">светский вечер · джаз · тайна</span></p>
 
     <div class="date">
       <div><span class="sm">пятница</span></div>
@@ -251,7 +261,7 @@ body::after{ /* лёгкая виньетка, как на фото */
       <div class="row"><div class="ic">🕠</div><div><b>Когда</b><span>30 октября в 17:30</span></div></div>
       <div class="row"><div class="ic">📍</div><div><b>Где</b><span>Санкт-Петербург, Кадетская линия В.&nbsp;О., д.&nbsp;5, корп.&nbsp;2, лит.&nbsp;Д<small>помещение 252, 2-й этаж</small></span><a class="map" href="https://yandex.ru/maps/?text=%D0%A1%D0%B0%D0%BD%D0%BA%D1%82-%D0%9F%D0%B5%D1%82%D0%B5%D1%80%D0%B1%D1%83%D1%80%D0%B3%2C%20%D0%9A%D0%B0%D0%B4%D0%B5%D1%82%D1%81%D0%BA%D0%B0%D1%8F%20%D0%BB%D0%B8%D0%BD%D0%B8%D1%8F%205%D0%BA2" target="_blank" rel="noopener">показать на карте</a></div></div>
       <div class="row"><div class="ic">🎷</div><div><b>Тема</b><span>Manhattan Jazz Salon, 1948<small>светский вечер, джаз и тайна</small></span></div></div>
-      <button class="row row-btn" id="dressBtn" type="button"><div class="ic">🥂</div><div><b>Дресс-код</b><span>Элегантный вечерний образ 40/50-х<small>леди — жемчуг, кавалеры — бабочки</small></span><span class="map">смотреть мудборд ▸</span></div></button>
+      <button class="row row-btn" id="dressBtn" type="button"><div class="ic">🥂</div><div><b>Дресс-код</b><span>Элегантный вечерний образ 40/50-х<small>леди — жемчуг, кавалеры — бабочки</small></span></div><span class="chev" aria-hidden="true">›</span></button>
     </div>
 
     <div class="count" aria-label="До праздника осталось">
@@ -311,7 +321,14 @@ body::after{ /* лёгкая виньетка, как на фото */
 
   // Имя гостя из ссылки: ...?to=Маша → «Маша, тебе письмо»
   const guest = new URLSearchParams(location.search).get("to");
-  if (guest) el("to").textContent = guest.slice(0, 30) + ", тебе письмо";
+  if (guest) {                                  // именная ссылка: имя гостя на конверте и в открытке
+    const g = guest.trim().slice(0, 30);
+    el("to").textContent = g + ", тебе письмо";
+    el("cardName").textContent = g;
+    el("bigName").textContent = g;
+    el("subTxt").textContent = "Яна приглашает тебя на день рождения";
+    document.title = g + ", тебе письмо · 30 октября";
+  }
 
   // Сцена появляется, когда все слои загружены (или через 4 с, если сеть совсем медленная)
   const sceneEl = el("scene");
