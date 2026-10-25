@@ -133,10 +133,13 @@ body::after{ /* лёгкая виньетка, как на фото */
 .transcript[open] summary::after{content:" ▴"}
 .transcript p{font-family:var(--serif);font-size:17px;line-height:1.45;margin:10px 0 0;color:var(--ink)}
 .info{display:grid;gap:8px;margin:0 0 22px;text-align:left}
-.row{display:flex;gap:12px;align-items:center;background:rgba(255,255,255,.55);border-radius:4px;padding:11px 14px;border:1px solid rgba(201,139,149,.35)}
+.row{display:flex;gap:12px;align-items:flex-start;background:rgba(255,255,255,.55);border-radius:4px;padding:11px 14px;border:1px solid rgba(201,139,149,.35)}
+.row > div:last-child{min-width:0}
+.row .map{display:inline-block;margin-top:4px;font:600 12px var(--sans);letter-spacing:.04em;color:var(--ink-soft);text-decoration:underline;text-underline-offset:3px}
 .row .ic{flex:none;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-size:17px;background:var(--rose-light)}
 .row b{display:block;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-soft)}
-.row span{font-family:var(--serif);font-size:18px;font-weight:600}
+.row span{display:block;font-family:var(--serif);font-size:18px;font-weight:600;line-height:1.25}
+.row span small{display:block;font-size:15px;font-weight:500;color:var(--ink-soft)}
 .count{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:0 0 24px}
 .count > div{border-top:1px solid var(--rose);padding:8px 0 0}
 .count .n{font-family:var(--serif);font-weight:600;font-size:30px;color:var(--ink);font-variant-numeric:tabular-nums;line-height:1}
@@ -183,9 +186,9 @@ body::after{ /* лёгкая виньетка, как на фото */
 
 <section class="invite" id="invite" aria-live="polite">
   <article class="card">
-    <div class="kicker">Светский раут</div>
+    <div class="kicker">Manhattan Jazz Salon · 1948</div>
     <h1 class="name">Яна</h1>
-    <p class="sub">празднует день рождения<br><span class="ny">Нью-Йорк · 1948</span></p>
+    <p class="sub">празднует день рождения<br><span class="ny">светский вечер · джаз · тайна</span></p>
 
     <div class="date">
       <div><span class="sm">пятница</span></div>
@@ -218,8 +221,9 @@ body::after{ /* лёгкая виньетка, как на фото */
     </details>
 
     <div class="info">
-      <div class="row"><div class="ic">🕖</div><div><b>Во сколько</b><span>в 19:00</span></div></div>
-      <div class="row"><div class="ic">📍</div><div><b>Где</b><span>Адрес пришлю лично</span></div></div>
+      <div class="row"><div class="ic">🕠</div><div><b>Когда</b><span>30 октября в 17:30</span></div></div>
+      <div class="row"><div class="ic">📍</div><div><b>Где</b><span>Санкт-Петербург, Кадетская линия В.&nbsp;О., д.&nbsp;5, корп.&nbsp;2, лит.&nbsp;Д<small>помещение 252, 2-й этаж</small></span><a class="map" href="https://yandex.ru/maps/?text=%D0%A1%D0%B0%D0%BD%D0%BA%D1%82-%D0%9F%D0%B5%D1%82%D0%B5%D1%80%D0%B1%D1%83%D1%80%D0%B3%2C%20%D0%9A%D0%B0%D0%B4%D0%B5%D1%82%D1%81%D0%BA%D0%B0%D1%8F%20%D0%BB%D0%B8%D0%BD%D0%B8%D1%8F%205%D0%BA2" target="_blank" rel="noopener">показать на карте</a></div></div>
+      <div class="row"><div class="ic">🎷</div><div><b>Тема</b><span>Manhattan Jazz Salon, 1948<small>светский вечер, джаз и тайна</small></span></div></div>
       <div class="row"><div class="ic">🥂</div><div><b>Дресс-код</b><span>Леди — жемчуг, кавалеры — бабочки</span></div></div>
     </div>
 
@@ -247,7 +251,8 @@ body::after{ /* лёгкая виньетка, как на фото */
 
 <script>
 (() => {
-  const EVENT = { start: new Date(2026, 9, 30, 19, 0), hours: 4, title: "День рождения Яны" };
+  const EVENT = { start: new Date(2026, 9, 30, 17, 30), hours: 5, title: "День рождения Яны — Manhattan Jazz Salon, 1948",
+    place: "Санкт-Петербург, Кадетская линия В. О., д. 5, корп. 2, лит. Д, пом. 252 (2-й этаж)" };
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const el = id => document.getElementById(id);
   const HAND = { w: 432, h: 791, px: 0.4259, py: 0.9874 }; // размер PNG и точка щипка (доля)
@@ -374,7 +379,8 @@ body::after{ /* лёгкая виньетка, как на фото */
   const end = new Date(EVENT.start.getTime() + EVENT.hours * 36e5);
   const ics = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//invite//RU", "BEGIN:VEVENT",
     "UID:yana-bday-2026@invite", `DTSTAMP:${fmt(new Date())}`, `DTSTART:${fmt(EVENT.start)}`, `DTEND:${fmt(end)}`,
-    `SUMMARY:${EVENT.title}`, "END:VEVENT", "END:VCALENDAR"].join("\r\n");
+    `SUMMARY:${EVENT.title}`, `LOCATION:${EVENT.place}`, "DESCRIPTION:Светский вечер, джаз и тайна. Дресс-код: леди — жемчуг, кавалеры — бабочки.",
+    "END:VEVENT", "END:VCALENDAR"].join("\r\n");
   el("cal").href = "data:text/calendar;charset=utf-8," + encodeURIComponent(ics);
 
   // Конфетти: бордо, бархат, жемчуг, золото
