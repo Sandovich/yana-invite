@@ -80,8 +80,11 @@ body::after{ /* лёгкая виньетка, как на фото */
   display:flex;flex-direction:column;align-items:center;padding-top:7%;gap:2px;
   transition:transform 1.25s cubic-bezier(.45,.02,.25,1)}
 .card-s.peek{transition:transform .8s cubic-bezier(.2,.8,.25,1)}
-.card-s .n{font-family:var(--classica);font-size:clamp(28px,8.5vw,40px);line-height:1;color:var(--ink);margin-top:6px;white-space:nowrap;width:92%;text-align:center}
-.card-s .d{font-family:var(--serif);font-style:italic;font-weight:600;font-size:clamp(13px,3.8vw,17px);color:var(--ink-soft);letter-spacing:.06em}
+.card-s .n{font-family:var(--classica);font-size:clamp(28px,8.5vw,40px);line-height:1.02;color:var(--ink);margin-top:4px;white-space:nowrap;width:92%;text-align:center}
+.card-s .n span{display:block}
+.card-s .f{font-family:var(--serif);font-style:italic;font-size:clamp(13px,3.6vw,16px);color:var(--ink-soft);margin-top:3px;line-height:1}
+.card-s .f[hidden]{display:none}
+.card-s .d{font-family:var(--serif);font-style:italic;font-weight:600;font-size:clamp(13px,3.8vw,17px);color:var(--ink-soft);letter-spacing:.06em;margin-top:5px}
 .card-s .k{font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-soft);font-weight:700}
 /* клапан: два слоя (закрытый и открытый), переворот вокруг фальца в два полуоборота — без backface-visibility (Safari его теряет) */
 .flap{position:absolute;inset:0;z-index:4;pointer-events:none;transform-origin:50% 40.98%;will-change:transform;backface-visibility:hidden;-webkit-backface-visibility:hidden}
@@ -126,7 +129,7 @@ body::after{ /* лёгкая виньетка, как на фото */
 .date{display:flex;align-items:center;justify-content:center;margin:0 auto 20px}
 .date > div{padding:4px 14px;display:flex;flex-direction:column;justify-content:center}
 .date .mid{border-left:1px solid var(--rose);border-right:1px solid var(--rose);padding:0 18px}
-.date .big{font-family:var(--serif);font-weight:600;font-size:60px;line-height:1;color:var(--ink)}
+.date .big{font-family:var(--classica);font-weight:400;font-size:66px;line-height:1;color:var(--ink)}
 .date .sm{font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft)}
 .text{font-family:var(--serif);font-size:19px;line-height:1.45;color:var(--ink);max-width:30ch;margin:0 auto 22px;text-wrap:balance}
 /* голосовое сообщение */
@@ -240,7 +243,8 @@ body::after{ /* лёгкая виньетка, как на фото */
         <img class="lay" src="img/env_back.webp" alt="" draggable="false">
         <div class="card-s" id="cardS">
           <div class="k">приглашение</div>
-          <div class="n" id="cardName">для вас</div>
+          <div class="f" id="cardFor" hidden>для</div>
+          <div class="n" id="cardName"><span>для вас</span></div>
           <div class="d">30 октября</div>
         </div>
         <img class="front" src="img/env_front.webp" alt="" draggable="false">
@@ -369,9 +373,26 @@ window.TG_CONFIG = { token: "", chat: "769656309" };
     const word = gp === "мн" || (!gp && many) ? "Дорогие" : gp === "ж" || (!gp && fem) ? "Дорогая" : "Дорогой";
     el("to").textContent = g + ", тебе письмо";
     if (many) el("to").textContent = g + ", вам письмо";
-    el("cardName").textContent = g;
     el("bigName").textContent = word + " " + g + ",";
     document.title = g + " · приглашение на 30 октября";
+    // Карточка в конверте: «приглашение / для / Владиславы / и Игоря» — имена в родительном падеже (&for=… задаёт форму вручную)
+    const forced = new URLSearchParams(location.search).get("for");
+    const parts = (forced ? unpct(forced).replace(/[<>"]/g, "").trim() : g).split(/\s(?=(?:и|&)\s)|,\s*/);
+    const lines = parts.map((p, i) => (forced ? p : p.split(" ").map(genitive).join(" ")) + (i < parts.length - 1 && !/^[и&]\s/.test(parts[i + 1]) ? "," : ""));
+    el("cardFor").hidden = false;
+    el("cardName").innerHTML = lines.map(l => "<span>" + l.replace(/&/g, "&amp;") + "</span>").join("");
+  }
+  // Родительный падеж русского имени: Владислава → Владиславы, Игорь → Игоря, Андрей → Андрея, Маша → Маши, Мария → Марии
+  function genitive(w) {
+    if (/^(и|&)$/i.test(w)) return w;
+    const map = { "лев": "Льва", "павел": "Павла", "любовь": "Любови", "пётр": "Петра", "петр": "Петра" };
+    const l = w.toLowerCase(); if (map[l]) return map[l];
+    if (/[гкхжшчщ]а$/i.test(w)) return w.slice(0, -1) + "и";
+    if (/а$/i.test(w)) return w.slice(0, -1) + "ы";
+    if (/я$/i.test(w)) return w.slice(0, -1) + "и";
+    if (/[ьй]$/i.test(w)) return w.slice(0, -1) + "я";
+    if (/[бвгджзклмнпрстфхцчшщ]$/i.test(w)) return w + "а";
+    return w;                                             // Мари, Лео, Хлое — не склоняем
   }
   // Длинное имя на карточке в конверте («Владислава и Игорь»): ужимаем шрифт, пока не влезет в одну строку
   function fitCardName() {
