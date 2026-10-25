@@ -176,6 +176,7 @@ body::after{ /* лёгкая виньетка, как на фото */
 .btn.yes{color:var(--pearl);background:var(--ink);box-shadow:0 12px 22px -10px rgba(90,26,43,.7)}
 .btn.no{color:var(--ink);background:transparent;box-shadow:inset 0 0 0 1.5px var(--rose)}
 .btn.cal{display:inline-block;margin-top:14px;font-size:13px;color:var(--ink-soft);background:none;text-decoration:underline;text-underline-offset:4px;padding:8px}
+.calalt{display:block;font:500 11px var(--sans);letter-spacing:.04em;color:var(--ink-soft);opacity:.7;text-decoration:none;margin-top:-2px}
 .answer{min-height:24px;margin-top:14px;font-family:var(--serif);font-style:italic;font-size:19px;color:var(--ink)}
 .answer .sent{display:block;margin-top:4px;font:500 11px var(--sans);font-style:normal;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);opacity:.8}
 .btn.picked{transform:scale(.97);opacity:.85}
@@ -315,7 +316,8 @@ body::after{ /* лёгкая виньетка, как на фото */
       <button class="btn no" id="no">Не смогу</button>
     </div>
     <div class="answer" id="answer"></div>
-    <a class="btn cal" id="cal" download="Yana-birthday.ics">Добавить в календарь</a>
+    <a class="btn cal" id="cal" href="event.ics">Добавить в календарь</a>
+    <a class="calalt" id="calAlt" href="event.ics" target="_blank" rel="noopener">или файл для другого календаря</a>
 
     <div class="sign">С любовью, Яна</div>
   </article>
@@ -349,10 +351,6 @@ body::after{ /* лёгкая виньетка, как на фото */
 
 <canvas id="confetti"></canvas>
 
-<script>
-// Telegram-бот, которому уходят ответы «приду / не смогу». Заполнить: token — от @BotFather, chat — id чата Яны с ботом.
-window.TG_CONFIG = { token: "", chat: "769656309" };
-</script>
 <script>
 (() => {
   const EVENT = { start: new Date(2026, 9, 30, 17, 30), hours: 5, title: "День рождения Яны — Manhattan Jazz Salon, 1948",
@@ -569,43 +567,35 @@ window.TG_CONFIG = { token: "", chat: "769656309" };
   dress.addEventListener("click", e => { if (e.target === dress) closeDress(); });
   addEventListener("keydown", e => { if (e.key === "Escape" && dress.classList.contains("show")) closeDress(); });
 
-  // Ответ гостя → Яне в Telegram через бота (токен и chat_id — в TG_CONFIG в начале страницы)
-  const TG = window.TG_CONFIG || {};
+  // Ответ гостя → функция /rsvp на Cloudflare Pages → Яне в Telegram (токен бота хранится в настройках Cloudflare, не в странице)
+  const RSVP_URL = "https://priglasheniye.pages.dev/rsvp";
   let lastSent = "";
   async function notify(kind) {
-    const who = guest ? guest.trim().slice(0, 40) : "Гость без именной ссылки";
-    const text = (kind === "yes" ? "✅ " + who + " — придёт!" : "❌ " + who + " — не сможет прийти") +
-      "\n" + new Date().toLocaleString("ru-RU", { timeZone: "Europe/Moscow", day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" });
-    if (!TG.token || !TG.chat) { console.warn("TG_CONFIG не заполнен — ответ не отправлен:", text); return null; }
     if (lastSent === kind) return true;                       // повторный клик по той же кнопке — не дублируем
     try {
-      const r = await fetch("https://api.telegram.org/bot" + TG.token + "/sendMessage", {
-        method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({ chat_id: TG.chat, text, disable_notification: "false" })
-      });
-      const j = await r.json(); if (j.ok) lastSent = kind; return !!j.ok;
+      const r = await fetch(RSVP_URL, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ name: guest || "", kind }) });
+      const j = await r.json().catch(() => ({})); if (j.ok) lastSent = kind; return !!j.ok;
     } catch (e) { return false; }
   }
   async function answer(kind) {
     const a = el("answer");
-    a.innerHTML = (kind === "yes" ? "Ура! Жду тебя" : "Очень жаль… Отметим в другой раз") + '<small class="sent" id="sent"></small>';
+    a.innerHTML = (kind === "yes" ? "Ура! Жду тебя" : "Очень жаль… Отметим в другой раз") + '<small class="sent" id="sent">отправляю…</small>';
     if (kind === "yes") burst();
     el("yes").classList.toggle("picked", kind === "yes"); el("no").classList.toggle("picked", kind === "no");
     const ok = await notify(kind), s = el("sent");
-    if (s) s.textContent = ok === null ? "" : ok ? "Ответ передан Яне" : "Не получилось отправить — напишите Яне";
+    if (s) s.textContent = ok ? "Ответ передан Яне" : "Не получилось отправить — напишите Яне";
   }
   el("yes").addEventListener("click", () => answer("yes"));
   el("no").addEventListener("click", () => answer("no"));
 
-  // Файл для календаря
-  const pad = n => String(n).padStart(2, "0");
-  const fmt = d => `${d.getUTCFullYear()}${pad(d.getUTCMonth() + 1)}${pad(d.getUTCDate())}T${pad(d.getUTCHours())}${pad(d.getUTCMinutes())}00Z`;
-  const end = new Date(EVENT.start.getTime() + EVENT.hours * 36e5);
-  const ics = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//invite//RU", "BEGIN:VEVENT",
-    "UID:yana-bday-2026@invite", `DTSTAMP:${fmt(new Date())}`, `DTSTART:${fmt(EVENT.start)}`, `DTEND:${fmt(end)}`,
-    `SUMMARY:${EVENT.title}`, `LOCATION:${EVENT.place}`, "DESCRIPTION:Светский вечер, джаз и тайна. Дресс-код: леди — жемчуг, кавалеры — бабочки.",
-    "END:VEVENT", "END:VCALENDAR"].join("\r\n");
-  el("cal").href = "data:text/calendar;charset=utf-8," + encodeURIComponent(ics);
+  // Календарь: iPhone/iPad/Mac открывают файл event.ics прямо в «Календаре», остальным — ссылка в Google Календарь; второй вариант запасной
+  const ICS = "https://priglasheniye.pages.dev/event.ics";
+  const GCAL = "https://calendar.google.com/calendar/render?action=TEMPLATE&text=" + encodeURIComponent(EVENT.title) +
+    "&dates=20261030T143000Z/20261030T193000Z&location=" + encodeURIComponent(EVENT.place) +
+    "&details=" + encodeURIComponent("Светский вечер, джаз и тайна. Дресс-код: элегантный вечерний образ 40/50-х. Приглашение: https://priglasheniye.pages.dev/");
+  const apple = /iPhone|iPad|iPod|Macintosh/.test(navigator.userAgent);
+  el("cal").href = apple ? ICS : GCAL; if (!apple) el("cal").target = "_blank";
+  el("calAlt").href = apple ? GCAL : ICS; el("calAlt").textContent = apple ? "или в Google Календарь" : "или скачать файл .ics";
 
   // ---------- Блёстки: мелкая мерцающая пыль, ловящая свет (золото, жемчуг, роза) ----------
   // Спрайты рисуются один раз: мягкая светящаяся точка и четырёхлучевая вспышка — дальше только drawImage, это дёшево.

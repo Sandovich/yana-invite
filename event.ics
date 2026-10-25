@@ -1,0 +1,21 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//priglasheniye//Yana 30.10.2026//RU
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:yana-bday-2026-10-30@priglasheniye.pages.dev
+DTSTAMP:20261025T120000Z
+DTSTART:20261030T143000Z
+DTEND:20261030T193000Z
+SUMMARY:День рождения Яны — Manhattan Jazz Salon, 1948
+LOCATION:Санкт-Петербург, Кадетская линия В. О., д. 5, корп. 2, лит. Д, пом. 252 (2-й этаж)
+DESCRIPTION:Светский вечер, джаз и тайна. Дресс-код: элегантный вечерний образ 40/50-х. Приглашение: https://priglasheniye.pages.dev/
+URL:https://priglasheniye.pages.dev/
+BEGIN:VALARM
+TRIGGER:-PT3H
+ACTION:DISPLAY
+DESCRIPTION:Сегодня в 17:30 — день рождения Яны
+END:VALARM
+END:VEVENT
+END:VCALENDAR
