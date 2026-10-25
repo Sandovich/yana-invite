@@ -97,7 +97,7 @@ body::after{ /* лёгкая виньетка, как на фото */
 /* ---------- приглашение ---------- */
 .invite{position:fixed;inset:0;z-index:5;overflow-y:auto;display:grid;place-items:start center;
   padding-block:calc(56px + env(safe-area-inset-top,0px)) 40px;padding-left:max(12px,env(safe-area-inset-left,0px));padding-right:max(12px,env(safe-area-inset-right,0px));
-  background:radial-gradient(120% 80% at 50% 30%,#5e121c,var(--wine) 60%,#2e0509);
+  background:#3a070c url("img/lace_bg.webp") center top/100% auto repeat-y;
   opacity:0;pointer-events:none;transition:opacity .7s ease}
 .invite.show{opacity:1;pointer-events:auto}
 /* плашка: кремовый картон с зерном, слепое тиснение — двойная линия и завитки по углам (свет сверху-слева) */
@@ -117,7 +117,7 @@ body::after{ /* лёгкая виньетка, как на фото */
   filter:drop-shadow(0 6px 8px rgba(40,5,10,.4))}
 .host{font-family:"Cormorant SC",var(--serif);font-weight:600;font-size:13px;letter-spacing:.34em;color:var(--wine);margin:0 0 6px}
 .kicker{font-size:11px;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-soft)}
-.kicker.top{position:absolute;left:0;right:0;top:calc(var(--cw)*.3);font-size:9px;letter-spacing:.32em;color:var(--ink-soft);opacity:.85}
+.kicker.top{position:absolute;left:0;right:0;top:calc(var(--cw)*.235);font-size:9px;letter-spacing:.32em;color:var(--ink-soft);opacity:.85}
 .name{font-family:var(--classica);font-weight:400;font-size:clamp(40px,11.5vw,56px);line-height:1.25;margin:0;color:var(--wine);padding:0 4px;text-wrap:balance}
 .sub{font-family:var(--serif);font-style:italic;font-weight:600;font-size:24px;margin:6px 0 14px;color:var(--ink)}
 .sub .ny{display:inline-block;margin-top:6px;font-style:normal;font-size:12px;font-family:var(--sans);font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-soft)}
@@ -254,10 +254,10 @@ body::after{ /* лёгкая виньетка, как на фото */
     <img class="paper" id="paper" alt="" draggable="false">
     <div class="kicker top">Manhattan Jazz Salon · 1948</div>
     <h1 class="name" id="bigName">Дорогие гости,</h1>
-    <p class="sub">ждём Вас в пятницу</p>
+    <p class="sub">ждём Вас в</p>
 
     <div class="date">
-      <div><span class="sm">пятница</span></div>
+      <div><span class="sm">пятницу</span></div>
       <div class="mid"><span class="big">30</span></div>
       <div><span class="sm">октября</span><span class="sm">2026</span></div>
     </div>
