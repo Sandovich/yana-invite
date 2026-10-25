@@ -7,163 +7,124 @@
 <meta name="description" content="Тебе письмо! Открой конверт — там приглашение на день рождения Яны.">
 <meta property="og:title" content="Тебе письмо 💌">
 <meta property="og:description" content="Открой конверт — там приглашение на день рождения Яны, 30 октября.">
-<meta name="theme-color" content="#ffd9e4">
+<meta name="theme-color" content="#fbf4f5">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marck+Script&family=Pacifico&family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Manrope:wght@400;600;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Marck+Script&family=Manrope:wght@400;600;700&display=swap">
 <style>
 :root{
-  --cream:#fff8f1;
-  --ink:#4a1d33;
-  --ink-soft:#8a4a66;
-  --pink:#ff5c8a;
-  --pink-3:#ffc2d4;
-  --coral:#ff8a5c;
-  --mango:#ffc94d;
-  --lilac:#b993ff;
-  --mint:#7ee0c3;
-  --gold:#e8a93a;
-  --env:#ff7aa2;
-  --env-dark:#f0557f;
-  --env-light:#ff9dbb;
+  --bg:#fbf4f5;          /* фон фото с конвертом */
+  --cream:#f7f0ea;       /* карточка */
+  --ink:#5a1a2b;         /* бордо перчатки и бахромы */
+  --ink-soft:#8c4a5a;
+  --rose:#c98b95;        /* бархат */
+  --rose-light:#e9c3c9;
+  --pearl:#efe8df;
+  --gold:#c9a66b;
   --script:"Marck Script","Segoe Script",cursive;
-  --fun:"Pacifico","Marck Script",cursive;
-  --serif:"Playfair Display",Georgia,serif;
+  --serif:"Cormorant Garamond",Georgia,serif;
   --sans:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;
 }
 *{box-sizing:border-box}
 html,body{margin:0;min-height:100%}
-body{
-  font-family:var(--sans);color:var(--ink);
-  background:
-    radial-gradient(60vmax 60vmax at 10% 0%, #ffe3b8 0%, transparent 60%),
-    radial-gradient(55vmax 55vmax at 100% 30%, #ffc6dc 0%, transparent 60%),
-    radial-gradient(60vmax 60vmax at 30% 110%, #e3d4ff 0%, transparent 60%),
-    #ffe9ef;
-  min-height:100svh;overflow-x:hidden;
-  -webkit-tap-highlight-color:transparent;
-}
+body{font-family:var(--sans);color:var(--ink);background:var(--bg);min-height:100svh;overflow-x:hidden;-webkit-tap-highlight-color:transparent}
+body::after{ /* лёгкая виньетка, как на фото */
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(120% 90% at 50% 40%,transparent 55%,rgba(201,139,149,.18) 100%)}
 
-/* ---------- плавающие шарики и блёстки ---------- */
+/* ---------- блёстки ---------- */
 .sky{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
-.balloon{position:absolute;bottom:-160px;width:56px;height:70px;border-radius:50% 50% 48% 52%/55% 55% 45% 45%;
-  animation:rise linear infinite;opacity:.85}
-.balloon::before{content:"";position:absolute;left:14px;top:12px;width:12px;height:18px;border-radius:50%;background:rgba(255,255,255,.55);transform:rotate(-20deg)}
-.balloon::after{content:"";position:absolute;left:50%;top:100%;width:1px;height:80px;background:rgba(74,29,51,.25)}
-@keyframes rise{0%{transform:translate(0,0) rotate(-4deg)}50%{transform:translate(18px,-60vh) rotate(4deg)}100%{transform:translate(-10px,-125vh) rotate(-3deg)}}
-.spark{position:absolute;width:10px;height:10px;color:#fff;animation:twinkle 3s ease-in-out infinite}
+.spark{position:absolute;width:9px;height:9px;color:var(--gold);opacity:0;animation:twinkle 4s ease-in-out infinite}
 .spark::before,.spark::after{content:"";position:absolute;left:50%;top:50%;background:currentColor;border-radius:2px;transform:translate(-50%,-50%)}
-.spark::before{width:2px;height:100%}.spark::after{width:100%;height:2px}
-@keyframes twinkle{0%,100%{opacity:0;transform:scale(.4) rotate(0)}50%{opacity:1;transform:scale(1) rotate(45deg)}}
+.spark::before{width:1.5px;height:100%}.spark::after{width:100%;height:1.5px}
+@keyframes twinkle{0%,100%{opacity:0;transform:scale(.3) rotate(0)}50%{opacity:.8;transform:scale(1) rotate(45deg)}}
 
-/* ---------- сцена с конвертом ---------- */
+/* ---------- сцена ---------- */
 .stage{position:relative;z-index:1;min-height:100svh;display:grid;place-items:center;
   padding-block:24px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-.scene{display:flex;flex-direction:column;align-items:center;gap:28px;transition:opacity .6s ease, transform .6s ease}
-.to{font-family:var(--script);font-size:clamp(30px,8vw,44px);color:var(--pink);text-align:center;line-height:1.1;
-  text-shadow:0 2px 0 #fff}
-.hint{font-size:14px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);
-  animation:pulse 1.8s ease-in-out infinite}
-@keyframes pulse{0%,100%{opacity:.55}50%{opacity:1}}
+.scene{display:flex;flex-direction:column;align-items:center;gap:18px;transition:opacity .7s ease}
+.to{font-family:var(--serif);font-style:italic;font-weight:600;font-size:clamp(34px,9vw,48px);color:var(--ink);text-align:center;line-height:1.05;letter-spacing:.01em;transition:opacity .5s}
+.hint{font-size:12px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-soft);animation:pulse 1.8s ease-in-out infinite;margin-top:6px}
+@keyframes pulse{0%,100%{opacity:.5}50%{opacity:1}}
 
-.env{position:relative;width:min(340px,86vw);aspect-ratio:1.45;cursor:pointer;perspective:900px;
-  filter:drop-shadow(0 22px 28px rgba(240,85,127,.35));
-  animation:wiggle 2.6s ease-in-out infinite;transform-origin:50% 90%;border:0;padding:0;background:none}
-.env:focus-visible{outline:3px dashed var(--pink);outline-offset:10px;border-radius:12px}
+/* коробка: конверт (качается) + рука (не качается) */
+.box{position:relative;width:min(400px,90vw);aspect-ratio:630/610}
+.env{position:absolute;inset:0;border:0;padding:0;background:none;cursor:pointer;
+  animation:wiggle 2.8s ease-in-out infinite;transform-origin:50% 85%}
+.env:focus-visible{outline:3px dashed var(--rose);outline-offset:10px;border-radius:12px}
 @keyframes wiggle{
-  0%,58%,100%{transform:rotate(0) translateY(0)}
-  62%{transform:rotate(-5deg) translateY(-6px)}
-  66%{transform:rotate(5deg) translateY(-8px)}
-  70%{transform:rotate(-4deg) translateY(-6px)}
-  74%{transform:rotate(3deg) translateY(-3px)}
-  78%{transform:rotate(0) translateY(0)}
+  0%,60%,100%{transform:rotate(0) translateY(0)}
+  64%{transform:rotate(-3.5deg) translateY(-5px)}
+  68%{transform:rotate(3.5deg) translateY(-7px)}
+  72%{transform:rotate(-2.5deg) translateY(-5px)}
+  76%{transform:rotate(1.5deg) translateY(-2px)}
+  80%{transform:rotate(0) translateY(0)}
 }
-.env.open{animation:none;cursor:default}
-.env-back{position:absolute;inset:0;border-radius:14px;background:linear-gradient(160deg,var(--env-dark),#e2416f)}
-.letter{position:absolute;left:6%;right:6%;top:8%;bottom:6%;border-radius:10px;
-  background:var(--cream);box-shadow:0 2px 8px rgba(74,29,51,.15);
-  display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:10%;gap:4px;
-  transition:transform .9s cubic-bezier(.2,.8,.2,1);z-index:2}
-.letter .l-small{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-soft);font-weight:800}
-.letter .l-name{font-family:var(--fun);font-size:36px;color:var(--pink);line-height:1}
-.letter .l-date{font-family:var(--serif);font-weight:800;font-size:15px;color:var(--ink)}
-.pocket{position:absolute;inset:0;border-radius:14px;z-index:3;
-  background:linear-gradient(180deg,var(--env),var(--env-dark));
-  clip-path:polygon(0 0,50% 54%,100% 0,100% 100%,0 100%)}
-.pocket::after{ /* нижний треугольник светлее */
-  content:"";position:absolute;inset:0;background:linear-gradient(0deg,var(--env-light),var(--env));
-  clip-path:polygon(0 100%,50% 50%,100% 100%)}
-.pocket .dots{position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.35) 1.4px,transparent 1.6px);background-size:16px 16px;opacity:.6}
-.flap{position:absolute;left:0;right:0;top:0;height:62%;z-index:4;transform-origin:50% 0;
-  transition:transform .7s cubic-bezier(.5,0,.3,1)}
-.flap::before{content:"";position:absolute;inset:0;border-radius:14px 14px 0 0;
-  background:linear-gradient(180deg,var(--env-light),var(--env));
-  clip-path:polygon(0 0,100% 0,50% 100%)}
-.env.flap-open .flap{transform:rotateX(180deg)}
-.env.flap-behind .flap{z-index:1}
-.seal{position:absolute;left:50%;top:62%;width:64px;height:64px;margin:-32px 0 0 -32px;z-index:5;border-radius:50%;
-  background:radial-gradient(circle at 35% 30%,#ffe08a,var(--gold) 55%,#b97a1c);
-  box-shadow:0 4px 10px rgba(120,60,10,.35), inset 0 -3px 6px rgba(0,0,0,.15), inset 0 3px 4px rgba(255,255,255,.5);
-  display:grid;place-items:center;transition:transform .45s cubic-bezier(.5,-0.6,.5,1.6),opacity .45s}
-.seal::before{content:"";position:absolute;inset:6px;border-radius:50%;border:2px dashed rgba(120,60,10,.35)}
-.seal svg{width:28px;height:28px}
-.env.seal-off .seal{transform:scale(1.5) rotate(25deg);opacity:0}
-.env.letter-up .letter{transform:translateY(-62%)}
+.env.still{animation:none;cursor:default}
+.env img{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none;user-select:none}
+.env .pocket{z-index:3}
+/* карточка в конверте: геометрия снята с фото (кадр 630×610) */
+.card-s{position:absolute;z-index:2;left:20.95%;width:56.8%;top:32.95%;height:57%;
+  background:var(--cream);border-radius:3px;
+  box-shadow:0 1px 2px rgba(90,26,43,.18),inset 0 0 0 1px rgba(255,255,255,.6);
+  display:flex;flex-direction:column;align-items:center;padding-top:7%;gap:2px;
+  transition:transform 1.25s cubic-bezier(.45,.02,.25,1)}
+.card-s .n{font-family:var(--script);font-size:clamp(34px,10vw,46px);line-height:1;color:var(--ink);margin-top:4px}
+.card-s .d{font-family:var(--serif);font-style:italic;font-weight:600;font-size:clamp(13px,3.8vw,17px);color:var(--ink-soft);letter-spacing:.06em}
+.card-s .k{font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-soft);font-weight:700}
+.hand{position:absolute;z-index:10;left:0;top:0;width:44%;pointer-events:none;user-select:none;display:block;
+  filter:drop-shadow(0 14px 18px rgba(90,26,43,.28));opacity:0;
+  transition:transform 1.15s cubic-bezier(.2,.75,.25,1),opacity .3s}
+.hand.pull{transition:transform 1.25s cubic-bezier(.45,.02,.25,1)}
+.hand.away{transition:transform 1s cubic-bezier(.5,0,.8,.6),opacity .6s .3s}
+.env.fade{transition:opacity .7s ease,transform .7s ease;opacity:0;transform:scale(.94) translateY(16px)}
 
 /* ---------- приглашение ---------- */
 .invite{position:fixed;inset:0;z-index:5;overflow-y:auto;display:grid;place-items:start center;
-  padding-block:calc(60px + env(safe-area-inset-top,0px)) 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
-  opacity:0;pointer-events:none;transition:opacity .6s ease}
+  padding-block:calc(56px + env(safe-area-inset-top,0px)) 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  opacity:0;pointer-events:none;transition:opacity .7s ease}
 .invite.show{opacity:1;pointer-events:auto}
-.card{position:relative;width:min(460px,100%);background:var(--cream);border-radius:22px;
-  padding:40px 26px 30px;text-align:center;
-  box-shadow:0 30px 60px -20px rgba(240,85,127,.45),0 0 0 1px rgba(255,92,138,.12);
-  transform:translateY(40px) scale(.92);transition:transform .8s cubic-bezier(.2,.9,.25,1.15)}
+.card{position:relative;width:min(440px,100%);background:var(--cream);border-radius:6px;
+  padding:44px 28px 34px;text-align:center;
+  box-shadow:0 30px 60px -22px rgba(90,26,43,.4),0 2px 6px rgba(90,26,43,.08);
+  transform:translateY(30px) scale(.94);transition:transform .9s cubic-bezier(.2,.8,.25,1)}
 .invite.show .card{transform:none}
-.card::before{ /* праздничная рамка-лента */
-  content:"";position:absolute;inset:10px;border-radius:16px;pointer-events:none;
-  border:2px solid transparent;
-  background:linear-gradient(120deg,var(--pink),var(--coral),var(--mango),var(--mint),var(--lilac),var(--pink)) border-box;
-  -webkit-mask:linear-gradient(#000 0 0) padding-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:.8}
+.card::before{content:"";position:absolute;inset:10px;border:1px solid rgba(201,139,149,.55);border-radius:3px;pointer-events:none}
+.card::after{content:"";position:absolute;inset:14px;border:1px solid rgba(201,139,149,.3);border-radius:2px;pointer-events:none}
 .card > *{position:relative}
-.kicker{font-size:12px;font-weight:800;letter-spacing:.24em;text-transform:uppercase;color:var(--coral)}
-.name{font-family:var(--fun);font-weight:400;font-size:clamp(64px,19vw,92px);line-height:1.25;margin:2px 0 0;
-  background:linear-gradient(100deg,var(--pink) 10%,var(--coral) 55%,var(--lilac) 95%);
-  -webkit-background-clip:text;background-clip:text;color:transparent;padding:0 8px}
-.sub{font-family:var(--serif);font-style:italic;font-weight:600;font-size:21px;margin:4px 0 22px;color:var(--ink)}
-.date{display:flex;align-items:center;justify-content:center;margin:0 auto 22px;max-width:100%}
-.date > div{padding:6px 14px;display:flex;flex-direction:column;justify-content:center}
-.date .mid{border-left:2px solid var(--pink-3);border-right:2px solid var(--pink-3);padding:0 18px}
-.date .big{font-family:var(--serif);font-weight:800;font-size:56px;line-height:1;color:var(--pink)}
-.date .sm{font-size:12px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-soft)}
-.text{font-size:16px;line-height:1.6;color:var(--ink);max-width:34ch;margin:0 auto 22px;text-wrap:balance}
-.info{display:grid;gap:10px;margin:0 0 24px;text-align:left}
-.row{display:flex;gap:12px;align-items:center;background:#fff;border-radius:14px;padding:12px 14px;
-  box-shadow:0 1px 0 rgba(255,92,138,.15)}
-.row .ic{flex:none;width:38px;height:38px;border-radius:12px;display:grid;place-items:center;font-size:20px}
-.row b{display:block;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft)}
-.row span{font-size:15px;font-weight:600}
-.count{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:0 0 26px}
-.count > div{background:linear-gradient(160deg,#fff,#fff1f5);border-radius:14px;padding:10px 0}
-.count .n{font-family:var(--serif);font-weight:800;font-size:28px;color:var(--pink);font-variant-numeric:tabular-nums}
-.count .u{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft)}
-.q{font-family:var(--serif);font-weight:800;font-size:20px;margin:0 0 12px}
+.kicker{font-size:11px;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-soft)}
+.name{font-family:var(--script);font-weight:400;font-size:clamp(72px,21vw,100px);line-height:1.15;margin:0;color:var(--ink)}
+.sub{font-family:var(--serif);font-style:italic;font-weight:600;font-size:24px;margin:-4px 0 20px;color:var(--ink)}
+.date{display:flex;align-items:center;justify-content:center;margin:0 auto 20px}
+.date > div{padding:4px 14px;display:flex;flex-direction:column;justify-content:center}
+.date .mid{border-left:1px solid var(--rose);border-right:1px solid var(--rose);padding:0 18px}
+.date .big{font-family:var(--serif);font-weight:600;font-size:60px;line-height:1;color:var(--ink)}
+.date .sm{font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft)}
+.text{font-family:var(--serif);font-size:19px;line-height:1.45;color:var(--ink);max-width:30ch;margin:0 auto 22px;text-wrap:balance}
+.info{display:grid;gap:8px;margin:0 0 22px;text-align:left}
+.row{display:flex;gap:12px;align-items:center;background:rgba(255,255,255,.55);border-radius:4px;padding:11px 14px;border:1px solid rgba(201,139,149,.35)}
+.row .ic{flex:none;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-size:17px;background:var(--rose-light)}
+.row b{display:block;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-soft)}
+.row span{font-family:var(--serif);font-size:18px;font-weight:600}
+.count{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:0 0 24px}
+.count > div{border-top:1px solid var(--rose);padding:8px 0 0}
+.count .n{font-family:var(--serif);font-weight:600;font-size:30px;color:var(--ink);font-variant-numeric:tabular-nums;line-height:1}
+.count .u{font-size:9px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-soft);margin-top:4px}
+.q{font-family:var(--serif);font-style:italic;font-weight:600;font-size:24px;margin:0 0 12px}
 .btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
-.btn{font:800 16px var(--sans);border:0;border-radius:999px;padding:14px 24px;cursor:pointer;transition:transform .15s ease}
+.btn{font:700 14px var(--sans);letter-spacing:.06em;border:0;border-radius:999px;padding:14px 26px;cursor:pointer;transition:transform .15s ease}
 .btn:active{transform:scale(.96)}
-.btn.yes{color:#fff;background:linear-gradient(100deg,var(--pink),var(--coral));box-shadow:0 10px 20px -8px rgba(255,92,138,.8)}
-.btn.no{color:var(--ink);background:#fff;box-shadow:inset 0 0 0 2px var(--pink-3)}
-.btn.cal{display:inline-block;margin-top:14px;font-size:14px;color:var(--ink-soft);background:none;text-decoration:underline;text-underline-offset:4px;padding:8px}
-.answer{min-height:24px;margin-top:14px;font-weight:600;color:var(--pink)}
-.sign{font-family:var(--script);font-size:28px;color:var(--ink-soft);margin-top:18px}
+.btn.yes{color:var(--pearl);background:var(--ink);box-shadow:0 12px 22px -10px rgba(90,26,43,.7)}
+.btn.no{color:var(--ink);background:transparent;box-shadow:inset 0 0 0 1.5px var(--rose)}
+.btn.cal{display:inline-block;margin-top:14px;font-size:13px;color:var(--ink-soft);background:none;text-decoration:underline;text-underline-offset:4px;padding:8px}
+.answer{min-height:24px;margin-top:14px;font-family:var(--serif);font-style:italic;font-size:19px;color:var(--ink)}
+.sign{font-family:var(--script);font-size:30px;color:var(--ink);margin-top:14px}
 #confetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:10}
 .again{position:fixed;left:max(10px,env(safe-area-inset-left,0px));top:max(10px,env(safe-area-inset-top,0px));z-index:6;
-  font:600 13px var(--sans);color:var(--ink-soft);background:rgba(255,255,255,.75);border:0;border-radius:999px;padding:8px 14px;cursor:pointer;display:none}
+  font:600 12px var(--sans);color:var(--ink-soft);background:rgba(251,244,245,.85);border:1px solid rgba(201,139,149,.4);border-radius:999px;padding:8px 14px;cursor:pointer;display:none}
 .invite.show ~ .again{display:block}
 
-@media (prefers-reduced-motion:reduce){
-  .env,.balloon,.spark,.hint{animation:none!important}
-}
+@media (prefers-reduced-motion:reduce){.env,.spark,.hint{animation:none!important}}
 </style>
 </head>
 <body>
@@ -172,25 +133,26 @@ body{
 
 <main class="stage">
   <div class="scene" id="scene">
-    <div class="to" id="to">Тебе письмо!</div>
-    <button class="env" id="env" aria-label="Открыть конверт">
-      <div class="env-back"></div>
-      <div class="letter">
-        <div class="l-small">приглашение</div>
-        <div class="l-name">Яна</div>
-        <div class="l-date">30 · 10</div>
-      </div>
-      <div class="pocket"><div class="dots"></div></div>
-      <div class="flap"></div>
-      <div class="seal"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#9a2c4f" d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 5 6.4 5c2 0 3.6 1.1 4.6 2.6l1 1.4 1-1.4C14 6.1 15.6 5 17.6 5 21 5 23.1 8.4 21.6 11.8 19.5 16.4 12 21 12 21z"/></svg></div>
-    </button>
-    <div class="hint" id="hint">нажми, чтобы открыть</div>
+    <div class="to" id="to">Тебе письмо</div>
+    <div class="box" id="box">
+      <button class="env" id="env" aria-label="Открыть конверт">
+        <img src="img/envelope.png" alt="" draggable="false">
+        <div class="card-s" id="cardS">
+          <div class="k">приглашение</div>
+          <div class="n">Яна</div>
+          <div class="d">30 октября</div>
+        </div>
+        <img class="pocket" src="img/pocket.png" alt="" draggable="false">
+      </button>
+      <img class="hand" id="hand" src="img/hand.png" alt="" draggable="false">
+    </div>
+    <div class="hint" id="hint">нажми на конверт</div>
   </div>
 </main>
 
 <section class="invite" id="invite" aria-live="polite">
   <article class="card">
-    <div class="kicker">Приглашение на праздник</div>
+    <div class="kicker">Приглашение</div>
     <h1 class="name">Яна</h1>
     <p class="sub">празднует день рождения</p>
 
@@ -200,12 +162,12 @@ body{
       <div><span class="sm">октября</span><span class="sm">2026</span></div>
     </div>
 
-    <p class="text">Будет вкусно, весело и очень красиво. Приходи&nbsp;— без тебя праздник будет не&nbsp;тот!</p>
+    <p class="text">Будет вкусно, тепло и очень красиво. Приходи&nbsp;— без тебя праздник будет не&nbsp;тот.</p>
 
     <div class="info">
-      <div class="row"><div class="ic" style="background:#ffe3ec">⏰</div><div><b>Во сколько</b><span>в 19:00</span></div></div>
-      <div class="row"><div class="ic" style="background:#fff0cc">📍</div><div><b>Где</b><span>Адрес пришлю лично</span></div></div>
-      <div class="row"><div class="ic" style="background:#e9e0ff">👗</div><div><b>Дресс-код</b><span>Что-нибудь яркое</span></div></div>
+      <div class="row"><div class="ic">🕖</div><div><b>Во сколько</b><span>в 19:00</span></div></div>
+      <div class="row"><div class="ic">📍</div><div><b>Где</b><span>Адрес пришлю лично</span></div></div>
+      <div class="row"><div class="ic">🥂</div><div><b>Дресс-код</b><span>Нарядно</span></div></div>
     </div>
 
     <div class="count" aria-label="До праздника осталось">
@@ -217,16 +179,16 @@ body{
 
     <p class="q">Придёшь?</p>
     <div class="btns">
-      <button class="btn yes" id="yes">Конечно приду 🎉</button>
+      <button class="btn yes" id="yes">Конечно приду</button>
       <button class="btn no" id="no">Не смогу</button>
     </div>
     <div class="answer" id="answer"></div>
     <a class="btn cal" id="cal" download="Yana-birthday.ics">Добавить в календарь</a>
 
-    <div class="sign">С любовью, Яна ♡</div>
+    <div class="sign">С любовью, Яна</div>
   </article>
 </section>
-<button class="again" id="again">↺ закрыть конверт</button>
+<button class="again" id="again">↺ в конверт</button>
 
 <canvas id="confetti"></canvas>
 
@@ -235,54 +197,63 @@ body{
   const EVENT = { start: new Date(2026, 9, 30, 19, 0), hours: 4, title: "День рождения Яны" };
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const el = id => document.getElementById(id);
+  const HAND = { w: 432, h: 791, px: 0.4259, py: 0.9874 }; // размер PNG и точка щипка (доля)
 
-  // Имя гостя из ссылки: ...?to=Маша  →  «Маша, тебе письмо!»
+  // Имя гостя из ссылки: ...?to=Маша → «Маша, тебе письмо»
   const guest = new URLSearchParams(location.search).get("to");
-  if (guest) el("to").textContent = guest.slice(0, 30) + ", тебе письмо!";
+  if (guest) el("to").textContent = guest.slice(0, 30) + ", тебе письмо";
 
-  // Шарики и блёстки
+  // Блёстки
   const sky = el("sky");
-  const colors = ["#ff5c8a", "#ff8a5c", "#ffc94d", "#b993ff", "#7ee0c3", "#ff8fb1"];
-  if (!reduce) {
-    for (let i = 0; i < 9; i++) {
-      const b = document.createElement("div");
-      b.className = "balloon";
-      const c = colors[i % colors.length];
-      b.style.background = `radial-gradient(circle at 35% 30%, #fff8 0 8%, ${c} 40%)`;
-      b.style.left = (i * 11 + Math.random() * 6) + "%";
-      const s = 0.7 + Math.random() * 0.6;
-      b.style.width = 56 * s + "px"; b.style.height = 70 * s + "px";
-      b.style.animationDuration = (14 + Math.random() * 10) + "s";
-      b.style.animationDelay = (-Math.random() * 20) + "s";
-      sky.appendChild(b);
-    }
-    for (let i = 0; i < 18; i++) {
-      const s = document.createElement("div");
-      s.className = "spark";
-      s.style.left = Math.random() * 100 + "%"; s.style.top = Math.random() * 100 + "%";
-      s.style.animationDelay = (Math.random() * 3) + "s";
-      s.style.color = Math.random() > .5 ? "#fff" : "#ffc94d";
-      sky.appendChild(s);
-    }
+  if (!reduce) for (let i = 0; i < 16; i++) {
+    const s = document.createElement("div");
+    s.className = "spark";
+    s.style.left = Math.random() * 100 + "%"; s.style.top = Math.random() * 100 + "%";
+    s.style.animationDelay = (Math.random() * 4) + "s";
+    s.style.color = Math.random() > .5 ? "#c9a66b" : "#c98b95";
+    sky.appendChild(s);
   }
 
-  // Открытие конверта: печать → клапан → письмо → открытка
-  const env = el("env"), scene = el("scene"), invite = el("invite"), hint = el("hint");
+  // Рука достаёт карточку
+  const env = el("env"), box = el("box"), hand = el("hand"), cardS = el("cardS"),
+        scene = el("scene"), invite = el("invite"), hint = el("hint");
   let opened = false;
   const wait = ms => new Promise(r => setTimeout(r, reduce ? 0 : ms));
 
   async function open() {
     if (opened) return; opened = true;
-    hint.style.visibility = "hidden";
-    env.classList.add("open", "seal-off");
-    await wait(350);
-    env.classList.add("flap-open");
-    await wait(380);
-    env.classList.add("flap-behind");
-    await wait(150);
-    env.classList.add("letter-up");
-    await wait(900);
-    scene.style.opacity = "0"; scene.style.transform = "scale(.9) translateY(30px)";
+    hint.style.visibility = "hidden"; el("to").style.opacity = "0";
+    env.classList.add("still");
+
+    const B = box.getBoundingClientRect(), C = cardS.getBoundingClientRect();
+    const hw = hand.offsetWidth, hh = hw * HAND.h / HAND.w;
+    // щипок — верх карточки по центру, пальцы чуть заходят на карточку
+    const tx = (C.left - B.left) + C.width / 2 - hw * HAND.px;
+    const ty = (C.top - B.top) + C.height * 0.05 - hh * HAND.py;
+    const startY = -(B.top + hh + 40);          // целиком выше экрана
+    hand.style.transition = "none";
+    hand.style.transform = `translate(${tx}px, ${startY}px)`;
+    hand.getBoundingClientRect();
+    hand.style.transition = "";
+    hand.style.opacity = "1";
+    await wait(30);
+    hand.style.transform = `translate(${tx}px, ${ty}px)`;   // спускается
+    await wait(1200);
+    hand.style.transform = `translate(${tx}px, ${ty + 3}px) scale(.985)`; // хватает
+    await wait(260);
+    const lift = C.height * 1.08;                              // вытягивает карточку из кармана
+    hand.classList.add("pull");
+    hand.style.transform = `translate(${tx}px, ${ty - lift}px)`;
+    cardS.style.transform = `translateY(${-lift}px)`;
+    await wait(1300);
+    env.classList.add("fade");                                 // конверт уходит, рука уносит карточку
+    hand.classList.remove("pull"); hand.classList.add("away");
+    hand.style.transform = `translate(${tx}px, ${startY - lift}px)`;
+    hand.style.opacity = "0";
+    cardS.style.transition = "transform .9s cubic-bezier(.5,0,.8,.6), opacity .5s .2s";
+    cardS.style.transform = `translateY(${-lift - B.top - hh}px)`; cardS.style.opacity = "0";
+    await wait(500);
+    scene.style.opacity = "0";
     invite.classList.add("show");
     invite.scrollTop = 0;
     burst();
@@ -291,9 +262,8 @@ body{
 
   el("again").addEventListener("click", () => {
     invite.classList.remove("show");
-    env.className = "env";
-    scene.style.opacity = ""; scene.style.transform = "";
-    hint.style.visibility = "";
+    env.className = "env"; hand.className = "hand"; hand.style.cssText = "";
+    cardS.style.cssText = ""; scene.style.opacity = ""; hint.style.visibility = ""; el("to").style.opacity = "";
     opened = false;
   });
 
@@ -309,8 +279,8 @@ body{
   tick(); setInterval(tick, 1000);
 
   // Ответ гостя
-  el("yes").addEventListener("click", () => { el("answer").textContent = "Ура! Жду тебя 💖"; burst(); });
-  el("no").addEventListener("click", () => { el("answer").textContent = "Очень жаль… Отметим в другой раз!"; });
+  el("yes").addEventListener("click", () => { el("answer").textContent = "Ура! Жду тебя"; burst(); });
+  el("no").addEventListener("click", () => { el("answer").textContent = "Очень жаль… Отметим в другой раз"; });
 
   // Файл для календаря
   const pad = n => String(n).padStart(2, "0");
@@ -321,7 +291,8 @@ body{
     `SUMMARY:${EVENT.title}`, "END:VEVENT", "END:VCALENDAR"].join("\r\n");
   el("cal").href = "data:text/calendar;charset=utf-8," + encodeURIComponent(ics);
 
-  // Конфетти
+  // Конфетти: бордо, бархат, жемчуг, золото
+  const colors = ["#5a1a2b", "#c98b95", "#efe8df", "#c9a66b", "#e9c3c9"];
   const cv = el("confetti"), ctx = cv.getContext("2d");
   let parts = [], raf = 0;
   function resize() { cv.width = innerWidth * devicePixelRatio; cv.height = innerHeight * devicePixelRatio; }
@@ -329,13 +300,12 @@ body{
   function burst() {
     if (reduce) return;
     const W = cv.width, H = cv.height, k = devicePixelRatio;
-    for (let i = 0; i < 160; i++) {
-      const side = i % 2 ? 1 : -1; // +1 летит слева направо, −1 справа налево
+    for (let i = 0; i < 140; i++) {
+      const side = i % 2 ? 1 : -1;
       parts.push({
         x: side > 0 ? W * 0.05 : W * 0.95, y: H * 0.8,
-        vx: side * (3 + Math.random() * 9) * k,
-        vy: -(10 + Math.random() * 13) * k,
-        w: (6 + Math.random() * 6) * k, h: (8 + Math.random() * 8) * k,
+        vx: side * (3 + Math.random() * 9) * k, vy: -(10 + Math.random() * 13) * k,
+        w: (5 + Math.random() * 5) * k, h: (7 + Math.random() * 7) * k,
         r: Math.random() * 6, vr: (Math.random() - .5) * .3,
         c: colors[Math.floor(Math.random() * colors.length)], life: 0
       });
