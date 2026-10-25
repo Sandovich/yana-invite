@@ -95,7 +95,7 @@ body::after{ /* лёгкая виньетка, как на фото */
 .invite.show{opacity:1;pointer-events:auto}
 /* плашка: кремовый картон с зерном, слепое тиснение — двойная линия и завитки по углам (свет сверху-слева) */
 .card{--cw:440px;--paper:#f1e7d3;position:relative;width:min(440px,100%);background:var(--paper);border-radius:3px;
-  padding:calc(var(--cw)*.26) 28px 30px;text-align:center;isolation:isolate;
+  padding:calc(var(--cw)*.26) calc(var(--cw)*.105) calc(var(--cw)*.1);text-align:center;isolation:isolate;
   box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 1px 2px rgba(40,10,10,.35),0 34px 44px -22px rgba(0,0,0,.65);
   transform:translateY(30px) scale(.94);transition:transform .9s cubic-bezier(.2,.8,.25,1)}
 .invite.show .card{transform:none}
@@ -103,15 +103,20 @@ body::after{ /* лёгкая виньетка, как на фото */
   content:"";position:absolute;inset:0;z-index:0;pointer-events:none;mix-blend-mode:multiply;opacity:.8;border-radius:3px;
   background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' seed='5'/%3E%3CfeColorMatrix values='0 0 0 0 .55 0 0 0 0 .45 0 0 0 0 .3 0 0 0 .13 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
 .card > *{position:relative}
-.emb{filter:drop-shadow(-.7px -.7px 0 rgba(255,255,255,.9)) drop-shadow(.9px .9px .7px rgba(80,45,20,.42))}  /* рельеф без краски */
-.line{position:absolute;pointer-events:none;border:1.4px solid var(--paper);z-index:1}
-.line.l1{inset:calc(var(--cw)*.052)}
-.line.l2{inset:calc(var(--cw)*.072)}
-.corner{position:absolute;width:calc(var(--cw)*.27);height:auto;z-index:1;pointer-events:none}
-.corner.tl{left:calc(var(--cw)*.028);top:calc(var(--cw)*.028)}
-.corner.tr{right:calc(var(--cw)*.028);top:calc(var(--cw)*.028);transform:scaleX(-1)}
-.corner.bl{left:calc(var(--cw)*.028);bottom:calc(var(--cw)*.028);transform:scaleY(-1)}
-.corner.br{right:calc(var(--cw)*.028);bottom:calc(var(--cw)*.028);transform:scale(-1)}
+/* рельеф тиснения — три слоя: тень (вниз-вправо), блик (вверх-влево), бумага сверху. Без CSS-фильтров: одинаково на iPhone и Android */
+.lines{position:absolute;inset:0;pointer-events:none;z-index:1}
+.lines i{position:absolute;border:2px solid var(--paper);border-radius:1px}
+.lines .o{inset:calc(var(--cw)*.05)} .lines .n{inset:calc(var(--cw)*.072)}
+.lines .sh{border-color:rgba(70,30,15,.55);transform:translate(1.6px,1.6px);filter:blur(.7px)}
+.lines .hi{border-color:rgba(255,255,255,.95);transform:translate(-1.2px,-1.2px)}
+.corner{position:absolute;width:calc(var(--cw)*.29);height:auto;z-index:1;pointer-events:none;overflow:visible}
+.corner.tl{left:calc(var(--cw)*.026);top:calc(var(--cw)*.026)}
+.corner.tr{right:calc(var(--cw)*.026);top:calc(var(--cw)*.026);transform:scaleX(-1)}
+.corner.bl{left:calc(var(--cw)*.026);bottom:calc(var(--cw)*.026);transform:scaleY(-1)}
+.corner.br{right:calc(var(--cw)*.026);bottom:calc(var(--cw)*.026);transform:scale(-1)}
+.corner .sh{color:rgba(70,30,15,.55);filter:url(#softblur)}
+.corner .hi{color:rgba(255,255,255,.95)}
+.corner .pa{color:var(--paper)}
 /* герб с монограммой — сверху по центру */
 .crest{position:absolute;left:50%;top:calc(var(--cw)*-.09);transform:translateX(-50%);width:calc(var(--cw)*.30);height:auto;z-index:2;
   filter:drop-shadow(0 6px 8px rgba(40,5,10,.4))}
@@ -272,23 +277,26 @@ body::after{ /* лёгкая виньетка, как на фото */
         <text x="108" y="170" font-size="92">С</text>
       </g>
     </svg>
-    <div class="line l1 emb"></div><div class="line l2 emb"></div>
-    <svg class="corner tl emb" viewBox="0 0 160 160" aria-hidden="true"><use href="#scroll"/></svg>
-    <svg class="corner tr emb" viewBox="0 0 160 160" aria-hidden="true"><use href="#scroll"/></svg>
-    <svg class="corner bl emb" viewBox="0 0 160 160" aria-hidden="true"><use href="#scroll"/></svg>
-    <svg class="corner br emb" viewBox="0 0 160 160" aria-hidden="true"><use href="#scroll"/></svg>
+    <div class="lines"><i class="o sh"></i><i class="n sh"></i><i class="o hi"></i><i class="n hi"></i><i class="o"></i><i class="n"></i></div>
+    <svg class="corner tl" viewBox="0 0 200 200" aria-hidden="true"><use href="#scroll" class="sh" transform="translate(2.2 2.2)"/><use href="#scroll" class="hi" transform="translate(-1.5 -1.5)"/><use href="#scroll" class="pa"/></svg>
+    <svg class="corner tr" viewBox="0 0 200 200" aria-hidden="true"><use href="#scroll" class="sh" transform="translate(2.2 2.2)"/><use href="#scroll" class="hi" transform="translate(-1.5 -1.5)"/><use href="#scroll" class="pa"/></svg>
+    <svg class="corner bl" viewBox="0 0 200 200" aria-hidden="true"><use href="#scroll" class="sh" transform="translate(2.2 2.2)"/><use href="#scroll" class="hi" transform="translate(-1.5 -1.5)"/><use href="#scroll" class="pa"/></svg>
+    <svg class="corner br" viewBox="0 0 200 200" aria-hidden="true"><use href="#scroll" class="sh" transform="translate(2.2 2.2)"/><use href="#scroll" class="hi" transform="translate(-1.5 -1.5)"/><use href="#scroll" class="pa"/></svg>
     <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
-      <!-- угловой завиток тиснения: рисуется цветом бумаги, объём даёт свет/тень -->
-      <g id="scroll" fill="none" stroke="var(--paper)" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M6 154 C6 80 44 26 118 14"/>
-        <path d="M118 14 c22-3 34 10 28 24 -5 11 -21 10 -22 0 -1-8 9-11 12-5"/>
-        <path d="M6 154 c-3-22 10-34 24-28 11 5 10 21 0 22 -8 1-11-9-5-12"/>
-        <path d="M34 112 C30 72 60 40 104 36"/>
-        <path d="M104 36 c14-1 22 8 18 18 -4 8-15 6-15-1 0-6 7-8 9-3"/>
-        <path d="M34 112 c-1 14 8 22 18 18 8-4 6-15-1-15 -6 0-8 7-3 9"/>
-        <path d="M58 64 c16-14 34-16 44-8 8 7 2 18-7 15 -7-2-6-11 1-11"/>
-        <path d="M56 66 c-14 16-16 34-8 44 7 8 18 2 15-7 -2-7-11-6-11 1"/>
-        <path d="M84 84 c6-10 20-10 24-2 3 7-5 13-11 9 -5-4-2-11 4-10"/>
+      <filter id="softblur" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="1.1"/></filter>
+      <!-- угловой завиток тиснения: две зеркальные спирали с листьями; рисуется цветом слоя (currentColor) -->
+      <g id="scroll" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 118 C14 70 40 34 82 30 C118 27 140 50 132 76 C125 98 98 104 86 90 C77 79 86 64 100 66 C110 68 112 80 104 82"/>
+        <path d="M118 20 C70 14 34 40 30 82 C27 118 50 140 76 132 C98 125 104 98 90 86 C79 77 64 86 66 100 C68 110 80 112 82 104"/>
+        <path d="M20 118 C22 140 34 160 52 178"/>
+        <path d="M118 20 C140 22 160 34 178 52"/>
+        <path d="M58 150 c-10 10-22 14-34 12 M150 58 c10-10 14-22 12-34"/>
+        <g fill="currentColor" stroke="none">
+          <path d="M46 166 c-8-14 2-30 16-32 -4 14-6 24-16 32z"/>
+          <path d="M166 46 c-14-8-30 2-32 16 14-4 24-6 32-16z"/>
+          <circle cx="104" cy="104" r="4"/>
+          <circle cx="178" cy="52" r="3.2"/><circle cx="52" cy="178" r="3.2"/>
+        </g>
       </g>
     </defs></svg>
     <div class="host">Яна Сандович</div>
