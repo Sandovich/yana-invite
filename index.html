@@ -57,7 +57,7 @@ body::after{ /* лёгкая виньетка, как на фото */
 
 /* коробка: конверт (качается) + рука (не качается) */
 .box{position:relative;width:min(400px,90vw);aspect-ratio:630/610}
-.env{position:absolute;inset:0;border:0;padding:0;background:none;cursor:pointer;
+.env{position:absolute;inset:0;border:0;padding:0;background:none;cursor:pointer;perspective:1200px;will-change:transform;
   animation:wiggle 2.8s ease-in-out infinite;transform-origin:50% 85%}
 .env:focus-visible{outline:3px dashed var(--rose);outline-offset:10px;border-radius:12px}
 @keyframes wiggle{
@@ -69,19 +69,26 @@ body::after{ /* лёгкая виньетка, как на фото */
   80%{transform:rotate(0) translateY(0)}
 }
 .env.still{animation:none;cursor:default}
-.env img,.env svg{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none;user-select:none;overflow:visible}
-.env .pocket{z-index:3}
-/* карточка в конверте: геометрия снята с фото (кадр 630×610) */
-.card-s{position:absolute;z-index:2;left:20.95%;width:56.8%;top:32.95%;height:57%;
-  background:var(--cream);border-radius:3px;
+.env img{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none;user-select:none}
+.env .lay{z-index:1}.env .front{z-index:3}
+/* карточка в конверте: внутри тела (фальц на 41 % высоты), наружу выходит только когда поднимается */
+.card-s{position:absolute;z-index:2;left:21%;width:58%;top:44%;height:47%;
+  background:var(--cream);border-radius:3px;will-change:transform;
   box-shadow:0 1px 2px rgba(90,26,43,.18),inset 0 0 0 1px rgba(255,255,255,.6);
   display:flex;flex-direction:column;align-items:center;padding-top:7%;gap:2px;
   transition:transform 1.25s cubic-bezier(.45,.02,.25,1)}
+.card-s.peek{transition:transform .8s cubic-bezier(.2,.8,.25,1)}
 .card-s .n{font-family:var(--classica);font-size:clamp(36px,11vw,50px);line-height:1;color:var(--ink);margin-top:6px}
 .card-s .d{font-family:var(--serif);font-style:italic;font-weight:600;font-size:clamp(13px,3.8vw,17px);color:var(--ink-soft);letter-spacing:.06em}
 .card-s .k{font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-soft);font-weight:700}
-.hand{position:absolute;z-index:10;left:0;top:0;width:44%;pointer-events:none;user-select:none;display:block;
-  filter:drop-shadow(0 14px 18px rgba(90,26,43,.28));opacity:0;
+/* клапан: 3D-переворот вокруг фальца; лицевая сторона — закрытый, обратная — открытый (кисти вниз) */
+.flap{position:absolute;inset:0;z-index:4;pointer-events:none;transform-style:preserve-3d;transform-origin:50% 40.98%;
+  transition:transform 1.1s cubic-bezier(.55,.05,.3,1);will-change:transform}
+.env.open .flap{transform:rotateX(180deg)}
+.env.flap-behind .flap{z-index:1}
+.flap img{backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.flap .b{transform:rotateX(180deg);transform-origin:50% 40.98%}
+.hand{position:absolute;z-index:10;left:0;top:0;width:56%;pointer-events:none;user-select:none;display:block;opacity:0;will-change:transform;
   transition:transform 1.15s cubic-bezier(.2,.75,.25,1),opacity .3s}
 .hand.pull{transition:transform 1.25s cubic-bezier(.45,.02,.25,1)}
 .hand.away{transition:transform 1s cubic-bezier(.5,0,.8,.6),opacity .6s .3s}
@@ -104,7 +111,7 @@ body::after{ /* лёгкая виньетка, как на фото */
   background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' seed='5'/%3E%3CfeColorMatrix values='0 0 0 0 .55 0 0 0 0 .45 0 0 0 0 .3 0 0 0 .13 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
 .card > *{position:relative;z-index:2}
 /* тиснение: SVG-«бумага» на всю плашку; рельеф — освещение карты высот (размытый силуэт узора), зерно идёт поверх */
-.paper{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;border-radius:3px}
+.paper{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;border-radius:3px;object-fit:fill}
 /* герб с монограммой — сверху по центру */
 .crest{position:absolute;left:50%;top:calc(var(--cw)*-.09);transform:translateX(-50%);width:calc(var(--cw)*.30);height:auto;z-index:3;
   filter:drop-shadow(0 6px 8px rgba(40,5,10,.4))}
@@ -187,7 +194,7 @@ body::after{ /* лёгкая виньетка, как на фото */
 .row-btn .map{text-decoration:none;color:var(--ink)}
 
 /* ---------- дресс-код и мудборд ---------- */
-.dress{position:fixed;inset:0;z-index:8;overflow-y:auto;background:rgba(90,26,43,.55);backdrop-filter:blur(6px);
+.dress{position:fixed;inset:0;z-index:8;overflow-y:auto;background:rgba(74,11,18,.78);
   display:grid;place-items:start center;
   padding-block:calc(16px + env(safe-area-inset-top,0px)) 32px;padding-left:max(12px,env(safe-area-inset-left,0px));padding-right:max(12px,env(safe-area-inset-right,0px));
   opacity:0;pointer-events:none;transition:opacity .4s}
@@ -226,70 +233,14 @@ body::after{ /* лёгкая виньетка, как на фото */
     <div class="to" id="to">Тебе письмо</div>
     <div class="box" id="box">
       <button class="env" id="env" aria-label="Открыть конверт">
-        <!-- конверт нарисован: клапан, бахрома -->
-        <svg viewBox="0 0 630 610" aria-hidden="true">
-          <defs>
-            <filter id="velvet" x="-5%" y="-5%" width="110%" height="110%" color-interpolation-filters="sRGB">
-              <feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="3" seed="4" result="n"/>
-              <feColorMatrix in="n" type="matrix" values="0 0 0 0 .25  0 0 0 0 .05  0 0 0 0 .08  0 0 0 .55 -.12" result="dark"/>
-              <feColorMatrix in="n" type="matrix" values="0 0 0 0 1  0 0 0 0 .9  0 0 0 0 .92  0 0 0 .5 -.22" result="light"/>
-              <feComposite in="dark" in2="SourceGraphic" operator="in" result="d2"/>
-              <feComposite in="light" in2="SourceGraphic" operator="in" result="l2"/>
-              <feComposite in="d2" in2="SourceGraphic" operator="over" result="s1"/>
-              <feComposite in="l2" in2="s1" operator="over"/>
-            </filter>
-            <filter id="fluff" x="-10%" y="-10%" width="120%" height="120%">
-              <feTurbulence type="turbulence" baseFrequency=".12 .6" numOctaves="2" seed="3" result="t"/>
-              <feDisplacementMap in="SourceGraphic" in2="t" scale="7" xChannelSelector="R" yChannelSelector="G"/>
-            </filter>
-            <filter id="softshadow" x="-20%" y="-20%" width="140%" height="160%"><feGaussianBlur stdDeviation="14"/></filter>
-            <linearGradient id="flapG" x1="0" y1="0" x2=".3" y2="1"><stop offset="0" stop-color="#dc96a0"/><stop offset=".55" stop-color="#cf7d88"/><stop offset="1" stop-color="#bf6b77"/></linearGradient>
-            <linearGradient id="pocketG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d9909a"/><stop offset=".5" stop-color="#cf7c87"/><stop offset="1" stop-color="#b96874"/></linearGradient>
-            <linearGradient id="tasselG" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#a9525f"/><stop offset=".45" stop-color="#d4848e"/><stop offset="1" stop-color="#a04b58"/></linearGradient>
-            <radialGradient id="knotG" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#e3a2aa"/><stop offset="1" stop-color="#9d4652"/></radialGradient>
-            <g id="tassel">
-              <path d="M0 0v18" stroke="#7a2130" stroke-width="2.2" fill="none"/>
-              <ellipse cx="0" cy="26" rx="7.5" ry="9.5" fill="url(#knotG)"/>
-              <path d="M-5 24c3-2 7-2 10 0" stroke="#7a2130" stroke-width="1.4" fill="none" opacity=".7"/>
-              <path d="M-6 34 C-14 52-16 76-13 100 L13 100 C16 76 14 52 6 34 Z" fill="url(#tasselG)"/>
-              <g stroke="#f0bcc3" stroke-width=".9" opacity=".55" fill="none">
-                <path d="M-8 44v54M-4 40v60M0 38v62M4 40v60M8 44v54"/>
-              </g>
-              <path d="M-13 100h26" stroke="#8b3645" stroke-width="2" opacity=".8"/>
-            </g>
-            <g id="fringe" fill="none" stroke-linecap="round" stroke-linejoin="round">
-              <path id="fr" fill="none" d="M45 250 L308 25 L575 250 M45 250 L308 392 L575 250"/>
-            </g>
-          </defs>
-          <ellipse cx="308" cy="560" rx="265" ry="36" fill="rgba(90,26,43,.35)" filter="url(#softshadow)"/>
-          <!-- клапан (ромб) -->
-          <path d="M308 25 L575 250 L308 392 L45 250 Z" fill="url(#flapG)" filter="url(#velvet)"/>
-          <path d="M308 25 L575 250 L308 392 L45 250 Z" fill="none" stroke="rgba(120,40,55,.25)" stroke-width="1.5"/>
-          <!-- бахрома по всем четырём рёбрам клапана -->
-          <use href="#fr" stroke="#6b1324" stroke-width="15"/>
-          <use href="#fr" stroke="#8d2036" stroke-width="11" stroke-dasharray="1.6 2.6" filter="url(#fluff)"/>
-          <use href="#fr" stroke="#b1455a" stroke-width="5" stroke-dasharray="1 3.5" opacity=".6" filter="url(#fluff)"/>
-        </svg>
+        <img class="lay" src="img/env_back.webp" alt="" draggable="false">
         <div class="card-s" id="cardS">
           <div class="k">приглашение</div>
           <div class="n" id="cardName">для вас</div>
           <div class="d">30 октября</div>
         </div>
-        <!-- карман и кисти — поверх карточки -->
-        <svg class="pocket" viewBox="0 0 630 610" aria-hidden="true">
-          <path d="M58 405 L308 383 L560 405 L560 560 Q560 568 552 568 L66 568 Q58 568 58 560 Z" fill="url(#pocketG)" filter="url(#velvet)"/>
-          <path d="M58 405 L308 560 L560 405" fill="none" stroke="rgba(255,255,255,.22)" stroke-width="1.6"/>
-          <path d="M58 405 L308 560 L560 405" fill="none" stroke="rgba(120,40,55,.22)" stroke-width="1.2" transform="translate(0 2)"/>
-          <path d="M58 405 L308 383 L560 405" fill="none" stroke="rgba(255,255,255,.3)" stroke-width="1.5"/>
-          <g id="tassels">
-            <use href="#tassel" transform="translate(52 256)"/><use href="#tassel" transform="translate(96 279)"/>
-            <use href="#tassel" transform="translate(140 302)"/><use href="#tassel" transform="translate(184 325)"/>
-            <use href="#tassel" transform="translate(228 350)"/>
-            <use href="#tassel" transform="translate(568 256)"/><use href="#tassel" transform="translate(524 279)"/>
-            <use href="#tassel" transform="translate(480 302)"/><use href="#tassel" transform="translate(436 325)"/>
-            <use href="#tassel" transform="translate(392 350)"/>
-          </g>
-        </svg>
+        <img class="front" src="img/env_front.webp" alt="" draggable="false">
+        <div class="flap"><img src="img/env_flap_closed.webp" alt="" draggable="false"><img class="b" src="img/env_flap_open.webp" alt="" draggable="false"></div>
       </button>
       <img class="hand" id="hand" src="img/hand.webp" alt="" draggable="false">
     </div>
@@ -299,45 +250,7 @@ body::after{ /* лёгкая виньетка, как на фото */
 
 <section class="invite" id="invite" aria-live="polite">
   <article class="card" id="card">
-    <svg class="paper" id="paper" viewBox="0 0 440 900" preserveAspectRatio="none" aria-hidden="true">
-      <defs>
-        <filter id="emb" filterUnits="userSpaceOnUse" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
-          <feGaussianBlur in="SourceAlpha" stdDeviation="2.2" result="bump"/>
-          <feDiffuseLighting in="bump" surfaceScale="4.5" diffuseConstant="1" lighting-color="#ffffff" result="diff">
-            <feDistantLight azimuth="225" elevation="60"/>
-          </feDiffuseLighting>
-          <!-- плоская бумага → 1.0; тень не глубже ~40 %, блик мягкий -->
-          <feComponentTransfer in="diff" result="diffN">
-            <feFuncR type="linear" slope=".66" intercept=".43"/><feFuncG type="linear" slope=".66" intercept=".43"/><feFuncB type="linear" slope=".66" intercept=".43"/>
-          </feComponentTransfer>
-          <feFlood flood-color="#f1e7d3" result="paper"/>
-          <feBlend in="paper" in2="diffN" mode="multiply" result="shaded"/>
-          <feSpecularLighting in="bump" surfaceScale="4.5" specularConstant=".2" specularExponent="24" lighting-color="#ffffff" result="spec">
-            <feDistantLight azimuth="225" elevation="60"/>
-          </feSpecularLighting>
-          <feComposite in="spec" in2="bump" operator="in" result="specM"/>
-          <feComposite in="shaded" in2="specM" operator="arithmetic" k2="1" k3="1"/>
-        </filter>
-        <!-- угловой завиток: две зеркальные спирали с листьями -->
-        <g id="scroll" fill="none" stroke="#000" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M20 118 C14 70 40 34 82 30 C118 27 140 50 132 76 C125 98 98 104 86 90 C77 79 86 64 100 66 C110 68 112 80 104 82"/>
-          <path d="M118 20 C70 14 34 40 30 82 C27 118 50 140 76 132 C98 125 104 98 90 86 C79 77 64 86 66 100 C68 110 80 112 82 104"/>
-          <path d="M20 118 C22 140 34 160 52 178"/>
-          <path d="M118 20 C140 22 160 34 178 52"/>
-          <path d="M58 150 c-10 10-22 14-34 12 M150 58 c10-10 14-22 12-34"/>
-          <g fill="#000" stroke="none">
-            <path d="M46 166 c-8-14 2-30 16-32 -4 14-6 24-16 32z"/>
-            <path d="M166 46 c-14-8-30 2-32 16 14-4 24-6 32-16z"/>
-            <circle cx="104" cy="104" r="4.5"/><circle cx="178" cy="52" r="3.5"/><circle cx="52" cy="178" r="3.5"/>
-          </g>
-        </g>
-      </defs>
-      <g filter="url(#emb)">
-        <rect id="ln1" fill="none" stroke="#000" stroke-width="2.6"/>
-        <rect id="ln2" fill="none" stroke="#000" stroke-width="2.6"/>
-        <use href="#scroll" id="c1"/><use href="#scroll" id="c2"/><use href="#scroll" id="c3"/><use href="#scroll" id="c4"/>
-      </g>
-    </svg>
+    <img class="paper" id="paper" alt="" draggable="false">
     <div class="kicker top">Manhattan Jazz Salon · 1948</div>
     <h1 class="name" id="bigName">Дорогие гости,</h1>
     <p class="sub">ждём Вас в пятницу</p>
@@ -432,7 +345,7 @@ body::after{ /* лёгкая виньетка, как на фото */
     place: "Санкт-Петербург, Кадетская линия В. О., д. 5, корп. 2, лит. Д, пом. 252 (2-й этаж)" };
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const el = id => document.getElementById(id);
-  const HAND = { w: 432, h: 791, px: 0.4259, py: 0.9874 }; // размер PNG и точка щипка (доля)
+  const HAND = { w: 551, h: 911, px: 0.441, py: 0.9232 }; // размер PNG и точка щипка (доля)
 
   // Имя гостя из ссылки: ...?to=Маша → «Маша, тебе письмо»
   const guest = new URLSearchParams(location.search).get("to");
@@ -449,24 +362,55 @@ body::after{ /* лёгкая виньетка, как на фото */
     document.title = g + " · приглашение на 30 октября";
   }
   // Сцена появляется, когда все слои загружены (или через 4 с, если сеть совсем медленная)
-  // ширина плашки → толщина кружевной рамки (пропорции фото)
+  // ширина плашки → тиснение: SVG с фильтром освещения собирается в строку и ставится как картинка (растеризуется один раз)
   const cardEl = el("card");
+  const PAPER_DEFS = `<defs>
+        <filter id="emb" filterUnits="userSpaceOnUse" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+          <feGaussianBlur in="SourceAlpha" stdDeviation="2.2" result="bump"/>
+          <feDiffuseLighting in="bump" surfaceScale="4.5" diffuseConstant="1" lighting-color="#ffffff" result="diff">
+            <feDistantLight azimuth="225" elevation="60"/>
+          </feDiffuseLighting>
+          <!-- плоская бумага → 1.0; тень не глубже ~40 %, блик мягкий -->
+          <feComponentTransfer in="diff" result="diffN">
+            <feFuncR type="linear" slope=".66" intercept=".43"/><feFuncG type="linear" slope=".66" intercept=".43"/><feFuncB type="linear" slope=".66" intercept=".43"/>
+          </feComponentTransfer>
+          <feFlood flood-color="#f1e7d3" result="paper"/>
+          <feBlend in="paper" in2="diffN" mode="multiply" result="shaded"/>
+          <feSpecularLighting in="bump" surfaceScale="4.5" specularConstant=".2" specularExponent="24" lighting-color="#ffffff" result="spec">
+            <feDistantLight azimuth="225" elevation="60"/>
+          </feSpecularLighting>
+          <feComposite in="spec" in2="bump" operator="in" result="specM"/>
+          <feComposite in="shaded" in2="specM" operator="arithmetic" k2="1" k3="1"/>
+        </filter>
+        <!-- угловой завиток: две зеркальные спирали с листьями -->
+        <g id="scroll" fill="none" stroke="#000" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 118 C14 70 40 34 82 30 C118 27 140 50 132 76 C125 98 98 104 86 90 C77 79 86 64 100 66 C110 68 112 80 104 82"/>
+          <path d="M118 20 C70 14 34 40 30 82 C27 118 50 140 76 132 C98 125 104 98 90 86 C79 77 64 86 66 100 C68 110 80 112 82 104"/>
+          <path d="M20 118 C22 140 34 160 52 178"/>
+          <path d="M118 20 C140 22 160 34 178 52"/>
+          <path d="M58 150 c-10 10-22 14-34 12 M150 58 c10-10 14-22 12-34"/>
+          <g fill="#000" stroke="none">
+            <path d="M46 166 c-8-14 2-30 16-32 -4 14-6 24-16 32z"/>
+            <path d="M166 46 c-14-8-30 2-32 16 14-4 24-6 32-16z"/>
+            <circle cx="104" cy="104" r="4.5"/><circle cx="178" cy="52" r="3.5"/><circle cx="52" cy="178" r="3.5"/>
+          </g>
+        </g>
+      </defs>`;
+  let paperKey = "";
   const setCW = () => {
     const W = cardEl.offsetWidth, H = cardEl.offsetHeight;
     cardEl.style.setProperty("--cw", W + "px");
-    // SVG-бумага: viewBox = пиксели плашки, узор раскладываем по размеру без искажений
-    const svg = el("paper"); svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
-    const o = W * .05, n = W * .072;
-    for (const [id, i] of [["ln1", o], ["ln2", n]]) {
-      const r = el(id); r.setAttribute("x", i); r.setAttribute("y", i); r.setAttribute("width", W - 2 * i); r.setAttribute("height", H - 2 * i);
-    }
-    const k = W * .29 / 200, m = W * .026;
-    el("c1").setAttribute("transform", `translate(${m} ${m}) scale(${k})`);
-    el("c2").setAttribute("transform", `translate(${W - m} ${m}) scale(${-k} ${k})`);
-    el("c3").setAttribute("transform", `translate(${m} ${H - m}) scale(${k} ${-k})`);
-    el("c4").setAttribute("transform", `translate(${W - m} ${H - m}) scale(${-k})`);
+    const key = W + "x" + H; if (key === paperKey) return; paperKey = key;
+    const o = W * .05, n = W * .072, k = W * .29 / 200, m = W * .026;
+    const rect = i => `<rect x="${i}" y="${i}" width="${W - 2 * i}" height="${H - 2 * i}" fill="none" stroke="#000" stroke-width="2.6"/>`;
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">${PAPER_DEFS}
+      <g filter="url(#emb)">${rect(o)}${rect(n)}
+        <use href="#scroll" transform="translate(${m} ${m}) scale(${k})"/><use href="#scroll" transform="translate(${W - m} ${m}) scale(${-k} ${k})"/>
+        <use href="#scroll" transform="translate(${m} ${H - m}) scale(${k} ${-k})"/><use href="#scroll" transform="translate(${W - m} ${H - m}) scale(${-k})"/>
+      </g></svg>`;
+    el("paper").src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
   };
-  setCW(); new ResizeObserver(setCW).observe(cardEl);
+  setCW(); new ResizeObserver(() => requestAnimationFrame(setCW)).observe(cardEl);
 
   const sceneEl = el("scene");
   const imgs = [...sceneEl.querySelectorAll("img")].map(i => i.complete && i.naturalWidth ? Promise.resolve() : (i.decode ? i.decode().catch(() => {}) : new Promise(r => { i.onload = i.onerror = r; })));
@@ -494,13 +438,19 @@ body::after{ /* лёгкая виньетка, как на фото */
     if (opened) return; opened = true;
     hint.style.visibility = "hidden"; el("to").style.opacity = "0";
     env.classList.add("still");
+    env.classList.add("open");                                 // клапан откидывается
+    await wait(1100);
+    env.classList.add("flap-behind");                          // карточка теперь перед открытым клапаном
+    cardS.classList.add("peek");
+    const peek = cardS.offsetHeight * 0.42;                    // карточка выглядывает из конверта
+    cardS.style.transform = `translateY(${-peek}px)`;
+    await wait(850);
 
     const B = box.getBoundingClientRect(), C = cardS.getBoundingClientRect();
     const hw = hand.offsetWidth, hh = hw * HAND.h / HAND.w;
-    // щипок — верх карточки по центру, пальцы чуть заходят на карточку
     const tx = (C.left - B.left) + C.width / 2 - hw * HAND.px;
     const ty = (C.top - B.top) + C.height * 0.05 - hh * HAND.py;
-    const startY = -(B.top + hh + 40);          // целиком выше экрана
+    const startY = -(B.top + hh + 40);
     hand.style.transition = "none";
     hand.style.transform = `translate(${tx}px, ${startY}px)`;
     hand.getBoundingClientRect();
@@ -511,17 +461,18 @@ body::after{ /* лёгкая виньетка, как на фото */
     await wait(1200);
     hand.style.transform = `translate(${tx}px, ${ty + 3}px) scale(.985)`; // хватает
     await wait(260);
-    const lift = C.height * 1.08;                              // вытягивает карточку из кармана
+    const lift = C.height * 1.15;
+    cardS.classList.remove("peek");
     hand.classList.add("pull");
     hand.style.transform = `translate(${tx}px, ${ty - lift}px)`;
-    cardS.style.transform = `translateY(${-lift}px)`;
+    cardS.style.transform = `translateY(${-peek - lift}px)`;
     await wait(1300);
-    env.classList.add("fade");                                 // конверт уходит, рука уносит карточку
+    env.classList.add("fade");
     hand.classList.remove("pull"); hand.classList.add("away");
     hand.style.transform = `translate(${tx}px, ${startY - lift}px)`;
     hand.style.opacity = "0";
     cardS.style.transition = "transform .9s cubic-bezier(.5,0,.8,.6), opacity .5s .2s";
-    cardS.style.transform = `translateY(${-lift - B.top - hh}px)`; cardS.style.opacity = "0";
+    cardS.style.transform = `translateY(${-peek - lift - B.top - hh}px)`; cardS.style.opacity = "0";
     await wait(500);
     scene.style.opacity = "0";
     invite.classList.add("show");
@@ -533,7 +484,7 @@ body::after{ /* лёгкая виньетка, как на фото */
   el("again").addEventListener("click", () => {
     invite.classList.remove("show");
     env.className = "env"; hand.className = "hand"; hand.style.cssText = "";
-    cardS.style.cssText = ""; scene.style.opacity = ""; hint.style.visibility = ""; el("to").style.opacity = "";
+    cardS.className = "card-s"; cardS.style.cssText = ""; scene.style.opacity = ""; hint.style.visibility = ""; el("to").style.opacity = "";
     opened = false;
   });
 
