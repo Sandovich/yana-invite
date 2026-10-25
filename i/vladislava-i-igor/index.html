@@ -47,14 +47,7 @@ body::after{ /* лёгкая виньетка, как на фото */
 
 /* ---------- блёстки ---------- */
 .sky{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
-/* звёзды-блики: яркие — свечение + тонкие длинные лучи + белое ядро (золото / бордо), блеклые — маленькие розовые; разгораются и гаснут */
-.spark{position:absolute;width:14px;height:14px;opacity:0;animation:twinkle 4s ease-in-out infinite;--peak:1;
-  background:no-repeat center/contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3CradialGradient id='g' cx='32' cy='32' r='32' gradientUnits='userSpaceOnUse'%3E%3Cstop offset='0' stop-color='%23fff6e0' stop-opacity='1'/%3E%3Cstop offset='.18' stop-color='%23f3d79a' stop-opacity='.55'/%3E%3Cstop offset='.5' stop-color='%23e9c889' stop-opacity='.14'/%3E%3Cstop offset='1' stop-color='%23e9c889' stop-opacity='0'/%3E%3C/radialGradient%3E%3Ccircle cx='32' cy='32' r='32' fill='url(%23g)'/%3E%3Cpath fill='%23d9b26a' d='M32 2c.6 20 9.4 28.8 30 30-20.6 1.2-29.4 10-30 30-.6-20-9.4-28.8-30-30 20.6-1.2 29.4-10 30-30z'/%3E%3Cpath fill='%23f1dba6' opacity='.85' d='M32 18c1.2 8.6 5.4 12.8 14 14-8.6 1.2-12.8 5.4-14 14-1.2-8.6-5.4-12.8-14-14 8.6-1.2 12.8-5.4 14-14z' transform='rotate(45 32 32)'/%3E%3Ccircle cx='32' cy='32' r='2.6' fill='%23fffdf7'/%3E%3C/svg%3E")}
-.spark.b{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3CradialGradient id='g' cx='32' cy='32' r='32' gradientUnits='userSpaceOnUse'%3E%3Cstop offset='0' stop-color='%23ffe9ee' stop-opacity='1'/%3E%3Cstop offset='.18' stop-color='%23e9b7c0' stop-opacity='.5'/%3E%3Cstop offset='.5' stop-color='%23d98fa0' stop-opacity='.12'/%3E%3Cstop offset='1' stop-color='%23d98fa0' stop-opacity='0'/%3E%3C/radialGradient%3E%3Ccircle cx='32' cy='32' r='32' fill='url(%23g)'/%3E%3Cpath fill='%236b1f33' d='M32 2c.6 20 9.4 28.8 30 30-20.6 1.2-29.4 10-30 30-.6-20-9.4-28.8-30-30 20.6-1.2 29.4-10 30-30z'/%3E%3Cpath fill='%23d98fa0' opacity='.8' d='M32 18c1.2 8.6 5.4 12.8 14 14-8.6 1.2-12.8 5.4-14 14-1.2-8.6-5.4-12.8-14-14 8.6-1.2 12.8-5.4 14-14z' transform='rotate(45 32 32)'/%3E%3Ccircle cx='32' cy='32' r='2.6' fill='%23fff4f6'/%3E%3C/svg%3E")}
-.spark.dim{--peak:.32;animation-duration:6s;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23c98b95' d='M12 1c.5 6.3 4.7 10.5 11 11-6.3.5-10.5 4.7-11 11-.5-6.3-4.7-10.5-11-11 6.3-.5 10.5-4.7 11-11z'/%3E%3C/svg%3E")}
-.spark.dim.c{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23c9a66b' d='M12 1c.5 6.3 4.7 10.5 11 11-6.3.5-10.5 4.7-11 11-.5-6.3-4.7-10.5-11-11 6.3-.5 10.5-4.7 11-11z'/%3E%3C/svg%3E")}
-@keyframes twinkle{0%{opacity:0;transform:scale(.3) rotate(0)}45%{opacity:var(--peak);transform:scale(1) rotate(25deg)}60%{opacity:calc(var(--peak)*.8);transform:scale(.9) rotate(35deg)}100%{opacity:0;transform:scale(.35) rotate(60deg)}}
+/* блёстки рисуются на canvas (#sky), см. JS glitter */
 
 /* ---------- сцена ---------- */
 .stage{position:relative;z-index:1;min-height:100svh;display:grid;place-items:center;overflow-x:clip;
@@ -236,12 +229,12 @@ body::after{ /* лёгкая виньетка, как на фото */
   font:600 12px var(--sans);color:var(--pearl);background:rgba(255,255,255,.1);border:1px solid rgba(239,232,223,.35);border-radius:999px;padding:8px 14px;cursor:pointer;display:none}
 .invite.show ~ .again{display:block}
 
-@media (prefers-reduced-motion:reduce){.env,.spark,.hint,.row-btn{animation:none!important}}
+@media (prefers-reduced-motion:reduce){.env,.hint,.row-btn{animation:none!important}}
 </style>
 </head>
 <body>
 
-<div class="sky" id="sky" aria-hidden="true"></div>
+<canvas class="sky" id="sky" aria-hidden="true"></canvas>
 
 <main class="stage">
   <div class="scene" id="scene">
@@ -465,17 +458,7 @@ window.TG_CONFIG = { token: "", chat: "769656309" };
   const imgs = [...sceneEl.querySelectorAll("img")].map(i => i.complete && i.naturalWidth ? Promise.resolve() : (i.decode ? i.decode().catch(() => {}) : new Promise(r => { i.onload = i.onerror = r; })));
   Promise.race([Promise.all(imgs), new Promise(r => setTimeout(r, 4000))]).then(() => sceneEl.classList.add("ready"));
 
-  // Звёзды: 12 ярких (золото/бордо) и 18 блеклых, каждая мерцает со своим периодом и сдвигом
-  const sky = el("sky");
-  if (!reduce) for (let i = 0; i < 30; i++) {
-    const s = document.createElement("div"), bright = i < 12;
-    s.className = "spark " + (bright ? ["a", "a", "b"][i % 3] : "dim " + ["a", "c"][i % 2]);
-    s.style.left = Math.random() * 100 + "%"; s.style.top = Math.random() * 100 + "%";
-    s.style.animationDelay = (Math.random() * 6) + "s";
-    s.style.animationDuration = (bright ? 3.2 + Math.random() * 2.5 : 5 + Math.random() * 3) + "s";
-    const sz = bright ? 30 + Math.random() * 34 : 8 + Math.random() * 10; s.style.width = s.style.height = sz + "px";
-    sky.appendChild(s);
-  }
+  // Блёстки первого экрана — см. ниже
 
   // Рука достаёт карточку
   const env = el("env"), box = el("box"), hand = el("hand"), cardS = el("cardS"),
@@ -528,7 +511,7 @@ window.TG_CONFIG = { token: "", chat: "769656309" };
     scene.style.opacity = "0";
     invite.classList.add("show");
     invite.scrollTop = 0;
-    burst();
+    skyStop(); burst();
   }
   env.addEventListener("click", open);
 
@@ -536,7 +519,7 @@ window.TG_CONFIG = { token: "", chat: "769656309" };
     invite.classList.remove("show");
     env.className = "env"; hand.className = "hand"; hand.style.cssText = "";
     cardS.className = "card-s"; cardS.style.cssText = ""; scene.style.opacity = ""; hint.style.visibility = ""; el("to").style.opacity = "";
-    opened = false;
+    opened = false; skyStart();
   });
 
   // Обратный отсчёт
@@ -624,54 +607,101 @@ window.TG_CONFIG = { token: "", chat: "769656309" };
     "END:VEVENT", "END:VCALENDAR"].join("\r\n");
   el("cal").href = "data:text/calendar;charset=utf-8," + encodeURIComponent(ics);
 
-  // Блеск звёзд: по всему экрану вспыхивают и гаснут четырёхлучевые искры (золото, жемчуг, роза) — вместо конфетти
-  const colors = [[233, 200, 137], [255, 243, 214], [239, 232, 223], [233, 183, 192], [201, 166, 107]];
+  // ---------- Блёстки: мелкая мерцающая пыль, ловящая свет (золото, жемчуг, роза) ----------
+  // Спрайты рисуются один раз: мягкая светящаяся точка и четырёхлучевая вспышка — дальше только drawImage, это дёшево.
+  // Две палитры: для светлого первого экрана — глубокие золото/роза/бордо с тёплым ядром, для бордовой открытки — золото/жемчуг с белым ядром
+  const PAL_L = [[196, 146, 62], [214, 118, 140], [122, 32, 54], [230, 186, 100], [201, 139, 149]];
+  const PAL_D = [[217, 178, 106], [243, 215, 154], [255, 246, 224], [233, 183, 192], [201, 139, 149]];
+  function sprites(pal, core) {
+    return pal.map(([r, g, b]) => {
+      const dot = document.createElement("canvas"); dot.width = dot.height = 64;
+      let c = dot.getContext("2d"), gr = c.createRadialGradient(32, 32, 0, 32, 32, 32);
+      gr.addColorStop(0, core); gr.addColorStop(.2, `rgba(${r},${g},${b},1)`); gr.addColorStop(.42, `rgba(${r},${g},${b},.4)`); gr.addColorStop(1, `rgba(${r},${g},${b},0)`);
+      c.fillStyle = gr; c.fillRect(0, 0, 64, 64);
+      const fl = document.createElement("canvas"); fl.width = fl.height = 128;
+      c = fl.getContext("2d"); gr = c.createRadialGradient(64, 64, 0, 64, 64, 64);
+      gr.addColorStop(0, core); gr.addColorStop(.22, `rgba(${r},${g},${b},.45)`); gr.addColorStop(1, `rgba(${r},${g},${b},0)`);
+      c.fillStyle = gr; c.fillRect(0, 0, 128, 128);
+      const ray = (len, w, a) => { c.save(); c.translate(64, 64); c.rotate(a);
+        const lg = c.createLinearGradient(-len, 0, len, 0); lg.addColorStop(0, `rgba(${r},${g},${b},0)`); lg.addColorStop(.5, core); lg.addColorStop(1, `rgba(${r},${g},${b},0)`);
+        c.fillStyle = lg; c.beginPath(); c.moveTo(-len, 0); c.quadraticCurveTo(0, -w, len, 0); c.quadraticCurveTo(0, w, -len, 0); c.fill(); c.restore(); };
+      ray(62, 2.6, 0); ray(62, 2.6, Math.PI / 2); ray(28, 1.6, Math.PI / 4); ray(28, 1.6, -Math.PI / 4);
+      return { dot, fl };
+    });
+  }
+  const SPR_L = sprites(PAL_L, "rgba(255,240,205,1)"), SPR_D = sprites(PAL_D, "rgba(255,253,247,1)");
+  const flick = (t, p) => Math.max(0, Math.sin(t * p.f + p.ph)) ** 3;            // вспышки, как блёстка поймала свет
+  function drawDust(cx, spr, p, b, alpha, k) {                                      // b — яркость 0..1
+    const sp = spr[p.c], a = alpha * (.28 + .72 * b);
+    if (a < .01) return;
+    cx.globalAlpha = a; const d = p.r * (3.4 + 2.2 * b) * k;
+    cx.drawImage(sp.dot, p.x * k - d / 2, p.y * k - d / 2, d, d);
+    if (b > .5 && p.r > 1.4) { const f = p.r * (6 + 6 * b) * k; cx.globalAlpha = alpha * (b - .5) / .5; cx.drawImage(sp.fl, p.x * k - f / 2, p.y * k - f / 2, f, f); }
+  }
+  function mkDust(x, y) {
+    return { x, y, r: .9 + Math.random() ** 1.7 * 2.6, c: Math.floor(Math.random() * 5),
+      ph: Math.random() * 6.3, f: (.9 + Math.random() * 2.6) / 1000,              // частота мерцания, рад/мс
+      vx: (Math.random() - .5) * 6, vy: -(3 + Math.random() * 9), sw: Math.random() * 6.3 };
+  }
+
+  // 1) Первый экран: пыль из блёсток медленно плывёт вверх и мерцает; останавливается, когда конверт открыт
+  const sky = el("sky"), sctx = sky.getContext("2d");
+  let dust = [], skyOn = false, skyRaf = 0, skyT = 0;
+  function sizeSky() {
+    const k = devicePixelRatio; sky.width = innerWidth * k; sky.height = innerHeight * k;
+    const n = Math.min(320, Math.max(140, Math.round(innerWidth * innerHeight / 2300)));
+    while (dust.length < n) dust.push(mkDust(Math.random() * innerWidth, Math.random() * innerHeight));
+    dust.length = n;
+  }
+  function skyStep(now) {
+    if (!skyOn) { skyRaf = 0; return; }
+    const dt = Math.min(50, now - (skyT || now)); skyT = now; const k = devicePixelRatio, W = innerWidth, H = innerHeight;
+    sctx.clearRect(0, 0, sky.width, sky.height);
+    for (const p of dust) {
+      p.y += p.vy * dt / 1000; p.x += (p.vx + Math.sin(now / 1400 + p.sw) * 4) * dt / 1000;
+      if (p.y < -6) { p.y = H + 4; p.x = Math.random() * W; } if (p.x < -6) p.x = W + 4; else if (p.x > W + 6) p.x = -4;
+      drawDust(sctx, SPR_L, p, flick(now, p), 1, k);
+    }
+    sctx.globalAlpha = 1; skyRaf = requestAnimationFrame(skyStep);
+  }
+  function skyStart() { if (reduce || skyOn) return; skyOn = true; skyT = 0; if (!skyRaf) skyRaf = requestAnimationFrame(skyStep); }
+  function skyStop() { skyOn = false; sctx.clearRect(0, 0, sky.width, sky.height); }
+  addEventListener("resize", sizeSky); sizeSky(); skyStart();
+  document.addEventListener("visibilitychange", () => { if (document.hidden) skyOn = false; else if (!invite.classList.contains("show")) skyStart(); });
+
+  // 2) Открытка: осыпание блёсток — медленно падают, покачиваются, вспыхивают и тают
   const cv = el("confetti"), ctx = cv.getContext("2d");
   let parts = [], raf = 0;
   function resize() { cv.width = innerWidth * devicePixelRatio; cv.height = innerHeight * devicePixelRatio; }
   addEventListener("resize", resize); resize();
   function burst() {
     if (reduce) return;
-    const W = cv.width, H = cv.height, k = devicePixelRatio, t0 = performance.now();
-    for (let i = 0; i < 70; i++) {
-      const big = Math.random() < .3;
-      parts.push({
-        x: Math.random() * W, y: Math.random() * H,
-        s: (big ? 14 + Math.random() * 12 : 5 + Math.random() * 8) * k,       // радиус луча
-        t0: t0 + Math.random() * 2600,                                          // когда вспыхнет
-        dur: 900 + Math.random() * 1500,                                         // сколько горит
-        rot: Math.random() * Math.PI, spin: (Math.random() - .5) * .0015,
-        c: colors[Math.floor(Math.random() * colors.length)], glow: big
-      });
+    const W = innerWidth, H = innerHeight, t0 = performance.now();
+    for (let i = 0; i < 300; i++) {
+      const p = mkDust(Math.random() * W, H * .95 - Math.random() * H * 1.5);        // половина уже на экране, половина сыплется сверху
+      p.r = 1 + Math.random() ** 1.5 * 2.8; p.vy = 34 + Math.random() * 60; p.vx = (Math.random() - .5) * 10;
+      p.t0 = t0 + Math.random() * 400; p.life = 4200 + Math.random() * 2200; parts.push(p);
+    }
+    for (let i = 0; i < 22; i++) {                                                 // отдельные крупные вспышки, уже на экране
+      const p = mkDust(Math.random() * W, Math.random() * H);
+      p.r = 2.4 + Math.random() * 1.8; p.vy = 6 + Math.random() * 10; p.vx = 0; p.f = (1.4 + Math.random()) / 1000;
+      p.t0 = t0 + 300 + Math.random() * 2600; p.life = 1800 + Math.random() * 1400; parts.push(p);
     }
     if (!raf) raf = requestAnimationFrame(step);
   }
-  function star(r, w) {                                                          // контур четырёхлучевой искры: r — длина луча, w — толщина у центра
-    ctx.beginPath(); ctx.moveTo(0, -r);
-    ctx.quadraticCurveTo(w * .4, -w * .4, r, 0); ctx.quadraticCurveTo(w * .4, w * .4, 0, r);
-    ctx.quadraticCurveTo(-w * .4, w * .4, -r, 0); ctx.quadraticCurveTo(-w * .4, -w * .4, 0, -r); ctx.closePath();
-  }
+  let lastStep = 0;
   function step(now) {
+    const dt = Math.min(50, now - (lastStep || now)); lastStep = now; const k = devicePixelRatio;
     ctx.clearRect(0, 0, cv.width, cv.height);
-    parts = parts.filter(p => now < p.t0 + p.dur);
+    parts = parts.filter(p => now < p.t0 + p.life && p.y < innerHeight + 10);
     for (const p of parts) {
       if (now < p.t0) continue;
-      const u = (now - p.t0) / p.dur, a = Math.sin(Math.PI * u) ** 1.4;           // плавно разгорается и гаснет
-      const r = p.s * (.55 + .45 * Math.sin(Math.PI * u)), [cr, cg, cb] = p.c;
-      ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot + (now - p.t0) * p.spin);
-      if (p.glow) {                                                                // свечение вокруг звезды
-        const g = ctx.createRadialGradient(0, 0, 0, 0, 0, r * 1.6);
-        g.addColorStop(0, `rgba(255,248,230,${.7 * a})`); g.addColorStop(.3, `rgba(${cr},${cg},${cb},${.35 * a})`); g.addColorStop(1, `rgba(${cr},${cg},${cb},0)`);
-        ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 0, r * 1.6, 0, Math.PI * 2); ctx.fill();
-      }
-      ctx.fillStyle = `rgba(${cr},${cg},${cb},${a})`; star(r, r * .16); ctx.fill();          // длинные тонкие лучи
-      if (p.glow) {
-        ctx.rotate(Math.PI / 4); ctx.fillStyle = `rgba(${cr},${cg},${cb},${.7 * a})`; star(r * .42, r * .1); ctx.fill();   // короткие диагональные
-        ctx.fillStyle = `rgba(255,253,247,${a})`; ctx.beginPath(); ctx.arc(0, 0, r * .07 + .8, 0, Math.PI * 2); ctx.fill(); // белое ядро
-      }
-      ctx.restore();
+      const u = (now - p.t0) / p.life, env = Math.min(1, u * 6) * Math.min(1, (1 - u) * 3);   // быстро появляется, в конце тает
+      p.y += p.vy * dt / 1000; p.x += (p.vx + Math.sin(now / 900 + p.sw) * 9) * dt / 1000;
+      drawDust(ctx, SPR_D, p, flick(now, p), env, k);
     }
-    raf = parts.length ? requestAnimationFrame(step) : 0;
+    ctx.globalAlpha = 1;
+    raf = parts.length ? requestAnimationFrame(step) : (lastStep = 0, 0);
   }
 })();
 </script>
