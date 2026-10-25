@@ -615,27 +615,25 @@ window.TG_CONFIG = { token: "", chat: "769656309" };
     return pal.map(([r, g, b]) => {
       const dot = document.createElement("canvas"); dot.width = dot.height = 64;
       let c = dot.getContext("2d"), gr = c.createRadialGradient(32, 32, 0, 32, 32, 32);
-      gr.addColorStop(0, core); gr.addColorStop(.2, `rgba(${r},${g},${b},1)`); gr.addColorStop(.42, `rgba(${r},${g},${b},.4)`); gr.addColorStop(1, `rgba(${r},${g},${b},0)`);
+      gr.addColorStop(0, core); gr.addColorStop(.3, `rgba(${r},${g},${b},1)`); gr.addColorStop(.5, `rgba(${r},${g},${b},.35)`); gr.addColorStop(.62, `rgba(${r},${g},${b},0)`);
       c.fillStyle = gr; c.fillRect(0, 0, 64, 64);
       const fl = document.createElement("canvas"); fl.width = fl.height = 128;
-      c = fl.getContext("2d"); gr = c.createRadialGradient(64, 64, 0, 64, 64, 64);
-      gr.addColorStop(0, core); gr.addColorStop(.22, `rgba(${r},${g},${b},.45)`); gr.addColorStop(1, `rgba(${r},${g},${b},0)`);
-      c.fillStyle = gr; c.fillRect(0, 0, 128, 128);
+      c = fl.getContext("2d");
       const ray = (len, w, a) => { c.save(); c.translate(64, 64); c.rotate(a);
         const lg = c.createLinearGradient(-len, 0, len, 0); lg.addColorStop(0, `rgba(${r},${g},${b},0)`); lg.addColorStop(.5, core); lg.addColorStop(1, `rgba(${r},${g},${b},0)`);
         c.fillStyle = lg; c.beginPath(); c.moveTo(-len, 0); c.quadraticCurveTo(0, -w, len, 0); c.quadraticCurveTo(0, w, -len, 0); c.fill(); c.restore(); };
-      ray(62, 2.6, 0); ray(62, 2.6, Math.PI / 2); ray(28, 1.6, Math.PI / 4); ray(28, 1.6, -Math.PI / 4);
+      ray(56, 1.8, 0); ray(56, 1.8, Math.PI / 2); ray(22, 1.1, Math.PI / 4); ray(22, 1.1, -Math.PI / 4);
       return { dot, fl };
     });
   }
   const SPR_L = sprites(PAL_L, "rgba(255,240,205,1)"), SPR_D = sprites(PAL_D, "rgba(255,253,247,1)");
   const flick = (t, p) => Math.max(0, Math.sin(t * p.f + p.ph)) ** 3;            // вспышки, как блёстка поймала свет
   function drawDust(cx, spr, p, b, alpha, k) {                                      // b — яркость 0..1
-    const sp = spr[p.c], a = alpha * (.28 + .72 * b);
+    const sp = spr[p.c], a = alpha * (.22 + .5 * b);
     if (a < .01) return;
-    cx.globalAlpha = a; const d = p.r * (3.4 + 2.2 * b) * k;
+    cx.globalAlpha = a; const d = p.r * (2.6 + 1.2 * b) * k;
     cx.drawImage(sp.dot, p.x * k - d / 2, p.y * k - d / 2, d, d);
-    if (b > .5 && p.r > 1.4) { const f = p.r * (6 + 6 * b) * k; cx.globalAlpha = alpha * (b - .5) / .5; cx.drawImage(sp.fl, p.x * k - f / 2, p.y * k - f / 2, f, f); }
+    if (b > .72 && p.r > 1.6) { const f = p.r * (5 + 4 * b) * k; cx.globalAlpha = alpha * .6 * (b - .72) / .28; cx.drawImage(sp.fl, p.x * k - f / 2, p.y * k - f / 2, f, f); }
   }
   function mkDust(x, y) {
     return { x, y, r: .9 + Math.random() ** 1.7 * 2.6, c: Math.floor(Math.random() * 5),
