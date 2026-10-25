@@ -612,29 +612,35 @@ window.TG_CONFIG = { token: "", chat: "769656309" };
   // Две палитры: для светлого первого экрана — глубокие золото/роза/бордо с тёплым ядром, для бордовой открытки — золото/жемчуг с белым ядром
   const PAL_L = [[196, 146, 62], [214, 118, 140], [122, 32, 54], [230, 186, 100], [201, 139, 149]];
   const PAL_D = [[217, 178, 106], [243, 215, 154], [255, 246, 224], [233, 183, 192], [201, 139, 149]];
-  function sprites(pal, core) {
+  // glow=true — вариант для открытки (точка с ореолом, вспышка с круглым свечением); glow=false — мягкий для экрана конверта
+  function sprites(pal, core, glow) {
     return pal.map(([r, g, b]) => {
       const dot = document.createElement("canvas"); dot.width = dot.height = 64;
       let c = dot.getContext("2d"), gr = c.createRadialGradient(32, 32, 0, 32, 32, 32);
-      gr.addColorStop(0, core); gr.addColorStop(.3, `rgba(${r},${g},${b},1)`); gr.addColorStop(.5, `rgba(${r},${g},${b},.35)`); gr.addColorStop(.62, `rgba(${r},${g},${b},0)`);
+      if (glow) { gr.addColorStop(0, core); gr.addColorStop(.2, `rgba(${r},${g},${b},1)`); gr.addColorStop(.42, `rgba(${r},${g},${b},.4)`); gr.addColorStop(1, `rgba(${r},${g},${b},0)`); }
+      else { gr.addColorStop(0, core); gr.addColorStop(.3, `rgba(${r},${g},${b},1)`); gr.addColorStop(.5, `rgba(${r},${g},${b},.35)`); gr.addColorStop(.62, `rgba(${r},${g},${b},0)`); }
       c.fillStyle = gr; c.fillRect(0, 0, 64, 64);
       const fl = document.createElement("canvas"); fl.width = fl.height = 128;
       c = fl.getContext("2d");
+      if (glow) { gr = c.createRadialGradient(64, 64, 0, 64, 64, 64); gr.addColorStop(0, core); gr.addColorStop(.22, `rgba(${r},${g},${b},.45)`); gr.addColorStop(1, `rgba(${r},${g},${b},0)`); c.fillStyle = gr; c.fillRect(0, 0, 128, 128); }
       const ray = (len, w, a) => { c.save(); c.translate(64, 64); c.rotate(a);
         const lg = c.createLinearGradient(-len, 0, len, 0); lg.addColorStop(0, `rgba(${r},${g},${b},0)`); lg.addColorStop(.5, core); lg.addColorStop(1, `rgba(${r},${g},${b},0)`);
         c.fillStyle = lg; c.beginPath(); c.moveTo(-len, 0); c.quadraticCurveTo(0, -w, len, 0); c.quadraticCurveTo(0, w, -len, 0); c.fill(); c.restore(); };
-      ray(56, 1.8, 0); ray(56, 1.8, Math.PI / 2); ray(22, 1.1, Math.PI / 4); ray(22, 1.1, -Math.PI / 4);
+      if (glow) { ray(62, 2.6, 0); ray(62, 2.6, Math.PI / 2); ray(28, 1.6, Math.PI / 4); ray(28, 1.6, -Math.PI / 4); }
+      else { ray(56, 1.8, 0); ray(56, 1.8, Math.PI / 2); ray(22, 1.1, Math.PI / 4); ray(22, 1.1, -Math.PI / 4); }
       return { dot, fl };
     });
   }
-  const SPR_L = sprites(PAL_L, "rgba(255,240,205,1)"), SPR_D = sprites(PAL_D, "rgba(255,253,247,1)");
+  const SPR_L = sprites(PAL_L, "rgba(255,240,205,1)", false), SPR_D = sprites(PAL_D, "rgba(255,253,247,1)", true);
+  const ST_SOFT = { base: .22, gain: .5, d0: 2.6, d1: 1.2, th: .72, f0: 5, f1: 4, fa: .6 };     // экран конверта: тихо, без ореола
+  const ST_GLOW = { base: .28, gain: .72, d0: 3.4, d1: 2.2, th: .5, f0: 6, f1: 6, fa: 1 };     // открытка: как было, со свечением
   const flick = (t, p) => Math.max(0, Math.sin(t * p.f + p.ph)) ** 3;            // вспышки, как блёстка поймала свет
-  function drawDust(cx, spr, p, b, alpha, k) {                                      // b — яркость 0..1
-    const sp = spr[p.c], a = alpha * (.22 + .5 * b);
+  function drawDust(cx, spr, st, p, b, alpha, k) {                                  // b — яркость 0..1, st — стиль
+    const sp = spr[p.c], a = alpha * (st.base + st.gain * b);
     if (a < .01) return;
-    cx.globalAlpha = a; const d = p.r * (2.6 + 1.2 * b) * k;
+    cx.globalAlpha = a; const d = p.r * (st.d0 + st.d1 * b) * k;
     cx.drawImage(sp.dot, p.x * k - d / 2, p.y * k - d / 2, d, d);
-    if (b > .72 && p.r > 1.6) { const f = p.r * (5 + 4 * b) * k; cx.globalAlpha = alpha * .6 * (b - .72) / .28; cx.drawImage(sp.fl, p.x * k - f / 2, p.y * k - f / 2, f, f); }
+    if (b > st.th && p.r > 1.4) { const f = p.r * (st.f0 + st.f1 * b) * k; cx.globalAlpha = alpha * st.fa * (b - st.th) / (1 - st.th); cx.drawImage(sp.fl, p.x * k - f / 2, p.y * k - f / 2, f, f); }
   }
   function mkDust(x, y) {
     return { x, y, r: .9 + Math.random() ** 1.7 * 2.6, c: Math.floor(Math.random() * 5),
@@ -658,7 +664,7 @@ window.TG_CONFIG = { token: "", chat: "769656309" };
     for (const p of dust) {
       p.y += p.vy * dt / 1000; p.x += (p.vx + Math.sin(now / 1400 + p.sw) * 4) * dt / 1000;
       if (p.y < -6) { p.y = H + 4; p.x = Math.random() * W; } if (p.x < -6) p.x = W + 4; else if (p.x > W + 6) p.x = -4;
-      drawDust(sctx, SPR_L, p, flick(now, p), 1, k);
+      drawDust(sctx, SPR_L, ST_SOFT, p, flick(now, p), 1, k);
     }
     sctx.globalAlpha = 1; skyRaf = requestAnimationFrame(skyStep);
   }
@@ -696,7 +702,7 @@ window.TG_CONFIG = { token: "", chat: "769656309" };
       if (now < p.t0) continue;
       const u = (now - p.t0) / p.life, env = Math.min(1, u * 6) * Math.min(1, (1 - u) * 3);   // быстро появляется, в конце тает
       p.y += p.vy * dt / 1000; p.x += (p.vx + Math.sin(now / 900 + p.sw) * 9) * dt / 1000;
-      drawDust(ctx, SPR_D, p, flick(now, p), env, k);
+      drawDust(ctx, SPR_D, ST_GLOW, p, flick(now, p), env, k);
     }
     ctx.globalAlpha = 1;
     raf = parts.length ? requestAnimationFrame(step) : (lastStep = 0, 0);
