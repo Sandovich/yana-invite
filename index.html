@@ -81,13 +81,13 @@ body::after{ /* лёгкая виньетка, как на фото */
 .card-s .n{font-family:var(--classica);font-size:clamp(36px,11vw,50px);line-height:1;color:var(--ink);margin-top:6px}
 .card-s .d{font-family:var(--serif);font-style:italic;font-weight:600;font-size:clamp(13px,3.8vw,17px);color:var(--ink-soft);letter-spacing:.06em}
 .card-s .k{font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-soft);font-weight:700}
-/* клапан: 3D-переворот вокруг фальца; лицевая сторона — закрытый, обратная — открытый (кисти вниз) */
-.flap{position:absolute;inset:0;z-index:4;pointer-events:none;transform-style:preserve-3d;transform-origin:50% 40.98%;
-  transition:transform 1.1s cubic-bezier(.55,.05,.3,1);will-change:transform}
-.env.open .flap{transform:rotateX(180deg)}
+/* клапан: два слоя (закрытый и открытый), переворот вокруг фальца в два полуоборота — без backface-visibility (Safari его теряет) */
+.flap{position:absolute;inset:0;z-index:4;pointer-events:none;transform-origin:50% 40.98%;will-change:transform;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.flap-c{transition:transform .55s cubic-bezier(.55,.05,.85,.5)}
+.flap-o{transform:rotateX(-90deg);visibility:hidden;transition:transform .6s cubic-bezier(.15,.5,.3,1)}
+.env.open .flap-c{transform:rotateX(90deg);visibility:hidden;transition:transform .55s cubic-bezier(.55,.05,.85,.5),visibility 0s .55s}
+.env.open2 .flap-o{transform:rotateX(0);visibility:visible}
 .env.flap-behind .flap{z-index:1}
-.flap img{backface-visibility:hidden;-webkit-backface-visibility:hidden}
-.flap .b{transform:rotateX(180deg);transform-origin:50% 40.98%}
 .hand{position:absolute;z-index:10;left:0;top:0;width:56%;pointer-events:none;user-select:none;display:block;opacity:0;will-change:transform;
   transition:transform 1.15s cubic-bezier(.2,.75,.25,1),opacity .3s}
 .hand.pull{transition:transform 1.25s cubic-bezier(.45,.02,.25,1)}
@@ -240,7 +240,8 @@ body::after{ /* лёгкая виньетка, как на фото */
           <div class="d">30 октября</div>
         </div>
         <img class="front" src="img/env_front.webp" alt="" draggable="false">
-        <div class="flap"><img src="img/env_flap_closed.webp" alt="" draggable="false"><img class="b" src="img/env_flap_open.webp" alt="" draggable="false"></div>
+        <div class="flap flap-c"><img src="img/env_flap_closed.webp" alt="" draggable="false"></div>
+        <div class="flap flap-o"><img src="img/env_flap_open.webp" alt="" draggable="false"></div>
       </button>
       <img class="hand" id="hand" src="img/hand.webp" alt="" draggable="false">
     </div>
@@ -438,8 +439,10 @@ body::after{ /* лёгкая виньетка, как на фото */
     if (opened) return; opened = true;
     hint.style.visibility = "hidden"; el("to").style.opacity = "0";
     env.classList.add("still");
-    env.classList.add("open");                                 // клапан откидывается
-    await wait(1100);
+    env.classList.add("open");                                 // клапан поднимается до ребра…
+    await wait(550);
+    env.classList.add("open2");                                // …и ложится открытым
+    await wait(650);
     env.classList.add("flap-behind");                          // карточка теперь перед открытым клапаном
     cardS.classList.add("peek");
     const peek = cardS.offsetHeight * 0.42;                    // карточка выглядывает из конверта
@@ -449,7 +452,7 @@ body::after{ /* лёгкая виньетка, как на фото */
     const B = box.getBoundingClientRect(), C = cardS.getBoundingClientRect();
     const hw = hand.offsetWidth, hh = hw * HAND.h / HAND.w;
     const tx = (C.left - B.left) + C.width / 2 - hw * HAND.px;
-    const ty = (C.top - B.top) + C.height * 0.05 - hh * HAND.py;
+    const ty = (C.top - B.top) + C.height * 0.14 - hh * HAND.py;   // пальцы заходят на край карточки
     const startY = -(B.top + hh + 40);
     hand.style.transition = "none";
     hand.style.transform = `translate(${tx}px, ${startY}px)`;
