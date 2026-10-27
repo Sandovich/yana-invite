@@ -397,10 +397,16 @@ body::after{ /* лёгкая виньетка, как на фото */
   // Длинное имя на карточке в конверте («Владислава и Игорь»): ужимаем шрифт, пока не влезет в одну строку
   function fitCardName() {
     const n = el("cardName"); n.style.fontSize = "";
+    if (!n.clientWidth) return;
     let fs = parseFloat(getComputedStyle(n).fontSize);
-    while (n.scrollWidth > n.clientWidth + 1 && fs > 15) { fs -= 1; n.style.fontSize = fs + "px"; }
+    // запас 10%: росчерки Classica выходят за габарит буквы и scrollWidth их не видит
+    const fits = () => [...n.children].every(s => { const r = document.createRange(); r.selectNodeContents(s); return r.getBoundingClientRect().width <= n.clientWidth * 0.9; });
+    while (!fits() && fs > 12) { fs -= 0.5; n.style.fontSize = fs + "px"; }
   }
   fitCardName(); document.fonts && document.fonts.ready.then(fitCardName); addEventListener("resize", fitCardName);
+  // на медленной сети Classica приходит позже fonts.ready (карточка скрыта) — подгоняем ещё раз, когда шрифт загрузится
+  document.fonts && document.fonts.load('40px "Classica Two"', el("cardName").textContent).then(fitCardName, () => {});
+  document.fonts && document.fonts.addEventListener && document.fonts.addEventListener("loadingdone", fitCardName);
   // Сцена появляется, когда все слои загружены (или через 4 с, если сеть совсем медленная)
   // ширина плашки → тиснение: SVG с фильтром освещения собирается в строку и ставится как картинка (растеризуется один раз)
   const cardEl = el("card");
